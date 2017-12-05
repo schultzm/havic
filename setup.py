@@ -54,7 +54,5 @@ setup(
     author_email = havtrans.__author_email__,
     license = havtrans.__license__,
     include_package_data = True,
-    install_requires = ['pandas>=0.20.3',
-                        'dendropy>=4.3.0',
-                        'rpy2>=2.9.0'],
+    install_requires = ['biopython>=1.70'],
     )
