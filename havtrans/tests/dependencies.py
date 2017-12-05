@@ -8,5 +8,5 @@ SOFTWAREZ = ['iqtree',
 R_LIBS = ['GenomicAlignments',
           'Rsamtools']
 
-CLUSTER_PICKER = ['~/Applications/ClusterPicker_1.2.5.jar']
+CLUSTER_PICKER = '/Applications/ClusterPicker_1.2.5.jar'
 

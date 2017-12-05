@@ -34,5 +34,5 @@ class Check_dependency:
         if path is not None:
             print(f'{self.software.ljust(28)}: ok ({path})')
         else:
-            print(f'Dependency {self.software} is not installed and/or in path',
+            print(f'Dependency {self.software} not callable in path',
                   file=sys.stderr)
