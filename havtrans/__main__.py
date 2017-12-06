@@ -3,6 +3,8 @@
 '''
 Parse fasta files (remove spaces in descriptor etc)
 Concatenate to single file
+Run the pipeline
+Trim the alignment
 '''
 
 from havtrans.classes.classes import Input_file, Check_dependency
@@ -59,20 +61,22 @@ def main():
             quality_controlled_seqs.append(record)
     SeqIO.write(quality_controlled_seqs, tmp_fasta, 'fasta')
     
-    #get ref and ref stats
+    #1.1 trim the sequences to remove primers
+
+    #2 get ref and ref stats
     refseq = SeqIO.read(subject, 'fasta')
     reflen = len(refseq.seq)
     header = refseq.id
     
-    #get minimap2 done
+    #3 get minimap2 done
     import os
-    cmd = f'minimap2 -k 7 -a {subject} {tmp_fasta} | samtools sort > {tmp_bam}'
+    cmd = f'minimap2 -k 28 -a {subject} {tmp_fasta} | samtools sort > {tmp_bam}'
     cmd2 = f'samtools index {tmp_bam}'
     os.system(cmd)
     os.system(cmd2)
 
 
-    #get the fasta from the bam using bam2fasta
+    #4 get the fasta from the bam using bam2fasta
     from rpy2 import robjects
     import warnings
     from rpy2.rinterface import RRuntimeWarning
@@ -82,15 +86,41 @@ def main():
     except:
         sys.exit('bam2fasta error')
     
-    #Run iqtree on the extracted bam2fasta
+    #5 Run iqtree on the extracted bam2fasta
     cmd = f'iqtree -s {fasta_from_bam} -nt AUTO -bb 1000 -m TEST'
     os.system(cmd)
     
-    #Run CLUSTER_PICKER on the tree and alignment
+    #6 Run CLUSTER_PICKER on the tree and alignment
     cmd = f'java -jar {CLUSTER_PICKER} {fasta_from_bam} {fasta_from_bam}.treefile 70 95 0.006 15 valid'
     print(cmd)
     os.system(cmd)
+    
+    #6 Link tree to alignment
+    from ete3 import PhyloTree, TreeStyle
+    from Bio import AlignIO
+    
+    alignment = AlignIO.read(open(fasta_from_bam, 'r'), 'fasta')
+    site_set = {'-'}
+    start_pos = 0
+    while len(site_set) == 1:
+        site_set = set(alignment[:, start_pos])
+        start_pos += 1
+    site_set = {'-'}
+    end_pos = alignment.get_alignment_length()-1 #subtract one due to 0 and 1-based indexing issues
+    while len(site_set) == 1:
+        site_set = set(alignment[:, end_pos])
+        end_pos -= 1
+    alignment_trimmed = alignment[:, start_pos:end_pos+2].format('fasta') #Add 2, again due to indexing discrepancies
 
+#     Load a tree and link it to an alignment.
+    t = PhyloTree(open(f'{fasta_from_bam}.treefile', 'r').read())
+    t.link_to_alignment(alignment=alignment_trimmed.format('fasta'), alg_format='fasta')
+#    print(help(t.render))
+    t.render(f'{fasta_from_bam}.treefile.pdf',
+             w=500,
+             h=500,
+             units="mm",
+             tree_style=TreeStyle())
 
 if __name__ == '__main__':
     main()
