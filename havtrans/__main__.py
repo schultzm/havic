@@ -54,6 +54,7 @@ def main():
     tmp_fasta = os.path.expanduser('~/all_tmp.fa')
     tmp_bam = os.path.expanduser('~/HAV_all_minimap2.bam')
     fasta_from_bam = os.path.expanduser('~/HAV_all_minimap2.stack.fa')
+    fasta_from_bam_trimmed = os.path.expanduser('~/HAV_all_minimap2.stack.trimmed.fa')
     for query_file in queries:
         for record in SeqIO.parse(query_file, 'fasta'):
             record.id = record.id.replace('_(reversed)', ' reversed') \
@@ -86,19 +87,8 @@ def main():
     except:
         sys.exit('bam2fasta error')
     
-    #5 Run iqtree on the extracted bam2fasta
-    cmd = f'iqtree -s {fasta_from_bam} -nt AUTO -bb 1000 -m TEST'
-    os.system(cmd)
-    
-    #6 Run CLUSTER_PICKER on the tree and alignment
-    cmd = f'java -jar {CLUSTER_PICKER} {fasta_from_bam} {fasta_from_bam}.treefile 70 95 0.006 15 valid'
-    print(cmd)
-    os.system(cmd)
-    
-    #6 Link tree to alignment
-    from ete3 import PhyloTree, TreeStyle
+    #4.1 Trim the alignment
     from Bio import AlignIO
-    
     alignment = AlignIO.read(open(fasta_from_bam, 'r'), 'fasta')
     site_set = {'-'}
     start_pos = 0
@@ -110,17 +100,28 @@ def main():
     while len(site_set) == 1:
         site_set = set(alignment[:, end_pos])
         end_pos -= 1
-    alignment_trimmed = alignment[:, start_pos:end_pos+2].format('fasta') #Add 2, again due to indexing discrepancies
-
-#     Load a tree and link it to an alignment.
-    t = PhyloTree(open(f'{fasta_from_bam}.treefile', 'r').read())
+    alignment_trimmed = alignment[:, start_pos:end_pos+2]#.format('fasta') #Add 2, again due to indexing discrepancies
+    AlignIO.write(alignment_trimmed, fasta_from_bam_trimmed, 'fasta')
+    #5 Run iqtree on the extracted bam2fasta
+    cmd = f'iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m TEST'
+    os.system(cmd)
+    
+    #6 Run CLUSTER_PICKER on the tree and alignment
+    cmd = f'java -jar {CLUSTER_PICKER} {fasta_from_bam_trimmed} {fasta_from_bam_trimmed}.treefile 70 95 0.006 15 valid'
+    print(cmd)
+    os.system(cmd)
+    
+    #6 Link tree to alignment
+    from ete3 import PhyloTree, TreeStyle
+    #Load a tree and link it to an alignment.
+    t = PhyloTree(open(f'{fasta_from_bam_trimmed}.treefile', 'r').read())
+    t.ladderize()
+    ts = TreeStyle()
+    ts.show_branch_support = True
+    ts.show_branch_length = True
     t.link_to_alignment(alignment=alignment_trimmed.format('fasta'), alg_format='fasta')
-#    print(help(t.render))
-    t.render(f'{fasta_from_bam}.treefile.pdf',
-             w=500,
-             h=500,
-             units="mm",
-             tree_style=TreeStyle())
+    t.render(f'{fasta_from_bam_trimmed}.treefile.pdf',
+             tree_style=ts)
 
 if __name__ == '__main__':
     main()

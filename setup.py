@@ -54,5 +54,6 @@ setup(
     author_email = havtrans.__author_email__,
     license = havtrans.__license__,
     include_package_data = True,
-    install_requires = ['biopython>=1.70'],
+    install_requires = ['biopython>=1.70',
+                        'ete3>=3.1.1'],
     )
