@@ -40,12 +40,12 @@ def main():
     queries = [Input_file(file, 'Query').filename for file in args.query_files]
     subject = Input_file(args.subject_file, 'Subject').filename
 
-#     for dep in SOFTWAREZ:
-#         path = Check_dependency(dep)
-#         path.check_software()
-#     for dep in R_LIBS: #move this to class
-#         check_r_dependencies.importr_tryhard(dep)
-#         print(f'R library {dep}'.ljust(28)+': ok', file=sys.stderr)
+    for dep in SOFTWAREZ:
+        path = Check_dependency(dep)
+        path.check_software()
+    for dep in R_LIBS: #move this to class
+        check_r_dependencies.importr_tryhard(dep)
+        print(f'R library {dep}'.ljust(28)+': ok', file=sys.stderr)
 
     
     #1 Compile the query fasta files to single file
@@ -118,10 +118,13 @@ def main():
     t.ladderize()
     ts = TreeStyle()
     ts.show_branch_support = True
-    ts.show_branch_length = True
+#     ts.show_branch_length = True
+    ts.show_leaf_name = False
+    ts.scale =  240
+    ts.optimal_scale_level = 'full'
     t.link_to_alignment(alignment=alignment_trimmed.format('fasta'), alg_format='fasta')
-    t.render(f'{fasta_from_bam_trimmed}.treefile.pdf',
-             tree_style=ts)
+    t.render(f'{fasta_from_bam_trimmed}.treefile.png',
+             tree_style=ts, dpi=300)
 
 if __name__ == '__main__':
     main()

@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 __name__            = 'havtrans'
 __parent_dir__      = 'HAVtrans'
 __version__         = '0.0.01b'
-__version_date__    = 'Mon 04 Dec, 2017'
+__version_date__    = 'Wed 05 Dec, 2017'
 __description__     = 'Detect Hepatitis transmission clusters'
 __author__          = 'Mark B Schultz'
 __author_email__    = 'dr.mark.schultz@gmail.com'
