@@ -30,6 +30,8 @@ def main():
                                nargs='+', required=True)
     subparser_run.add_argument('-s', '--subject_file', help='Subject file',
                                required=True)
+    subparser_run.add_argument('-o', '--outgroup', help='Tree-root outgroup',
+                               default=None, required=False)
     subparser_version = subparsers.add_parser('version', help='Print version.',
                                            description='Print version.')
     args = parser.parse_args()
@@ -40,12 +42,12 @@ def main():
     queries = [Input_file(file, 'Query').filename for file in args.query_files]
     subject = Input_file(args.subject_file, 'Subject').filename
 
-    for dep in SOFTWAREZ:
-        path = Check_dependency(dep)
-        path.check_software()
-    for dep in R_LIBS: #move this to class
-        check_r_dependencies.importr_tryhard(dep)
-        print(f'R library {dep}'.ljust(28)+': ok', file=sys.stderr)
+#     for dep in SOFTWAREZ:
+#         path = Check_dependency(dep)
+#         path.check_software()
+#     for dep in R_LIBS: #move this to class
+#         check_r_dependencies.importr_tryhard(dep)
+#         print(f'R library {dep}'.ljust(28)+': ok', file=sys.stderr)
 
     
     #1 Compile the query fasta files to single file
@@ -71,11 +73,13 @@ def main():
     
     #3 get minimap2 done
     import os
-    cmd = f'minimap2 -k 28 -a {subject} {tmp_fasta} | samtools sort > {tmp_bam}'
+    cmd = f'minimap2 -k 15 -a -x sr {subject} {tmp_fasta} | samtools sort > {tmp_bam}'
     cmd2 = f'samtools index {tmp_bam}'
     os.system(cmd)
     os.system(cmd2)
 
+    #3.1 find the unmapped sequences.
+    
 
     #4 get the fasta from the bam using bam2fasta
     from rpy2 import robjects
@@ -102,26 +106,74 @@ def main():
         end_pos -= 1
     alignment_trimmed = alignment[:, start_pos:end_pos+2]#.format('fasta') #Add 2, again due to indexing discrepancies
     AlignIO.write(alignment_trimmed, fasta_from_bam_trimmed, 'fasta')
+
     #5 Run iqtree on the extracted bam2fasta
-    cmd = f'iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m TEST'
+    cmd = f'iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m TEST'# -redo'
     os.system(cmd)
-    
+
     #6 Run CLUSTER_PICKER on the tree and alignment
     cmd = f'java -jar {CLUSTER_PICKER} {fasta_from_bam_trimmed} {fasta_from_bam_trimmed}.treefile 70 95 0.006 15 valid'
     print(cmd)
     os.system(cmd)
-    
+
     #6 Link tree to alignment
-    from ete3 import PhyloTree, TreeStyle
-    #Load a tree and link it to an alignment.
-    t = PhyloTree(open(f'{fasta_from_bam_trimmed}.treefile', 'r').read())
-    t.ladderize()
+
+#     from ete3 import PhyloTree, TreeStyle, Tree
+#     #Load a tree and link it to an alignment.
+# #     print(help(PhyloTree))
+    treestring = open(f'{fasta_from_bam_trimmed}.treefile', 'r').read()
+    
+#     from ete3 import Tree
+# 
+# # Generate a random tree (yule process)
+#     t = Tree()
+#     t.populate(8, names_library=list('ABCDEFGHIJKL'), random_branches=True)
+# 
+#     print(t.get_ascii(attributes=['name', 'support'], show_internal=True))
+#     tree = (t.write())
+#     print(t.write())
+#     t = PhyloTree(tree, format=2)
+#     t.render('tree.png', dpi=200)
+#     treestring = treestring.replace('):', ')0.1:')
+#     print(treestring)
+#     t = PhyloTree(newick=treestring, format=0)
+#     t.ladderize(direction=1)
+#     print(help(t))
+#     print(t.get_ascii(attributes=['support', 'length', 'name']))
+#     print(t.write())
+#     
+#     from Bio import Phylo
+# 
+#     '''
+#     I want to get a dictionary where the keys are every leaf name
+#     and the value is the parental (internal) node of that leaf
+#     '''
+#     tree = Phylo.read(open(f'{fasta_from_bam_trimmed}.treefile', 'r'), 'newick')
+#     res_dict = {}
+#     for node in tree.find_clades():
+#         ## if the node is a leaf, the name will be in node.name
+#         ## if the node is internal, the name will be node.confidence
+#         print(node.name, node.confidence)
+#         ## iterate through the descendet clades (should only be 2)
+#         for c in node.clades:
+#             ## if one of them is a leaf aka terminal
+#             if c.is_terminal():
+#                 ## print leaf name and parent node
+#                 print( c, node.confidence)
+#                 assert c not in res_dict
+#                 res_dict[c] = node.confidence
+#     print(tree.format('newick'))
+# #     print(t.write())
+# #     print(t.format('newick'))
+# #     t.ladderize()
     ts = TreeStyle()
+# #     print(help(ts))
     ts.show_branch_support = True
-#     ts.show_branch_length = True
+    ts.show_branch_length = True
     ts.show_leaf_name = False
-    ts.scale =  240
-    ts.optimal_scale_level = 'full'
+#     ts.scale =  240
+# #     ts.optimal_scale_level = 'mid'
+# #     ts.force_topology = True
     t.link_to_alignment(alignment=alignment_trimmed.format('fasta'), alg_format='fasta')
     t.render(f'{fasta_from_bam_trimmed}.treefile.png',
              tree_style=ts, dpi=300)
