@@ -9,7 +9,8 @@ R_LIBS = ['GenomicAlignments',
           'Rsamtools',
           'ggtree',
           'tidyverse',
-          'phytools']
+          'phytools',
+          'ape']
 
 CLUSTER_PICKER = '/Applications/ClusterPicker_1.2.5.jar'
 

@@ -4,8 +4,8 @@ library(ape)
 library(tidyverse)
 library(ggtree)
 
-tree1 <- read.newick('/Users/mschultz/HAV_all_minimap2.stack.trimmed.fa.treefile')
-tree <- read.newick('/Users/mschultz/HAV_all_minimap2.stack.trimmed.fa_clusterPicks.nwk')
+tree1 <- read.newick('%s')
+tree <- read.newick('%s')
 
 cluster_picks <- matrix(nrow = 0, ncol = 2) 
 colnames(cluster_picks) <- c('Cluster', 'Isolate')
@@ -15,7 +15,6 @@ for(tip in tree$tip.label[grep('Clust', tree$tip.label)]){
     outp_list_of_lists <- strsplit(tip, split = '_') 
     output_list <- outp_list_of_lists[[1]]
     cluster_picks <- rbind(cluster_picks, c(output_list[1], paste0(output_list[2:length(output_list)], collapse='_')))
-    # print(vals)
     }
 
 cluster_picks <- data.frame(cluster_picks, stringsAsFactors=FALSE)
@@ -48,7 +47,7 @@ for(cluster_n in 1:length(list_of_clusters)){
     }
 
 dev.off()
-pdf(file = paste('/Users/mschultz/HAV_all_minimap2.stack.trimmed.fa.treefile.', '.msa.pdf'), paper = 'a4r', width=11.69, height=8.27, onefile = TRUE)
+pdf(file = paste('/Users/mschultz/HAV_all_minimap2.stack.trimmed.fa.treefile', '.msa.pdf', sep=''), paper = 'a4r', width=11.69, height=8.27, onefile = TRUE)
 for(i in plot_list){
     print(i)
 }

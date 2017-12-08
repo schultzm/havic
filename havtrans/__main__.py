@@ -12,6 +12,7 @@ from havtrans.tests import check_r_dependencies
 from havtrans.tests.dependencies import SOFTWAREZ, R_LIBS, CLUSTER_PICKER
 from havtrans.mapping.bam2fasta import bam2fasta
 from havtrans.plottree.plottree import plottree
+from havtrans.plottree.pdfloop import looper
 import sys
 
 def main():
@@ -123,7 +124,7 @@ def main():
     Phylo.write(tree, f'{fasta_from_bam_trimmed}.mp.treefile', 'newick')
 
     #6 Run CLUSTER_PICKER on the tree and alignment
-    cmd = f'java -jar {CLUSTER_PICKER} {fasta_from_bam_trimmed} {fasta_from_bam_trimmed}.treefile 70 95 0.006 15 valid'
+    cmd = f'java -jar {CLUSTER_PICKER} {fasta_from_bam_trimmed} {fasta_from_bam_trimmed}.mp.treefile 70 95 0.006 15 valid'
     print(cmd)
     os.system(cmd)
 
@@ -133,8 +134,13 @@ def main():
     with open(f'{fasta_from_bam_trimmed}.Rplot.R', 'w') as out_r:
         out_r.write(plottree % (fasta_from_bam_trimmed, fasta_from_bam_trimmed, fasta_from_bam_trimmed))
     os.system(f'Rscript {fasta_from_bam_trimmed}.Rplot.R')
-    cluster_picked_tree = f'{fasta_from_bam_trimmed}_clusterPicks.nwk'
-    print(cluster_picked_tree)
+    
+    with open(f'{fasta_from_bam_trimmed}.Rplot.looper.R', 'w') as out_r:
+        cmds = looper % (f'{fasta_from_bam_trimmed}.mp.treefile', f'{fasta_from_bam_trimmed}.mp_clusterPicks.nwk')
+        print(cmds)
+        out_r.write(cmds)
+    os.system(f'Rscript {fasta_from_bam_trimmed}.Rplot.looper.R')
+    
 
 if __name__ == '__main__':
     main()
