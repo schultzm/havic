@@ -11,6 +11,7 @@ from havtrans.classes.classes import Input_file, Check_dependency
 from havtrans.tests import check_r_dependencies
 from havtrans.tests.dependencies import SOFTWAREZ, R_LIBS, CLUSTER_PICKER
 from havtrans.mapping.bam2fasta import bam2fasta
+from havtrans.plottree.plottree import plottree
 import sys
 
 def main():
@@ -32,6 +33,9 @@ def main():
                                required=True)
     subparser_run.add_argument('-o', '--outgroup', help='Tree-root outgroup',
                                default=None, required=False)
+    subparser_run.add_argument('-r', '--redo', help='Redo all  (force redo).',
+                               action='store_true', default=False,
+                               required=False)
     subparser_version = subparsers.add_parser('version', help='Print version.',
                                            description='Print version.')
     args = parser.parse_args()
@@ -111,72 +115,26 @@ def main():
     cmd = f'iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m TEST'# -redo'
     os.system(cmd)
 
+    #5.1 Midpoint root the phylogeny
+    from Bio import Phylo
+    tree = Phylo.read(f'{fasta_from_bam_trimmed}.treefile', 'newick')
+    tree.root_at_midpoint()
+    tree.ladderize(reverse=True)
+    Phylo.write(tree, f'{fasta_from_bam_trimmed}.mp.treefile', 'newick')
+
     #6 Run CLUSTER_PICKER on the tree and alignment
     cmd = f'java -jar {CLUSTER_PICKER} {fasta_from_bam_trimmed} {fasta_from_bam_trimmed}.treefile 70 95 0.006 15 valid'
     print(cmd)
     os.system(cmd)
 
-    #6 Link tree to alignment
-
-#     from ete3 import PhyloTree, TreeStyle, Tree
-#     #Load a tree and link it to an alignment.
-# #     print(help(PhyloTree))
-    treestring = open(f'{fasta_from_bam_trimmed}.treefile', 'r').read()
-    
-#     from ete3 import Tree
-# 
-# # Generate a random tree (yule process)
-#     t = Tree()
-#     t.populate(8, names_library=list('ABCDEFGHIJKL'), random_branches=True)
-# 
-#     print(t.get_ascii(attributes=['name', 'support'], show_internal=True))
-#     tree = (t.write())
-#     print(t.write())
-#     t = PhyloTree(tree, format=2)
-#     t.render('tree.png', dpi=200)
-#     treestring = treestring.replace('):', ')0.1:')
-#     print(treestring)
-#     t = PhyloTree(newick=treestring, format=0)
-#     t.ladderize(direction=1)
-#     print(help(t))
-#     print(t.get_ascii(attributes=['support', 'length', 'name']))
-#     print(t.write())
-#     
-#     from Bio import Phylo
-# 
-#     '''
-#     I want to get a dictionary where the keys are every leaf name
-#     and the value is the parental (internal) node of that leaf
-#     '''
-#     tree = Phylo.read(open(f'{fasta_from_bam_trimmed}.treefile', 'r'), 'newick')
-#     res_dict = {}
-#     for node in tree.find_clades():
-#         ## if the node is a leaf, the name will be in node.name
-#         ## if the node is internal, the name will be node.confidence
-#         print(node.name, node.confidence)
-#         ## iterate through the descendet clades (should only be 2)
-#         for c in node.clades:
-#             ## if one of them is a leaf aka terminal
-#             if c.is_terminal():
-#                 ## print leaf name and parent node
-#                 print( c, node.confidence)
-#                 assert c not in res_dict
-#                 res_dict[c] = node.confidence
-#     print(tree.format('newick'))
-# #     print(t.write())
-# #     print(t.format('newick'))
-# #     t.ladderize()
-    ts = TreeStyle()
-# #     print(help(ts))
-    ts.show_branch_support = True
-    ts.show_branch_length = True
-    ts.show_leaf_name = False
-#     ts.scale =  240
-# #     ts.optimal_scale_level = 'mid'
-# #     ts.force_topology = True
-    t.link_to_alignment(alignment=alignment_trimmed.format('fasta'), alg_format='fasta')
-    t.render(f'{fasta_from_bam_trimmed}.treefile.png',
-             tree_style=ts, dpi=300)
+    #6 Link tree to alignment and plot it
+    treestring = open(f'{fasta_from_bam_trimmed}.mp.treefile', 'r').read()
+    print(treestring)
+    with open(f'{fasta_from_bam_trimmed}.Rplot.R', 'w') as out_r:
+        out_r.write(plottree % (fasta_from_bam_trimmed, fasta_from_bam_trimmed, fasta_from_bam_trimmed))
+    os.system(f'Rscript {fasta_from_bam_trimmed}.Rplot.R')
+    cluster_picked_tree = f'{fasta_from_bam_trimmed}_clusterPicks.nwk'
+    print(cluster_picked_tree)
 
 if __name__ == '__main__':
     main()
