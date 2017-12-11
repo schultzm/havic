@@ -40,19 +40,23 @@ def main():
     subparser_run.add_argument('-r', '--redo', help='Redo all  (force redo).',
                                default=False, action='store_true',
                                required=False)
-    subparser_run.add_argument('-d', '--distance_fraction',
-                               help='''Distance fraction.  E.g., 0.01 is 1%.
-                               Can be input as a literal fraction.  Default is 2/300''',
-                               default=2/300,
+    subparser_run.add_argument('-n', '--n_snps',
+                               help='''Number of SNPS in distance
+                                       fraction (numerator, default=2).''',
+                               default=2, type=int,
                                required=False)
+    subparser_run.add_argument('-l', '--seqlen',
+                               help='''Sequence length in distance
+                                       fraction (denominator, default=300).''',
+                               default=300, type=int,
+                               required=False)
+    
 
     subparser_version = subparsers.add_parser('version', help='Print version.',
                                            description='Print version.')
     args = parser.parse_args()
-    print(args.distance_fraction)
     if not args.subparser_name:
         os.system('havtrans -h')
-
     queries = [Input_file(file, 'Query').filename for file in args.query_files]
     subject = Input_file(args.subject_file, 'Subject').filename
 
@@ -126,10 +130,8 @@ def main():
     AlignIO.write(alignment_trimmed, fasta_from_bam_trimmed, 'fasta')
 
     #5 Run iqtree on the extracted bam2fasta
-    x=args.redo
-    print(x)
     if args.redo:
-        redo = ' --redo'
+        redo = ' -redo'
     else:
         redo = ''
     cmd = f'iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m TEST{redo}'# -redo'
@@ -144,21 +146,28 @@ def main():
     Phylo.write(tree, f'{fasta_from_bam_trimmed}.mp.treefile', 'newick')
 
     #6 Run CLUSTER_PICKER on the tree and alignment
-    cmd = f'java -jar {CLUSTER_PICKER} {fasta_from_bam_trimmed} {fasta_from_bam_trimmed}.mp.treefile 70 95 {args.distance_fraction} 15 valid'
+    cmd = f'java -jar {CLUSTER_PICKER} {fasta_from_bam_trimmed} {fasta_from_bam_trimmed}.mp.treefile 70 95 {args.n_snps/args.seqlen} 15 valid'
     print(cmd)
     os.system(cmd)
-    cmd = (f'cp {fasta_from_bam_trimmed}.mp_clusterPicks.nwk {fasta_from_bam_trimmed}.div_{args.distance_fraction}.mp_clusterPicks.nwk')
+    cmd = (f'cp {fasta_from_bam_trimmed}.mp_clusterPicks.nwk {fasta_from_bam_trimmed}.div_{args.n_snps}SNPsIn{args.seqlen}bp.mp_clusterPicks.nwk')
+    cmd = (f'cp {fasta_from_bam_trimmed}.mp_clusterPicks.nwk.figTree {fasta_from_bam_trimmed}.div_{args.n_snps}SNPsIn{args.seqlen}bp.mp_clusterPicks.nwk.figTree')
+
     os.system(cmd)
 
     #6 Link tree to alignment and plot it
     treestring = open(f'{fasta_from_bam_trimmed}.mp.treefile', 'r').read()
-    print(treestring)
+#     print(treestring)
     with open(f'{fasta_from_bam_trimmed}.Rplot.R', 'w') as out_r:
-        cmd = ggtree_plot.replace('<- z', '<- \''+fasta_from_bam_trimmed+'\'').replace('<- w', '<- \''+str(args.distance_fraction)+'\'')
+        cmd = ggtree_plot.replace('<- z', '<- \''+fasta_from_bam_trimmed+'\'').replace('<- a', '<- '+str(args.n_snps)).replace('<- b', '<- '+str(args.seqlen))
         print(cmd)
         out_r.write(cmd)
     os.system(f'Rscript {fasta_from_bam_trimmed}.Rplot.R')
-
+# 
+#     #7 SNP-dists as raw fractions
+#     for i in range(1, len(alignment_trimmed)):
+#         for j in range(i, len(alignment_trimmed)):
+#             if j == i:
+#                 print(0)
 if __name__ == '__main__':
     main()
 
