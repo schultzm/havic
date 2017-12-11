@@ -134,7 +134,7 @@ def main():
         redo = ''
     cmd = f'iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m TEST{redo}'# -redo'
     print(cmd)
-#     os.system(cmd)
+    os.system(cmd)
 
     #5.1 Midpoint root the phylogeny
     from Bio import Phylo
@@ -147,23 +147,17 @@ def main():
     cmd = f'java -jar {CLUSTER_PICKER} {fasta_from_bam_trimmed} {fasta_from_bam_trimmed}.mp.treefile 70 95 {args.distance_fraction} 15 valid'
     print(cmd)
     os.system(cmd)
+    cmd = (f'cp {fasta_from_bam_trimmed}.mp_clusterPicks.nwk {fasta_from_bam_trimmed}.div_{args.distance_fraction}.mp_clusterPicks.nwk')
+    os.system(cmd)
 
     #6 Link tree to alignment and plot it
     treestring = open(f'{fasta_from_bam_trimmed}.mp.treefile', 'r').read()
     print(treestring)
     with open(f'{fasta_from_bam_trimmed}.Rplot.R', 'w') as out_r:
         cmd = ggtree_plot.replace('<- z', '<- \''+fasta_from_bam_trimmed+'\'').replace('<- w', '<- \''+str(args.distance_fraction)+'\'')
-#         cmd = plottree % (fasta_from_bam_trimmed, fasta_from_bam_trimmed, fasta_from_bam_trimmed)
         print(cmd)
         out_r.write(cmd)
     os.system(f'Rscript {fasta_from_bam_trimmed}.Rplot.R')
-    
-#     with open(f'{fasta_from_bam_trimmed}.Rplot.looper.R', 'w') as out_r:
-#         cmds = looper % (fasta_from_bam_trimmed, fasta_from_bam_trimmed, fasta_from_bam_trimmed, fasta_from_bam_trimmed)
-#         print(cmds)
-#         out_r.write(cmds)
-#     os.system(f'Rscript {fasta_from_bam_trimmed}.Rplot.looper.R')
-    
 
 if __name__ == '__main__':
     main()
