@@ -8,9 +8,11 @@ SOFTWAREZ = ['iqtree',
 R_LIBS = ['GenomicAlignments',
           'Rsamtools',
           'ggtree',
-          'tidyverse',
+#           'tidyverse',
           'phytools',
-          'ape']
+          'ape',
+          'devtools'
+          'plotly']
 
 CLUSTER_PICKER = '/Applications/ClusterPicker_1.2.5.jar'
 

@@ -13,7 +13,10 @@ from havtrans.tests.dependencies import SOFTWAREZ, R_LIBS, CLUSTER_PICKER
 from havtrans.mapping.bam2fasta import bam2fasta
 from havtrans.plottree.plottree import plottree
 from havtrans.plottree.pdfloop import looper
+from havtrans.tests.havnet_amplicon import havnet_ampliconseq
+from havtrans.plottree.ggtree import ggtree_plot
 import sys
+import io
 
 def main():
     '''
@@ -35,12 +38,18 @@ def main():
     subparser_run.add_argument('-o', '--outgroup', help='Tree-root outgroup',
                                default=None, required=False)
     subparser_run.add_argument('-r', '--redo', help='Redo all  (force redo).',
-                               action='store_true', default=False,
+                               default=False, action='store_true',
                                required=False)
+    subparser_run.add_argument('-d', '--distance_fraction',
+                               help='''Distance fraction.  E.g., 0.01 is 1%.
+                               Can be input as a literal fraction.  Default is 2/300''',
+                               default=2/300,
+                               required=False)
+
     subparser_version = subparsers.add_parser('version', help='Print version.',
                                            description='Print version.')
     args = parser.parse_args()
-    
+    print(args.distance_fraction)
     if not args.subparser_name:
         os.system('havtrans -h')
 
@@ -67,9 +76,13 @@ def main():
             record.id = record.id.replace('_(reversed)', ' reversed') \
                               .replace('(', '').replace(')', '')
             quality_controlled_seqs.append(record)
+    #1.01 Append the reference amplicon
+    print(SeqIO.read(io.StringIO(havnet_ampliconseq), 'fasta').id)
+    quality_controlled_seqs.append(SeqIO.read(io.StringIO(havnet_ampliconseq), 'fasta'))
+    #1.02 Remove duplicates - todo.
     SeqIO.write(quality_controlled_seqs, tmp_fasta, 'fasta')
     
-    #1.1 trim the sequences to remove primers
+    #1.1 trim the sequences to remove primers - todo
 
     #2 get ref and ref stats
     refseq = SeqIO.read(subject, 'fasta')
@@ -96,7 +109,7 @@ def main():
     except:
         sys.exit('bam2fasta error')
     
-    #4.1 Trim the alignment
+    #4.1 Trim the alignment to get rid of gap only sites at 5' and 3' end of aln
     from Bio import AlignIO
     alignment = AlignIO.read(open(fasta_from_bam, 'r'), 'fasta')
     site_set = {'-'}
@@ -113,8 +126,15 @@ def main():
     AlignIO.write(alignment_trimmed, fasta_from_bam_trimmed, 'fasta')
 
     #5 Run iqtree on the extracted bam2fasta
-    cmd = f'iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m TEST'# -redo'
-    os.system(cmd)
+    x=args.redo
+    print(x)
+    if args.redo:
+        redo = ' --redo'
+    else:
+        redo = ''
+    cmd = f'iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m TEST{redo}'# -redo'
+    print(cmd)
+#     os.system(cmd)
 
     #5.1 Midpoint root the phylogeny
     from Bio import Phylo
@@ -124,7 +144,7 @@ def main():
     Phylo.write(tree, f'{fasta_from_bam_trimmed}.mp.treefile', 'newick')
 
     #6 Run CLUSTER_PICKER on the tree and alignment
-    cmd = f'java -jar {CLUSTER_PICKER} {fasta_from_bam_trimmed} {fasta_from_bam_trimmed}.mp.treefile 70 95 0.006 15 valid'
+    cmd = f'java -jar {CLUSTER_PICKER} {fasta_from_bam_trimmed} {fasta_from_bam_trimmed}.mp.treefile 70 95 {args.distance_fraction} 15 valid'
     print(cmd)
     os.system(cmd)
 
@@ -132,14 +152,17 @@ def main():
     treestring = open(f'{fasta_from_bam_trimmed}.mp.treefile', 'r').read()
     print(treestring)
     with open(f'{fasta_from_bam_trimmed}.Rplot.R', 'w') as out_r:
-        out_r.write(plottree % (fasta_from_bam_trimmed, fasta_from_bam_trimmed, fasta_from_bam_trimmed))
+        cmd = ggtree_plot.replace('<- z', '<- \''+fasta_from_bam_trimmed+'\'').replace('<- w', '<- \''+str(args.distance_fraction)+'\'')
+#         cmd = plottree % (fasta_from_bam_trimmed, fasta_from_bam_trimmed, fasta_from_bam_trimmed)
+        print(cmd)
+        out_r.write(cmd)
     os.system(f'Rscript {fasta_from_bam_trimmed}.Rplot.R')
     
-    with open(f'{fasta_from_bam_trimmed}.Rplot.looper.R', 'w') as out_r:
-        cmds = looper % (f'{fasta_from_bam_trimmed}.mp.treefile', f'{fasta_from_bam_trimmed}.mp_clusterPicks.nwk')
-        print(cmds)
-        out_r.write(cmds)
-    os.system(f'Rscript {fasta_from_bam_trimmed}.Rplot.looper.R')
+#     with open(f'{fasta_from_bam_trimmed}.Rplot.looper.R', 'w') as out_r:
+#         cmds = looper % (fasta_from_bam_trimmed, fasta_from_bam_trimmed, fasta_from_bam_trimmed, fasta_from_bam_trimmed)
+#         print(cmds)
+#         out_r.write(cmds)
+#     os.system(f'Rscript {fasta_from_bam_trimmed}.Rplot.looper.R')
     
 
 if __name__ == '__main__':

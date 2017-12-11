@@ -2,20 +2,20 @@ plottree = '''
 library(phytools)
 
 tree <- read.newick('%s.mp.treefile')
-outgrp <- NULL
-rt_tree <- function(tree, outgroup){
-    if(is.null(outgrp)){
-        tree <- ladderize(midpoint.root(tree), right = FALSE)
-    }
-    else{
-        tree <-root(tree, outgroup=outgroup,resolve.root=T)
-    }
-    return(tree)
-}
+#outgrp <- NULL
+#rt_tree <- function(tree, outgroup){
+#    if(is.null(outgrp)){
+#        tree <- ladderize(midpoint.root(tree), right = FALSE)
+#    }
+#    else{
+#        tree <-root(tree, outgroup=outgroup,resolve.root=T)
+#    }
+#    return(tree)
+#}
 
-tree <- rt_tree(tree, outgrp)
+#tree <- rt_tree(tree, outgrp)
 
-library(tidyverse)
+#library(tidyverse)
 library(ggtree)
 
 
