@@ -50,6 +50,23 @@ def main():
                                        fraction (denominator, default=300).''',
                                default=300, type=int,
                                required=False)
+    subparser_run.add_argument('-k', '--minimap2_kmer',
+                               help='''k-mer size for minimap2 step. 
+                                       Default=5.''',
+                               default=5, type=int, choices=[3,
+                                                             5,
+                                                             7,
+                                                             9,
+                                                             11,
+                                                             13,
+                                                             15,
+                                                             17,
+                                                             19,
+                                                             21,
+                                                             23,
+                                                             25,
+                                                             27],
+                               required=False)
     
 
     subparser_version = subparsers.add_parser('version', help='Print version.',
@@ -76,14 +93,21 @@ def main():
     fasta_from_bam = os.path.expanduser('~/HAV_all_minimap2.stack.fa')
     fasta_from_bam_trimmed = os.path.expanduser('~/HAV_all_minimap2.stack.trimmed.fa')
     for query_file in queries:
+        print(query_file)
         for record in SeqIO.parse(query_file, 'fasta'):
-            record.id = record.id.replace('_(reversed)', ' reversed') \
+            record.id = record.id.replace('_(reversed)', '') \
                               .replace('(', '').replace(')', '')
-            quality_controlled_seqs.append(record)
+#             record.descrition.remove()
+            #1.02 Remove duplicates.
+            if record.id not in [record.id for record in quality_controlled_seqs]:
+                quality_controlled_seqs.append(record)
+#                 print(record.id, record.description)
+            else:
+                print(f'Duplicate record found (only one copy of this added to quality_controlled_seqs): {record.id}')
+#     sys.exit()
     #1.01 Append the reference amplicon
-    print(SeqIO.read(io.StringIO(havnet_ampliconseq), 'fasta').id)
+#     print(SeqIO.read(io.StringIO(havnet_ampliconseq), 'fasta').id)
     quality_controlled_seqs.append(SeqIO.read(io.StringIO(havnet_ampliconseq), 'fasta'))
-    #1.02 Remove duplicates - todo.
     SeqIO.write(quality_controlled_seqs, tmp_fasta, 'fasta')
     
     #1.1 trim the sequences to remove primers - todo
@@ -95,10 +119,13 @@ def main():
     
     #3 get minimap2 done
     import os
-    cmd = f'minimap2 -k 15 -a -x sr {subject} {tmp_fasta} | samtools sort > {tmp_bam}'
-    cmd2 = f'samtools index {tmp_bam}'
+    cmd = f'minimap2 -k {args.minimap2_kmer} -a {subject} {tmp_fasta} | samtools sort > {tmp_bam}'
     os.system(cmd)
-    os.system(cmd2)
+    cmd = f'samtools index {tmp_bam}'
+    os.system(cmd)
+    cmd = f'samtools view -f 4 {tmp_bam} | cut -f 1'
+    print(f'Unmapped reads at k-mer {args.minimap2_kmer}:')
+    os.system(cmd)
 
     #3.1 find the unmapped sequences.
     
@@ -109,13 +136,16 @@ def main():
     from rpy2.rinterface import RRuntimeWarning
     warnings.filterwarnings("ignore", category=RRuntimeWarning)
     try:
-        robjects.r(bam2fasta % (tmp_bam, f'{tmp_bam}.bai', header, 1, reflen, fasta_from_bam))
+        cmd = bam2fasta % (tmp_bam, f'{tmp_bam}.bai', header, 1, reflen, fasta_from_bam)
+        print(cmd)
+        robjects.r(cmd)
     except:
         sys.exit('bam2fasta error')
-    
+#     sys.exit()
     #4.1 Trim the alignment to get rid of gap only sites at 5' and 3' end of aln
     from Bio import AlignIO
     alignment = AlignIO.read(open(fasta_from_bam, 'r'), 'fasta')
+    print(alignment)
     site_set = {'-'}
     start_pos = 0
     while len(site_set) == 1:
@@ -131,10 +161,10 @@ def main():
 
     #5 Run iqtree on the extracted bam2fasta
     if args.redo:
-        redo = ' -redo'
+        redo = 'redo -redo'
     else:
-        redo = ''
-    cmd = f'iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m TEST{redo}'# -redo'
+        redo = ' TEST'
+    cmd = f'iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m{redo}'# -redo'
     print(cmd)
     os.system(cmd)
 
@@ -158,12 +188,12 @@ def main():
     treestring = open(f'{fasta_from_bam_trimmed}.mp.treefile', 'r').read()
 #     print(treestring)
     with open(f'{fasta_from_bam_trimmed}.Rplot.R', 'w') as out_r:
-        cmd = ggtree_plot.replace('<- z', '<- \''+fasta_from_bam_trimmed+'\'').replace('<- a', '<- '+str(args.n_snps)).replace('<- b', '<- '+str(args.seqlen))
+        cmd = ggtree_plot.replace('<- z', '<- \''+fasta_from_bam_trimmed+'\'').replace('<- a', '<- '+str(args.n_snps)).replace('<- b', '<- '+str(args.seqlen)).replace('<- k', '<- '+str(args.minimap2_kmer))
         print(cmd)
         out_r.write(cmd)
     os.system(f'Rscript {fasta_from_bam_trimmed}.Rplot.R')
 # 
-#     #7 SNP-dists as raw fractions
+#     #7 SNP-dists as raw fractions e.g. 1/300
 #     for i in range(1, len(alignment_trimmed)):
 #         for j in range(i, len(alignment_trimmed)):
 #             if j == i:
