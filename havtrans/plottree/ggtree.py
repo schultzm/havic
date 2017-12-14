@@ -63,9 +63,9 @@ dev.off()
 
 library(pheatmap)
 heatmap_data <- read.FASTA(basename)
-heatmap_data <- dist.dna(heatmap_data, model='N')
-pheatmap(as.matrix(heatmap_data), show_rownames = T, show_colnames = T, display_numbers = TRUE, number_format = '%.0f', fontsize = fntsz*2, filename = paste0(basename, '_SNPdists.pdf'), width=11.69, height=8.27)
+heatmap_data <- as.matrix(dist.dna(heatmap_data, model='N'))
+pheatmap(heatmap_data, show_rownames = T, show_colnames = T, display_numbers = TRUE, number_format = '%.0f', fontsize = fntsz*2, filename = paste0(basename, '_SNPdists.pdf'), width=11.69, height=8.27)
 dev.off()
-write.csv(x=as.matrix(heatmap_data), file=paste0(basename, '_SNPdists.csv'), quote=FALSE)
+write.csv(x=heatmap_data, file=paste0(basename, '_SNPdists.csv'), quote=FALSE)
 
 '''
