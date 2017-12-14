@@ -15,6 +15,15 @@ from havtrans.plottree.plottree import plottree
 from havtrans.plottree.pdfloop import looper
 from havtrans.tests.havnet_amplicon import havnet_ampliconseq
 from havtrans.plottree.ggtree import ggtree_plot
+from havtrans import (__ref_seq__,
+                      __parent_dir__,
+                      __version__,
+                      __version_date__,
+                      __author__,
+                      __author_email__,
+                      __github_username__,
+                      __download_url__)
+import pkg_resources
 import sys
 import io
 
@@ -33,17 +42,18 @@ def main():
                                            description='Run the pipeline.')
     subparser_run.add_argument('-q', '--query_files', help='Query file',
                                nargs='+', required=True)
-    subparser_run.add_argument('-s', '--subject_file', help='Subject file',
-                               required=True)
-    subparser_run.add_argument('-o', '--outgroup', help='Tree-root outgroup',
-                               default=None, required=False)
+    subparser_run.add_argument('-s', '--subject_file', help='''Subject file.
+                               Default is the complete HAVNET reference genome:
+                               NC_001489.1 Hepatitis A virus.''',
+                               default=None,
+                               required=False)
     subparser_run.add_argument('-r', '--redo', help='Redo all  (force redo).',
                                default=False, action='store_true',
                                required=False)
     subparser_run.add_argument('-n', '--n_snps',
                                help='''Number of SNPS in distance
-                                       fraction (numerator, default=2).''',
-                               default=2, type=int,
+                                       fraction (numerator, default=3).''',
+                               default=3, type=int,
                                required=False)
     subparser_run.add_argument('-l', '--seqlen',
                                help='''Sequence length in distance
@@ -74,8 +84,13 @@ def main():
     args = parser.parse_args()
     if not args.subparser_name:
         os.system('havtrans -h')
+        sys.exit()
     queries = [Input_file(file, 'Query').filename for file in args.query_files]
-    subject = Input_file(args.subject_file, 'Subject').filename
+    if args.subject_file is not None:
+        subject = Input_file(args.subject_file, 'Subject').filename
+    else:
+        subject = pkg_resources.resource_filename(__parent_dir__, __ref_seq__)
+    print(subject)
 
 #     for dep in SOFTWAREZ:
 #         path = Check_dependency(dep)

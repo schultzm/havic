@@ -18,13 +18,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 __name__            = 'havtrans'
-__parent_dir__      = 'HAVtrans'
+__parent_dir__      = 'havtrans'
+__ref_seq__         = 'tests/NC_001489.fa'
 __version__         = '0.0.01b'
-__version_date__    = 'Tue 12 Dec, 2017'
+__version_date__    = 'Thu 14 Dec, 2017'
 __description__     = 'Detect Hepatitis A transmission clusters'
 __author__          = 'Mark B Schultz'
 __author_email__    = 'dr.mark.schultz@gmail.com'
 __github_username__ = 'schultzm'
 __install__         = 'pip3 install git+https://github.com/schultzm/HAVTrans.git'
 __license__         = 'AGPL-3.0'
-__all__             = []
+__download_url__    = 'https://github.com/schultzm/HAVTrans/zipball/master'
+__all__             = ['havtrans']

@@ -57,10 +57,10 @@ q <- p + geom_tiplab(aes(label=label, color=Cluster), size=0.8, linesize=0.2, al
 
 library(pheatmap)
 heatmap_data <- read.FASTA(basename)
-heatmap_data <- dist.dna(heatmap_data, model='N')
+heatmap_data <- as.matrix(dist.dna(heatmap_data, model='N'))
 pdf(file=paste0(basename, '_SNPdists.pdf'), paper = 'a4r', width=11.69, height=8.27, onefile = TRUE)
-pheatmap(heatmap_data, show_rownames = TRUE, show_colnames = TRUE)
+pheatmap(as.matrix(heatmap_data), show_rownames = T, show_colnames = T, display_numbers = TRUE, number_format = '%.0f')
 dev.off()
-write.csv(x=as.matrix(heatmap_data), file=paste0(basename, '_SNPdists.csv'), quote=FALSE)
+write.csv(x=heatmap_data, file=paste0(basename, '_SNPdists.csv'), quote=FALSE)
 
 '''
