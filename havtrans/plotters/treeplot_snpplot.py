@@ -29,7 +29,8 @@ names(list_of_clusters)
 p <- ggtree(tree) %<+% cluster_picks
 names(p)
 
-fntsz <- -0.00458*length(tree$tip.label)+2.23817
+offst <- 0.2105*max(dist.nodes(tree))+0.1712
+fntsz <- -0.005*length(tree$tip.label)+2.23817
 wdth <- 4
 q <- p + geom_tiplab(aes(label=paste0(label, ' ', Cluster), color=Cluster), size=fntsz, linesize=0.2, align=TRUE) +
     theme(legend.position = "right") +
@@ -41,7 +42,7 @@ q <- p + geom_tiplab(aes(label=paste0(label, ' ', Cluster), color=Cluster), size
 
 pdf(file=paste0(basename, '.mp.treefile.', 'div_', nsnps, 'SNPsIn', seqlen, 'bp_msa.pdf'), paper = 'a4r', width=11.69, height=8.27, onefile = TRUE)
 
-h <- msaplot(p=q, fasta=basename, offset = 0.2, width = wdth, bg_line = FALSE, color=c('#f7fcfd', #white
+h <- msaplot(p=q, fasta=basename, offset = offst, width = wdth, bg_line = FALSE, color=c('#f7fcfd', #white
                                                                                     '#ef3b2c', #red
                                                                                     '#41ab5d', #green
                                                                                     '#ffffbf', #yellow
@@ -63,7 +64,10 @@ dev.off()
 
 library(pheatmap)
 heatmap_data <- read.FASTA(basename)
-heatmap_data <- dist.dna(heatmap_data, model='N', as.matrix = TRUE)
+heatmap_data <- dist.dna(heatmap_data,
+                         model='N',
+                         as.matrix = TRUE,
+                         pairwise.deletion = TRUE)
 re_name <- function(iname, trmatrix) {
     if(iname %in% trmatrix[,1]){
         row <- which(trmatrix[,1]==iname)
