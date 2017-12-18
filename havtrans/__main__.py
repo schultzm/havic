@@ -11,10 +11,10 @@ from havtrans.classes.classes import Input_file, Check_dependency
 from havtrans.tests import check_r_dependencies
 from havtrans.tests.dependencies import SOFTWAREZ, R_LIBS, CLUSTER_PICKER
 from havtrans.mapping.bam2fasta import bam2fasta
-from havtrans.plottree.plottree import plottree
-from havtrans.plottree.pdfloop import looper
-from havtrans.tests.havnet_amplicon import havnet_ampliconseq
-from havtrans.plottree.ggtree import ggtree_plot
+from havtrans.plotters.plottree import plottree
+from havtrans.plotters.treeplot_snpplot import plot_functions
+from havtrans.plotters.pdfloop import looper
+from havtrans.data.havnet_amplicon import havnet_ampliconseq
 from havtrans import (__ref_seq__,
                       __parent_dir__,
                       __version__,
@@ -60,6 +60,10 @@ def main():
                                        fraction (denominator, default=300).''',
                                default=300, type=int,
                                required=False)
+    subparser_run.add_argument('-p', '--prefix',
+                           help='''Filename prefix.''',
+                           default='', required=False)
+
     subparser_run.add_argument('-k', '--minimap2_kmer',
                                help='''k-mer size for minimap2 step. 
                                        Default=5.''',
@@ -90,38 +94,35 @@ def main():
         subject = Input_file(args.subject_file, 'Subject').filename
     else:
         subject = pkg_resources.resource_filename(__parent_dir__, __ref_seq__)
-    print(subject)
+    print(f'Will map amplicons to {subject}')
 
-#     for dep in SOFTWAREZ:
-#         path = Check_dependency(dep)
-#         path.check_software()
-#     for dep in R_LIBS: #move this to class
-#         check_r_dependencies.importr_tryhard(dep)
-#         print(f'R library {dep}'.ljust(28)+': ok', file=sys.stderr)
+    for dep in SOFTWAREZ:
+        path = Check_dependency(dep)
+        path.check_software()
+    for dep in R_LIBS: #move this to class
+        check_r_dependencies.importr_tryhard(dep)
+        print(f'R library {dep}'.ljust(28)+': ok', file=sys.stderr)
 
-    
     #1 Compile the query fasta files to single file
     from Bio import SeqIO
     quality_controlled_seqs = []
-    tmp_fasta = os.path.expanduser('~/all_tmp.fa')
-    tmp_bam = os.path.expanduser('~/HAV_all_minimap2.bam')
-    fasta_from_bam = os.path.expanduser('~/HAV_all_minimap2.stack.fa')
-    fasta_from_bam_trimmed = os.path.expanduser('~/HAV_all_minimap2.stack.trimmed.fa')
+    tmp_fasta = os.path.expanduser(f'~/{args.prefix}all_tmp.fa')
+    tmp_bam = os.path.expanduser(f'~/{args.prefix}HAV_all_minimap2.bam')
+    fasta_from_bam = os.path.expanduser(f'~/{args.prefix}HAV_all_minimap2.stack.fa')
+    fasta_from_bam_trimmed = os.path.expanduser(f'~/{args.prefix}HAV_all_minimap2' +
+                                                '.stack.trimmed.fa')
     for query_file in queries:
         print(query_file)
         for record in SeqIO.parse(query_file, 'fasta'):
             record.id = record.id.replace('_(reversed)', '') \
                               .replace('(', '').replace(')', '')
-#             record.descrition.remove()
             #1.02 Remove duplicates.
             if record.id not in [record.id for record in quality_controlled_seqs]:
                 quality_controlled_seqs.append(record)
-#                 print(record.id, record.description)
             else:
                 print(f'Duplicate record found (only one copy of this added to quality_controlled_seqs): {record.id}')
-#     sys.exit()
+
     #1.01 Append the reference amplicon
-#     print(SeqIO.read(io.StringIO(havnet_ampliconseq), 'fasta').id)
     quality_controlled_seqs.append(SeqIO.read(io.StringIO(havnet_ampliconseq), 'fasta'))
     SeqIO.write(quality_controlled_seqs, tmp_fasta, 'fasta')
     
@@ -203,7 +204,7 @@ def main():
     treestring = open(f'{fasta_from_bam_trimmed}.mp.treefile', 'r').read()
 #     print(treestring)
     with open(f'{fasta_from_bam_trimmed}.Rplot.R', 'w') as out_r:
-        cmd = ggtree_plot.replace('<- z', '<- \''+fasta_from_bam_trimmed+'\'').replace('<- a', '<- '+str(args.n_snps)).replace('<- b', '<- '+str(args.seqlen)).replace('<- k', '<- '+str(args.minimap2_kmer))
+        cmd = plot_functions.replace('<- z', '<- \''+fasta_from_bam_trimmed+'\'').replace('<- a', '<- '+str(args.n_snps)).replace('<- b', '<- '+str(args.seqlen)).replace('<- k', '<- '+str(args.minimap2_kmer))
         print(cmd)
         out_r.write(cmd)
     os.system(f'Rscript {fasta_from_bam_trimmed}.Rplot.R')

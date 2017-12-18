@@ -1,4 +1,4 @@
-ggtree_plot = '''
+plot_functions = '''
 library(phytools)
 library(plotly)
 library(tidyverse)

@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 __name__            = 'havtrans'
 __parent_dir__      = 'havtrans'
-__ref_seq__         = 'tests/NC_001489.fa'
+__ref_seq__         = 'data/NC_001489.fa'
 __version__         = '0.0.01b'
 __version_date__    = 'Thu 14 Dec, 2017'
 __description__     = 'Detect Hepatitis A transmission clusters'
