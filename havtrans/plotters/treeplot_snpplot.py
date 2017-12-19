@@ -63,11 +63,39 @@ dev.off()
 
 
 library(pheatmap)
-heatmap_data <- read.FASTA(basename)
-heatmap_data <- dist.dna(heatmap_data,
-                         model='N',
-                         as.matrix = TRUE,
-                         pairwise.deletion = TRUE)
+
+aln <- read.dna(basename, format = 'fasta', as.character = TRUE)
+# print(aln)
+snp_dists <- function(alignment, exclude_char){
+    mat <- matrix(0, nrow = nrow(alignment), ncol = nrow(alignment))
+    colnames(mat) <- rownames(alignment)
+    rownames(mat) <- rownames(alignment)
+    mat_snps <- mat
+    pw_dist <- function(Aln_sub){
+        len_aln <- Aln_sub[, c(which(!(Aln_sub[1,] %in% exclude_char) & !(Aln_sub[2,] %in% exclude_char))), drop=FALSE]
+        n_snps <- len_aln[, c(which(len_aln[1,]!=len_aln[2,])), drop=FALSE]
+        return(c(paste0('=', ncol(n_snps), '/', ncol(len_aln)), ncol(n_snps)))
+    }
+    for(i in 1:nrow(alignment)){
+        for(j in i:nrow(alignment)){
+            seq1 <- rownames(alignment)[i]
+            seq2 <- rownames(alignment)[j]
+            val <- pw_dist(alignment[c(i,j),])
+            mat[seq1, seq2] <- val[1]
+            mat[seq2, seq1] <- val[1]
+            mat_snps[seq1, seq2] = as.numeric(val[2])
+            mat_snps[seq2, seq1] = as.numeric(val[2])
+            }
+        }
+    return(list(mat, mat_snps))
+}
+
+exclusions <- tolower(c(names(IUPAC_CODE_MAP)[!(names(IUPAC_CODE_MAP) %in% c('A', 'C', 'T', 'G'))], '-', '?'))
+
+#Returns two matrices
+snps <- snp_dists(aln, exclusions)
+heatmap_data <- snps[[2]]
+
 re_name <- function(iname, trmatrix) {
     if(iname %in% trmatrix[,1]){
         row <- which(trmatrix[,1]==iname)
@@ -92,7 +120,7 @@ pheatmap(heatmap_data,
          number_format = '%.0f',
          fontsize = fntsz*2,
          filename = paste0(basename,
-                           '_ClusterNamesPicked',
+                           '_ClustersPicked',
                            nsnps,
                            'SNPsIn',
                            seqlen,
@@ -101,11 +129,21 @@ pheatmap(heatmap_data,
          height=8.27)
 dev.off()
 write.csv(x=heatmap_data, file=paste0(basename,
-                                      '_ClusterNamesPicked',
+                                      '_ClustersPicked',
                                       nsnps,
                                       'SNPsIn',
                                       seqlen,
                                       '_SNPdists.csv'),
           quote=FALSE)
+
+write.csv(snps[[1]], file=paste0(basename,
+                                 '_ClustersPicked',
+                                 nsnps,
+                                 'SNPsIn',
+                                 seqlen,
+                                 '_SNPcountsOverAlignLength.csv'),
+          quote = FALSE)
+#write.csv(snps[[2]], 'test_snps.csv', quote = FALSE)
+
 
 '''
