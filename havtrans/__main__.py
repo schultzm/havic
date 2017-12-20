@@ -63,7 +63,6 @@ def main():
     subparser_run.add_argument('-p', '--prefix',
                            help='''Filename prefix.''',
                            default='', required=False)
-
     subparser_run.add_argument('-k', '--minimap2_kmer',
                                help='''k-mer size for minimap2 step. 
                                        Default=5.''',

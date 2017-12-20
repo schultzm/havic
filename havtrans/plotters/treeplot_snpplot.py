@@ -5,7 +5,7 @@ library(tidyverse)
 library(ggtree)
 
 basename <- z
-print(paste0('basename', basename))
+print(paste0('basename: ', basename))
 nsnps <- a
 seqlen <- b
 kmer <- k
@@ -21,25 +21,25 @@ for(tip in tree_clust$tip.label[grep('Clust', tree_clust$tip.label)]){
     cluster_picks <- rbind(cluster_picks, c(paste0(output_list[2:length(output_list)], collapse='_'), output_list[1]))
     }
 
-cluster_picks <- data.frame(cluster_picks)
+cluster_picks <- data.frame(cluster_picks, stringsAsFactors=FALSE)
 cluster_picks
 
-list_of_clusters <- split(cluster_picks$Isolate, cluster_picks$Cluster)
-names(list_of_clusters)
-p <- ggtree(tree) %<+% cluster_picks
-names(p)
 
+#list_of_clusters <- split(cluster_picks$Isolate, cluster_picks$Cluster)
+p <- ggtree(tree) %<+% cluster_picks
 offst <- 0.2105*max(dist.nodes(tree))+0.1712
 fntsz <- -0.005*length(tree$tip.label)+2.23817
 wdth <- 4
-q <- p + geom_tiplab(aes(label=paste0(label, ' ', Cluster), color=Cluster), size=fntsz, linesize=0.2, align=TRUE) +
-    theme(legend.position = "right") +
+q <- p + geom_tiplab(aes(label=label, color=Cluster), size=fntsz, linesize=0.2, align=TRUE) +
+    # theme(legend.position = "right") +
     geom_tippoint(aes(color=Cluster), size=fntsz, na.rm=T) +
     geom_text2(aes(x=branch, label=as.integer(label), vjust=-0.3, hjust=1, subset=(isTip!=TRUE), na.rm=TRUE), size=fntsz, na.rm=TRUE) +
     geom_treescale(x=0.01, y =-2, offset=1, fontsize = fntsz) +
     annotate("text", x = 0.015, y=-4, label = "Substitutions per site", size=fntsz) + 
-    ggtitle(label = "ML IQtree with bootstrap %, tips cluster-picked (left); fasta alignment (right)", subtitle = paste0('Clusters have been picked at 95% support allowing ', nsnps, ' SNPs in ', seqlen, ' bp'))
+    ggtitle(label = "ML IQtree with bootstrap %, tips cluster-picked (left); fasta alignment (right)", subtitle = paste0('Clusters (coloured tips) have been picked as clades with >=95% support and divergence <= ', nsnps/seqlen*100, '%', ' (i.e., <= ', nsnps, ' SNPs in ', seqlen, ' bp)')) +
+    scale_colour_brewer(palette = "Set1", na.value = "black")
 
+#q
 pdf(file=paste0(basename, '.mp.treefile.', 'div_', nsnps, 'SNPsIn', seqlen, 'bp_msa.pdf'), paper = 'a4r', width=11.69, height=8.27, onefile = TRUE)
 
 h <- msaplot(p=q, fasta=basename, offset = offst, width = wdth, bg_line = FALSE, color=c('#f7fcfd', #white
@@ -65,7 +65,6 @@ dev.off()
 library(pheatmap)
 
 aln <- read.dna(basename, format = 'fasta', as.character = TRUE)
-# print(aln)
 snp_dists <- function(alignment, exclude_char){
     mat <- matrix(0, nrow = nrow(alignment), ncol = nrow(alignment))
     colnames(mat) <- rownames(alignment)
@@ -80,7 +79,7 @@ snp_dists <- function(alignment, exclude_char){
         for(j in i:nrow(alignment)){
             seq1 <- rownames(alignment)[i]
             seq2 <- rownames(alignment)[j]
-            val <- pw_dist(alignment[c(i,j),])
+            val <- pw_dist(alignment[c(i,j), , drop=FALSE])
             mat[seq1, seq2] <- val[1]
             mat[seq2, seq1] <- val[1]
             mat_snps[seq1, seq2] = as.numeric(val[2])
@@ -96,22 +95,22 @@ exclusions <- tolower(c(names(IUPAC_CODE_MAP)[!(names(IUPAC_CODE_MAP) %in% c('A'
 snps <- snp_dists(aln, exclusions)
 heatmap_data <- snps[[2]]
 
-re_name <- function(iname, trmatrix) {
-    if(iname %in% trmatrix[,1]){
-        row <- which(trmatrix[,1]==iname)
-        return(paste0(trmatrix[row,1], ' ', trmatrix[row,2])) 
-    }
-    else{
-        return(iname)
-    }
-}
-
-colnames(heatmap_data) <- lapply(colnames(heatmap_data),
-                                 re_name,
-                                 cluster_picks)
-rownames(heatmap_data) <- lapply(rownames(heatmap_data),
-                                 re_name,
-                                 cluster_picks)
+# re_name <- function(iname, trmatrix) {
+#     if(iname %in% trmatrix[,1]){
+#         row <- which(trmatrix[,1]==iname)
+#         return(paste0(trmatrix[row,1], ' ', trmatrix[row,2])) 
+#     }
+#     else{
+#         return(iname)
+#     }
+# }
+# 
+# colnames(heatmap_data) <- lapply(colnames(heatmap_data),
+#                                  re_name,
+#                                  cluster_picks)
+# rownames(heatmap_data) <- lapply(rownames(heatmap_data),
+#                                  re_name,
+#                                  cluster_picks)
 
 pheatmap(heatmap_data,
          show_rownames = T,
@@ -120,30 +119,27 @@ pheatmap(heatmap_data,
          number_format = '%.0f',
          fontsize = fntsz*2,
          filename = paste0(basename,
-                           '_ClustersPicked',
-                           nsnps,
-                           'SNPsIn',
-                           seqlen,
+#                            '_ClustersPicked',
+#                            nsnps,
+#                            'SNPsIn',
+#                            seqlen,
                            '_SNPdists.pdf'),
          width=11.69,
          height=8.27)
 dev.off()
 write.csv(x=heatmap_data, file=paste0(basename,
-                                      '_ClustersPicked',
-                                      nsnps,
-                                      'SNPsIn',
-                                      seqlen,
+#                                       '_ClustersPicked',
+#                                       nsnps,
+#                                       'SNPsIn',
+#                                       seqlen,
                                       '_SNPdists.csv'),
           quote=FALSE)
 
 write.csv(snps[[1]], file=paste0(basename,
-                                 '_ClustersPicked',
-                                 nsnps,
-                                 'SNPsIn',
-                                 seqlen,
+#                                  '_ClustersPicked',
+#                                  nsnps,
+#                                  'SNPsIn',
+#                                  seqlen,
                                  '_SNPcountsOverAlignLength.csv'),
           quote = FALSE)
-#write.csv(snps[[2]], 'test_snps.csv', quote = FALSE)
-
-
 '''
