@@ -24,8 +24,8 @@ from havtrans import (__ref_seq__,
                       __github_username__,
                       __download_url__)
 import pkg_resources
-import sys
 import io
+
 
 def main():
     '''
@@ -39,7 +39,7 @@ def main():
                                        help='', metavar='',
                                        dest='subparser_name')
     subparser_run = subparsers.add_parser('run', help='Run the analysis.',
-                                           description='Run the pipeline.')
+                                          description='Run the pipeline.')
     subparser_run.add_argument('-q', '--query_files', help='Query file',
                                nargs='+', required=True)
     subparser_run.add_argument('-s', '--subject_file', help='''Subject file.
@@ -61,10 +61,10 @@ def main():
                                default=300, type=int,
                                required=False)
     subparser_run.add_argument('-p', '--prefix',
-                           help='''Filename prefix.''',
-                           default='', required=False)
+                               help='''Filename prefix.''',
+                               default='', required=False)
     subparser_run.add_argument('-k', '--minimap2_kmer',
-                               help='''k-mer size for minimap2 step. 
+                               help='''k-mer size for minimap2 step.
                                        Default=5.''',
                                default=5, type=int, choices=[3,
                                                              5,
@@ -80,10 +80,10 @@ def main():
                                                              25,
                                                              27],
                                required=False)
-    
+
 
     subparser_version = subparsers.add_parser('version', help='Print version.',
-                                           description='Print version.')
+                                              description='Print version.')
     args = parser.parse_args()
     if not args.subparser_name:
         os.system('havtrans -h')
@@ -98,11 +98,11 @@ def main():
     for dep in SOFTWAREZ:
         path = Check_dependency(dep)
         path.check_software()
-    for dep in R_LIBS: #move this to class
+    for dep in R_LIBS:  # move this to class
         check_r_dependencies.importr_tryhard(dep)
-        print(f'R library {dep}'.ljust(28)+': ok', file=sys.stderr)
+        print(f'R library {dep}'.ljust(28) + ': ok', file=sys.stderr)
 
-    #1 Compile the query fasta files to single file
+    # 1 Compile the query fasta files to single file
     from Bio import SeqIO
     quality_controlled_seqs = []
     tmp_fasta = os.path.expanduser(f'~/{args.prefix}all_tmp.fa')
@@ -115,7 +115,7 @@ def main():
         for record in SeqIO.parse(query_file, 'fasta'):
             record.id = record.id.replace('_(reversed)', '') \
                               .replace('(', '').replace(')', '')
-            #1.02 Remove duplicates.
+            # 1.02 Remove duplicates.
             if record.id not in [record.id for record in quality_controlled_seqs]:
                 quality_controlled_seqs.append(record)
             else:
@@ -124,14 +124,14 @@ def main():
     #1.01 Append the reference amplicon
     quality_controlled_seqs.append(SeqIO.read(io.StringIO(havnet_ampliconseq), 'fasta'))
     SeqIO.write(quality_controlled_seqs, tmp_fasta, 'fasta')
-    
+
     #1.1 trim the sequences to remove primers - todo
 
     #2 get ref and ref stats
     refseq = SeqIO.read(subject, 'fasta')
     reflen = len(refseq.seq)
     header = refseq.id
-    
+
     #3 get minimap2 done
     import os
     cmd = f'minimap2 -k {args.minimap2_kmer} -a {subject} {tmp_fasta} | samtools sort > {tmp_bam}'
@@ -143,7 +143,7 @@ def main():
     os.system(cmd)
 
     #3.1 find the unmapped sequences.
-    
+
 
     #4 get the fasta from the bam using bam2fasta
     from rpy2 import robjects
@@ -156,7 +156,6 @@ def main():
         robjects.r(cmd)
     except:
         sys.exit('bam2fasta error')
-#     sys.exit()
     #4.1 Trim the alignment to get rid of gap only sites at 5' and 3' end of aln
     from Bio import AlignIO
     alignment = AlignIO.read(open(fasta_from_bam, 'r'), 'fasta')
@@ -201,18 +200,12 @@ def main():
 
     #6 Link tree to alignment and plot it
     treestring = open(f'{fasta_from_bam_trimmed}.mp.treefile', 'r').read()
-#     print(treestring)
     with open(f'{fasta_from_bam_trimmed}.Rplot.R', 'w') as out_r:
         cmd = plot_functions.replace('<- z', '<- \''+fasta_from_bam_trimmed+'\'').replace('<- a', '<- '+str(args.n_snps)).replace('<- b', '<- '+str(args.seqlen)).replace('<- k', '<- '+str(args.minimap2_kmer))
         print(cmd)
         out_r.write(cmd)
     os.system(f'Rscript {fasta_from_bam_trimmed}.Rplot.R')
-# 
-#     #7 SNP-dists as raw fractions e.g. 1/300
-#     for i in range(1, len(alignment_trimmed)):
-#         for j in range(i, len(alignment_trimmed)):
-#             if j == i:
-#                 print(0)
+
+
 if __name__ == '__main__':
     main()
-
