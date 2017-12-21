@@ -28,7 +28,7 @@ cluster_picks
 list_of_clusters <- split(cluster_picks$Isolate, cluster_picks$Cluster)
 
 p <- ggtree(tree) %<+% cluster_picks
-offst <- 0.5669*max(dist.nodes(tree))+-0.6551
+offst <- 0.4401 *max(dist.nodes(tree))+-0.4526
 if(offst <= 0){
     offst <- 0.1
 }
