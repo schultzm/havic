@@ -32,7 +32,7 @@ offst <- 0.4401 *max(dist.nodes(tree))+-0.4526
 if(offst <= 0){
     offst <- 0.1
 }
-fntsz <- -0.005*length(tree$tip.label)+2.23817
+fntsz <- -0.005093*length(tree$tip.label)+1.955556
 wdth <- 1
 library('qualpalr')
 #see https://cran.r-project.org/web/packages/qualpalr/README.html
