@@ -13,7 +13,10 @@ R_LIBS = ['GenomicAlignments',
           'ape',
           'devtools',
           'plotly',
-          'pheatmap']
+          'pheatmap',
+          #'RColorBrewer',
+          #'rwantshue',
+          'qualpalr']
 
 CLUSTER_PICKER = '/Applications/ClusterPicker_1.2.5.jar'
 

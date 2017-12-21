@@ -25,20 +25,28 @@ cluster_picks <- data.frame(cluster_picks, stringsAsFactors=FALSE)
 cluster_picks
 
 
-#list_of_clusters <- split(cluster_picks$Isolate, cluster_picks$Cluster)
+list_of_clusters <- split(cluster_picks$Isolate, cluster_picks$Cluster)
+
 p <- ggtree(tree) %<+% cluster_picks
-offst <- 0.2105*max(dist.nodes(tree))+0.1712
+offst <- 0.5669*max(dist.nodes(tree))+-0.6551
+if(offst <= 0){
+    offst <- 0.1
+}
 fntsz <- -0.005*length(tree$tip.label)+2.23817
-wdth <- 4
+wdth <- 1
+library('qualpalr')
+#see https://cran.r-project.org/web/packages/qualpalr/README.html
+pal <- qualpal(n = length(names(list_of_clusters)), list(h = c(0, 360), s = c(0.5, 1), l = c(0.4, 0.4)))
+#plot(pal)
+#rownames(pal$HSL)
 q <- p + geom_tiplab(aes(label=label, color=Cluster), size=fntsz, linesize=0.2, align=TRUE) +
     # theme(legend.position = "right") +
     geom_tippoint(aes(color=Cluster), size=fntsz, na.rm=T) +
     geom_text2(aes(x=branch, label=as.integer(label), vjust=-0.3, hjust=1, subset=(isTip!=TRUE), na.rm=TRUE), size=fntsz, na.rm=TRUE) +
     geom_treescale(x=0.01, y =-2, offset=1, fontsize = fntsz) +
     annotate("text", x = 0.015, y=-4, label = "Substitutions per site", size=fntsz) + 
-    ggtitle(label = "ML IQtree with bootstrap %, tips cluster-picked (left); fasta alignment (right)", subtitle = paste0('Clusters (coloured tips) have been picked as clades with >=95% support and divergence <= ', nsnps/seqlen*100, '%', ' (i.e., <= ', nsnps, ' SNPs in ', seqlen, ' bp)')) +
-    scale_colour_brewer(palette = "Set1", na.value = "black")
-
+    ggtitle(label = "ML IQtree with bootstrap %, tips cluster-picked (left); fasta alignment (right)", subtitle = paste0('Clusters (coloured tips) have been picked as clades with >=95% support and divergence <= ', nsnps/seqlen*100, '%', '(i.e., <= ', nsnps, ' SNPs in ', seqlen, ' bp)')) +
+    scale_colour_manual(values=rownames(pal$HSL), na.value = "black")
 #q
 pdf(file=paste0(basename, '.mp.treefile.', 'div_', nsnps, 'SNPsIn', seqlen, 'bp_msa.pdf'), paper = 'a4r', width=11.69, height=8.27, onefile = TRUE)
 
