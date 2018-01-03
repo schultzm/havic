@@ -192,7 +192,7 @@ def main():
     print(cmd)
     os.system(cmd)
     # cmd = (f'cp {fasta_from_bam_trimmed}.mp_clusterPicks.nwk {fasta_from_bam_trimmed}.div_{args.n_snps}SNPsIn{args.seqlen}bp.mp_clusterPicks.nwk')
-    cmd = (f'cp {fasta_from_bam_trimmed}.mp_clusterPicks.nwk.figTree {fasta_from_bam_trimmed}.div_{args.n_snps}SNPsIn{args.seqlen}bp.mp_clusterPicks.nwk.figTree')
+    cmd = f'cp {fasta_from_bam_trimmed}.mp_clusterPicks.nwk.figTree {fasta_from_bam_trimmed}.div_{args.n_snps}SNPsIn{args.seqlen}bp.mp_clusterPicks.nwk.figTree'
     os.system(cmd)
     # 6 Link tree to alignment and plot it
     # treestring = open(f'{fasta_from_bam_trimmed}.mp.treefile', 'r').read()
