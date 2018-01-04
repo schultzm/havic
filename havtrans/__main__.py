@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 """
 A pipeline for aligning amplicons and picking transmission clusters.
 
@@ -14,9 +13,9 @@ from havtrans.classes.classes import Input_file, Check_dependency
 from havtrans.tests import check_r_dependencies
 from havtrans.tests.dependencies import SOFTWAREZ, R_LIBS, CLUSTER_PICKER
 from havtrans.mapping.bam2fasta import bam2fasta
-from havtrans.plotters.plottree import plottree
+# from havtrans.plotters.plottree import plottree
 from havtrans.plotters.treeplot_snpplot import plot_functions
-from havtrans.plotters.pdfloop import looper
+# from havtrans.plotters.pdfloop import looper
 from havtrans.data.havnet_amplicon import havnet_ampliconseq
 from havtrans import (__ref_seq__, __parent_dir__, __version__,
                       __version_date__, __author__, __author_email__,
@@ -41,8 +40,8 @@ def main():
         '-s',
         '--subject_file',
         help='''Subject file.
-                               Default is the complete HAVNET reference genome:
-                               NC_001489.1 Hepatitis A virus.''',
+               Default is the complete HAVNET reference genome:
+               NC_001489.1 Hepatitis A virus.''',
         default=None,
         required=False)
     subparser_run.add_argument(
@@ -72,7 +71,7 @@ def main():
         '-p',
         '--prefix',
         help='''Filename prefix.''',
-        default='',
+        default='_test_',
         required=False)
     subparser_run.add_argument(
         '-k',
@@ -86,6 +85,7 @@ def main():
     subparser_version = subparsers.add_parser(
         'version', help='Print version.', description='Print version.')
     args = parser.parse_args()
+    subpar
     if not args.subparser_name:
         os.system('havtrans -h')
         sys.exit()
@@ -121,9 +121,8 @@ def main():
             ]:
                 quality_controlled_seqs.append(record)
             else:
-                print(
-                    f'Duplicate record found (only one copy of this added to quality_controlled_seqs): {record.id}'
-                )
+                print(f"Duplicate record found (only one copy of this " +
+                      "added to quality_controlled_seqs): {record.id}")
     # 1.01 Append the reference amplicon
     quality_controlled_seqs.append(
         SeqIO.read(io.StringIO(havnet_ampliconseq), 'fasta'))
@@ -135,7 +134,9 @@ def main():
     header = refseq.id
     # 3 get minimap2 done
     import os
-    cmd = f'minimap2 -k {args.minimap2_kmer} -a {subject} {tmp_fasta} | samtools sort > {tmp_bam}'
+    cmd = f"minimap2 -k {args.minimap2_kmer} -a {subject} {tmp_fasta} " \
+          f"| samtools sort > {tmp_bam}"
+    print(cmd)
     os.system(cmd)
     cmd = f'samtools index {tmp_bam}'
     os.system(cmd)
@@ -155,7 +156,8 @@ def main():
         robjects.r(cmd)
     except:
         sys.exit('bam2fasta error')
-    # 4.1 Trim the alignment to get rid of gap only sites at 5' and 3' end of aln
+    # 4.1 Trim the alignment to get rid of gap-only
+    # sites at 5' and 3' end of aln
     from Bio import AlignIO
     alignment = AlignIO.read(open(fasta_from_bam, 'r'), 'fasta')
     print(alignment)
@@ -170,25 +172,35 @@ def main():
     while len(site_set) == 1:
         site_set = set(alignment[:, end_pos])
         end_pos -= 1
-    alignment_trimmed = alignment[:, start_pos:end_pos +
-                                  2]  # .format('fasta') #Add 2, again due to indexing discrepancies
+    # .format('fasta') #Add 2, again due to indexing discrepancies
+    alignment_trimmed = alignment[:, start_pos:end_pos + 2]
     AlignIO.write(alignment_trimmed, fasta_from_bam_trimmed, 'fasta')
     # 5 Run iqtree on the extracted bam2fasta
     if args.redo:
-        redo = 'redo -redo'
+        redo = ' -redo'
     else:
-        redo = ' TEST'
-    cmd = f'iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m{redo}'
+        redo = ''
+    # cmd = f'iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 4000 -m TN+I+G4{redo}'
+    import random
+    x = random.randint(1, 10000000000000)
+    y = random.randint(1, 10000000000000)
+    cmd = f"raxmlHPC-PTHREADS -T 4 -f a -p {x} " \
+          f"-s IA_HAV_all_minimap2.stack.trimmed.fa -x {y} " \
+          f"-N autoMRE_IGN -m GTRGAMMAX -n {args.prefix}"
     print(cmd)
+    sys.exit()
     os.system(cmd)
     # 5.1 Midpoint root the phylogeny
+    treefile = f'{fasta_from_bam_trimmed}.treefile'
+    mp_treefile = f'{fasta_from_bam_trimmed}.mp.treefile'
     from Bio import Phylo
-    tree = Phylo.read(f'{fasta_from_bam_trimmed}.treefile', 'newick')
+    tree = Phylo.read(treefile, 'newick')
     tree.root_at_midpoint()
     tree.ladderize(reverse=True)
-    Phylo.write(tree, f'{fasta_from_bam_trimmed}.mp.treefile', 'newick')
+    Phylo.write(tree, mp_treefile, 'newick')
     # 6 Run CLUSTER_PICKER on the tree and alignment
-    cmd = f'java -jar {CLUSTER_PICKER} {fasta_from_bam_trimmed} {fasta_from_bam_trimmed}.mp.treefile 70 95 {args.n_snps/args.seqlen} 15 valid'
+    cmd = f"java -jar {CLUSTER_PICKER} {fasta_from_bam_trimmed} " \
+          f"{mp_treefile} 70 95 {args.n_snps/args.seqlen} 15 valid"
     print(cmd)
     os.system(cmd)
     # cmd = (f'cp {fasta_from_bam_trimmed}.mp_clusterPicks.nwk {fasta_from_bam_trimmed}.div_{args.n_snps}SNPsIn{args.seqlen}bp.mp_clusterPicks.nwk')
