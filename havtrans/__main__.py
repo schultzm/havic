@@ -192,7 +192,7 @@ def main():
     root = tree.get_midpoint_outgroup()
     tree.set_outgroup(root)
     tree.ladderize(direction=1)
-    tree.write(mp_treefile)
+    tree.write(outfile=mp_treefile)
     # 6 Run CLUSTER_PICKER on the tree and alignment
     cmd = f"java -jar {CLUSTER_PICKER} {fasta_from_bam_trimmed} " \
           f"{mp_treefile} 70 95 {args.n_snps/args.seqlen} 15 valid"
