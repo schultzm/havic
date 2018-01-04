@@ -29,92 +29,91 @@ def main():
     import argparse
     import os
     import sys
-    parser = argparse.ArgumentParser(description='Run HAVTrans')
+    parser = argparse.ArgumentParser(description="Run HAVTrans")
     subparsers = parser.add_subparsers(
-        title='Sub-commands help', help='', metavar='', dest='subparser_name')
+        title="Sub-commands help", help="", metavar="", dest="subparser_name")
     subparser_run = subparsers.add_parser(
-        'run', help='Run the analysis.', description='Run the pipeline.')
+        "run", help="Run the analysis.", description="Run the pipeline.")
     subparser_run.add_argument(
-        '-q', '--query_files', help='Query file', nargs='+', required=True)
+        "-q", "--query_files", help="Query file", nargs="+", required=True)
     subparser_run.add_argument(
-        '-s',
-        '--subject_file',
-        help='''Subject file.
+        "-s",
+        "--subject_file",
+        help="""Subject file.
                Default is the complete HAVNET reference genome:
-               NC_001489.1 Hepatitis A virus.''',
+               NC_001489.1 Hepatitis A virus.""",
         default=None,
         required=False)
     subparser_run.add_argument(
-        '-r',
-        '--redo',
-        help='Redo all  (force redo).',
+        "-r",
+        "--redo",
+        help="Redo all  (force redo).",
         default=False,
-        action='store_true',
+        action="store_true",
         required=False)
     subparser_run.add_argument(
-        '-n',
-        '--n_snps',
-        help='''Number of SNPS in distance
-                                       fraction (numerator, default=3).''',
+        "-n",
+        "--n_snps",
+        help="""Number of SNPS in distance
+                                       fraction (numerator, default=3).""",
         default=3,
         type=int,
         required=False)
     subparser_run.add_argument(
-        '-l',
-        '--seqlen',
-        help='''Sequence length in distance
-                                       fraction (denominator, default=300).''',
+        "-l",
+        "--seqlen",
+        help="""Sequence length in distance
+                                       fraction (denominator, default=300).""",
         default=300,
         type=int,
         required=False)
     subparser_run.add_argument(
-        '-p',
-        '--prefix',
-        help='''Filename prefix.''',
-        default='_test_',
+        "-p",
+        "--prefix",
+        help="""Filename prefix.""",
+        default="_test_",
         required=False)
     subparser_run.add_argument(
-        '-k',
-        '--minimap2_kmer',
-        help='''k-mer size for minimap2 step.
-                                       Default=5.''',
+        "-k",
+        "--minimap2_kmer",
+        help="""k-mer size for minimap2 step.
+                                       Default=5.""",
         default=5,
         type=int,
         choices=[3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27],
         required=False)
     subparser_version = subparsers.add_parser(
-        'version', help='Print version.', description='Print version.')
+        "version", help="Print version.", description="Print version.")
     args = parser.parse_args()
-    subpar
     if not args.subparser_name:
-        os.system('havtrans -h')
+        os.system("havtrans -h")
         sys.exit()
-    queries = [Input_file(file, 'Query').filename for file in args.query_files]
+    queries = [Input_file(file, "Query").filename for file in args.query_files]
     if args.subject_file is not None:
-        subject = Input_file(args.subject_file, 'Subject').filename
+        subject = Input_file(args.subject_file, "Subject").filename
     else:
         subject = pkg_resources.resource_filename(__parent_dir__, __ref_seq__)
-    print(f'Will map amplicons to {subject}')
+    print(f"Will map amplicons to {subject}")
     for dep in SOFTWAREZ:
         path = Check_dependency(dep)
         path.check_software()
     for dep in R_LIBS:  # move this to class
         check_r_dependencies.importr_tryhard(dep)
-        print(f'R library {dep}'.ljust(28) + ': ok', file=sys.stderr)
+        print(f"R library {dep}".ljust(28) + ": ok", file=sys.stderr)
     # 1 Compile the query fasta files to single file
     from Bio import SeqIO
     quality_controlled_seqs = []
-    tmp_fasta = os.path.expanduser(f'~/{args.prefix}all_tmp.fa')
-    tmp_bam = os.path.expanduser(f'~/{args.prefix}HAV_all_minimap2.bam')
+    tmp_fasta = os.path.expanduser(f"~/{args.prefix}all_tmp.fa")
+    tmp_bam = os.path.expanduser(f"~/{args.prefix}HAV_all_minimap2.bam")
     fasta_from_bam = os.path.expanduser(
-        f'~/{args.prefix}HAV_all_minimap2.stack.fa')
+        f"~/{args.prefix}HAV_all_minimap2.stack.fa")
     fasta_from_bam_trimmed = os.path.expanduser(
-        f'~/{args.prefix}HAV_all_minimap2' + '.stack.trimmed.fa')
+        f"~/{args.prefix}HAV_all_minimap2" + ".stack.trimmed.fa")
     for query_file in queries:
         print(query_file)
-        for record in SeqIO.parse(query_file, 'fasta'):
-            record.id = record.id.replace('_(reversed)', '') \
-                              .replace('(', '').replace(')', '')
+        for record in SeqIO.parse(query_file, "fasta"):
+            record.id = record.id.replace("_(reversed)", "") \
+                              .replace("(", "").replace(")", "")
             # 1.02 Remove duplicates.
             if record.id not in [
                     record.id for record in quality_controlled_seqs
@@ -125,11 +124,11 @@ def main():
                       "added to quality_controlled_seqs): {record.id}")
     # 1.01 Append the reference amplicon
     quality_controlled_seqs.append(
-        SeqIO.read(io.StringIO(havnet_ampliconseq), 'fasta'))
-    SeqIO.write(quality_controlled_seqs, tmp_fasta, 'fasta')
+        SeqIO.read(io.StringIO(havnet_ampliconseq), "fasta"))
+    SeqIO.write(quality_controlled_seqs, tmp_fasta, "fasta")
     # 1.1 trim the sequences to remove primers - todo
     # 2 get ref and ref stats
-    refseq = SeqIO.read(subject, 'fasta')
+    refseq = SeqIO.read(subject, "fasta")
     reflen = len(refseq.seq)
     header = refseq.id
     # 3 get minimap2 done
@@ -138,11 +137,11 @@ def main():
           f"| samtools sort > {tmp_bam}"
     print(cmd)
     os.system(cmd)
-    cmd = f'samtools index {tmp_bam}'
+    cmd = f"samtools index {tmp_bam}"
     os.system(cmd)
     # 3.1 find the unmapped sequences.
-    cmd = f'samtools view -f 4 {tmp_bam} | cut -f 1'
-    print(f'Unmapped reads at k-mer {args.minimap2_kmer}:')
+    cmd = f"samtools view -f 4 {tmp_bam} | cut -f 1"
+    print(f"Unmapped reads at k-mer {args.minimap2_kmer}:")
     os.system(cmd)
     # 4 get the fasta from the bam using bam2fasta
     from rpy2 import robjects
@@ -150,74 +149,94 @@ def main():
     from rpy2.rinterface import RRuntimeWarning
     warnings.filterwarnings("ignore", category=RRuntimeWarning)
     try:
-        cmd = bam2fasta % (tmp_bam, f'{tmp_bam}.bai', header, 1, reflen,
+        cmd = bam2fasta % (tmp_bam, f"{tmp_bam}.bai", header, 1, reflen,
                            fasta_from_bam)
         print(cmd)
         robjects.r(cmd)
     except:
-        sys.exit('bam2fasta error')
+        sys.exit("bam2fasta error")
     # 4.1 Trim the alignment to get rid of gap-only
-    # sites at 5' and 3' end of aln
+    # sites at 5" and 3" end of aln
     from Bio import AlignIO
-    alignment = AlignIO.read(open(fasta_from_bam, 'r'), 'fasta')
+    alignment = AlignIO.read(open(fasta_from_bam, "r"), "fasta")
     print(alignment)
-    site_set = {'-'}
+    site_set = {"-"}
     start_pos = 0
     while len(site_set) == 1:
         site_set = set(alignment[:, start_pos])
         start_pos += 1
-    site_set = {'-'}
+    site_set = {"-"}
     # subtract one due to 0 and 1-based indexing issues
     end_pos = alignment.get_alignment_length() - 1
     while len(site_set) == 1:
         site_set = set(alignment[:, end_pos])
         end_pos -= 1
-    # .format('fasta') #Add 2, again due to indexing discrepancies
+    # .format("fasta") #Add 2, again due to indexing discrepancies
     alignment_trimmed = alignment[:, start_pos:end_pos + 2]
-    AlignIO.write(alignment_trimmed, fasta_from_bam_trimmed, 'fasta')
+    AlignIO.write(alignment_trimmed, fasta_from_bam_trimmed, "fasta")
     # 5 Run iqtree on the extracted bam2fasta
     if args.redo:
-        redo = ' -redo'
+        redo = " -redo"
     else:
-        redo = ''
-    # cmd = f'iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 4000 -m TN+I+G4{redo}'
-    import random
-    x = random.randint(1, 10000000000000)
-    y = random.randint(1, 10000000000000)
-    cmd = f"raxmlHPC-PTHREADS -T 4 -f a -p {x} " \
-          f"-s IA_HAV_all_minimap2.stack.trimmed.fa -x {y} " \
-          f"-N autoMRE_IGN -m GTRGAMMAX -n {args.prefix}"
+        redo = ""
+    cmd = f"iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m TN+I+G4{redo}"
+    # import random
+    # x = random.randint(1, 10000000000000)
+    # y = random.randint(1, 10000000000000)
+    # cmd = f"raxmlHPC-PTHREADS -T 4 -f a -p {x} " \
+    #       f"-s IA_HAV_all_minimap2.stack.trimmed.fa -x {y} " \
+    #       f"-N 10 -m GTRGAMMAX -n {args.prefix}"
+    # f"-N autoMRE_IGN -m GTRGAMMAX -n {args.prefix}"
     print(cmd)
-    sys.exit()
     os.system(cmd)
     # 5.1 Midpoint root the phylogeny
-    treefile = f'{fasta_from_bam_trimmed}.treefile'
-    mp_treefile = f'{fasta_from_bam_trimmed}.mp.treefile'
-    from Bio import Phylo
-    tree = Phylo.read(treefile, 'newick')
-    tree.root_at_midpoint()
-    tree.ladderize(reverse=True)
-    Phylo.write(tree, mp_treefile, 'newick')
+    treefile = f"{fasta_from_bam_trimmed}.treefile"
+    print(treefile)
+    # Bug in biophylo.  MP rooting a tree puts the wrong branch support!
+    # might need to change 'prefix' to 'suffix'
+    # treefile = f"RAxML_bipartitions.{args.prefix}"
+    mp_treefile = f"{fasta_from_bam_trimmed}.mp.treefile"
+    # from Bio import Phylo
+    # tree = Phylo.read(treefile, "newick")
+    # Phylo.write(tree, sys.stdout, "newick")
+    # Same bug in dendropy
+    # import dendropy
+    # tree = dendropy.Tree.get(path=treefile, schema="newick")
+    # print(tree.as_string(schema='newick'))
+    # tree.reroot_at_midpoint()
+    # print(tree.as_string(schema='newick'))
+    from ete3 import Tree
+    tree = Tree(treefile, format=0)
+    print(tree.write())
+    root = tree.get_midpoint_outgroup()
+    tree.set_outgroup(root)
+    tree.ladderize(direction=1)
+    tree.write(mp_treefile)
+    # tree.root_at_midpoint()
+    # tree.ladderize(reverse=True)
+    # Phylo.write(tree, mp_treefile, "newick")
+    # Phylo.write(tree, sys.stdout, "newick")
+    # sys.exit()
     # 6 Run CLUSTER_PICKER on the tree and alignment
     cmd = f"java -jar {CLUSTER_PICKER} {fasta_from_bam_trimmed} " \
           f"{mp_treefile} 70 95 {args.n_snps/args.seqlen} 15 valid"
     print(cmd)
     os.system(cmd)
-    # cmd = (f'cp {fasta_from_bam_trimmed}.mp_clusterPicks.nwk {fasta_from_bam_trimmed}.div_{args.n_snps}SNPsIn{args.seqlen}bp.mp_clusterPicks.nwk')
-    cmd = f'cp {fasta_from_bam_trimmed}.mp_clusterPicks.nwk.figTree {fasta_from_bam_trimmed}.div_{args.n_snps}SNPsIn{args.seqlen}bp.mp_clusterPicks.nwk.figTree'
+    # cmd = (f"cp {fasta_from_bam_trimmed}.mp_clusterPicks.nwk {fasta_from_bam_trimmed}.div_{args.n_snps}SNPsIn{args.seqlen}bp.mp_clusterPicks.nwk")
+    cmd = f"cp {fasta_from_bam_trimmed}.mp_clusterPicks.nwk.figTree {fasta_from_bam_trimmed}.div_{args.n_snps}SNPsIn{args.seqlen}bp.mp_clusterPicks.nwk.figTree"
     os.system(cmd)
     # 6 Link tree to alignment and plot it
-    # treestring = open(f'{fasta_from_bam_trimmed}.mp.treefile', 'r').read()
-    with open(f'{fasta_from_bam_trimmed}.Rplot.R', 'w') as out_r:
-        cmd = plot_functions.replace('<- z', '<- \'' +
-                                     fasta_from_bam_trimmed + '\'') \
-            .replace('<- a', '<- ' + str(args.n_snps)) \
-            .replace('<- b', '<- ' + str(args.seqlen)) \
-            .replace('<- k', '<- ' + str(args.minimap2_kmer))
+    # treestring = open(f"{fasta_from_bam_trimmed}.mp.treefile", "r").read()
+    with open(f"{fasta_from_bam_trimmed}.Rplot.R", "w") as out_r:
+        cmd = plot_functions.replace("<- z", "<- \"" +
+                                     fasta_from_bam_trimmed + "\"") \
+            .replace("<- a", "<- " + str(args.n_snps)) \
+            .replace("<- b", "<- " + str(args.seqlen)) \
+            .replace("<- k", "<- " + str(args.minimap2_kmer))
         print(cmd)
         out_r.write(cmd)
-    os.system(f'Rscript {fasta_from_bam_trimmed}.Rplot.R')
+    os.system(f"Rscript {fasta_from_bam_trimmed}.Rplot.R")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
