@@ -180,31 +180,12 @@ def main():
     else:
         redo = ""
     cmd = f"iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m TN+I+G4{redo}"
-    # import random
-    # x = random.randint(1, 10000000000000)
-    # y = random.randint(1, 10000000000000)
-    # cmd = f"raxmlHPC-PTHREADS -T 4 -f a -p {x} " \
-    #       f"-s IA_HAV_all_minimap2.stack.trimmed.fa -x {y} " \
-    #       f"-N 10 -m GTRGAMMAX -n {args.prefix}"
-    # f"-N autoMRE_IGN -m GTRGAMMAX -n {args.prefix}"
     print(cmd)
     os.system(cmd)
-    # 5.1 Midpoint root the phylogeny
+    # 5.1 Midpoint root the phylogeny using ete3
     treefile = f"{fasta_from_bam_trimmed}.treefile"
-    print(treefile)
-    # Bug in biophylo.  MP rooting a tree puts the wrong branch support!
-    # might need to change 'prefix' to 'suffix'
-    # treefile = f"RAxML_bipartitions.{args.prefix}"
+    print(f"Reading {treefile}")
     mp_treefile = f"{fasta_from_bam_trimmed}.mp.treefile"
-    # from Bio import Phylo
-    # tree = Phylo.read(treefile, "newick")
-    # Phylo.write(tree, sys.stdout, "newick")
-    # Same bug in dendropy
-    # import dendropy
-    # tree = dendropy.Tree.get(path=treefile, schema="newick")
-    # print(tree.as_string(schema='newick'))
-    # tree.reroot_at_midpoint()
-    # print(tree.as_string(schema='newick'))
     from ete3 import Tree
     tree = Tree(treefile, format=0)
     print(tree.write())
@@ -212,11 +193,6 @@ def main():
     tree.set_outgroup(root)
     tree.ladderize(direction=1)
     tree.write(mp_treefile)
-    # tree.root_at_midpoint()
-    # tree.ladderize(reverse=True)
-    # Phylo.write(tree, mp_treefile, "newick")
-    # Phylo.write(tree, sys.stdout, "newick")
-    # sys.exit()
     # 6 Run CLUSTER_PICKER on the tree and alignment
     cmd = f"java -jar {CLUSTER_PICKER} {fasta_from_bam_trimmed} " \
           f"{mp_treefile} 70 95 {args.n_snps/args.seqlen} 15 valid"
