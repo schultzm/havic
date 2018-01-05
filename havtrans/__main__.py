@@ -182,14 +182,15 @@ def main():
     # cmd = f"iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m " \
     #       f"TN+I+G4{redo}"
     import random
-    x = random.randint(1, 10000000000000)
-    y = random.randint(1, 10000000000000)
-    cmd = f"raxmlHPC-PTHREADS -T 4 -f a -p {x} " \
-          f"-s {fasta_from_bam_trimmed} -x {y} " \
-          f"-N autoMRE_IGN -m GTRGAMMAX -n {args.prefix}{x}"
-    cmd2 = cmd.replace(f"-f a ", "-y ").replace(f" -x {y} -N autoMRE_IGN", "")
-    print(cmd2)
-    os.system(cmd2)
+    x = random.randint(1, 1000000)
+    y = random.randint(1, 1000000)
+    cmd = f"raxmlHPC-PTHREADS -T 4 -y -p {x} " \
+          f"-s {fasta_from_bam_trimmed} " \
+          f" -m GTRGAMMAX -n {args.prefix}{x}"
+
+    os.system(cmd)
+    # Check the number of alignment patterns to determine number of CPUs for
+    # job.  Use 1 CPU per 500 alignment patterns.  Refer RAxML manual.
     cpus = None
     with open(os.path.expanduser(f"~/RAxML_info.{args.prefix}{x}")) as info:
         patterns = [
@@ -201,15 +202,25 @@ def main():
     if cpus < 2:
         cpus = 2
         print(cpus)
+    from multiprocessing import cpu_count
+    if cpus > cpu_count():
+        cpus = cpu_count()
+
+    cmd = f"raxmlHPC-PTHREADS -T {cpus} -f a -p {x} " \
+          f"-s {fasta_from_bam_trimmed} -x {y} " \
+          f"-N autoMRE_IGN -m GTRGAMMAX -n {args.prefix}_p{x}x{y}"
+
     print(cmd)
 
-    sys.exit()
     # sys.exit()
     os.system(cmd)
     # 5.1 Midpoint root the phylogeny using ete3
     # treefile = f"{fasta_from_bam_trimmed}.treefile"
-    treefile = os.path.expanduser(f"~/RAxML_bipartitions.{args.prefix}")
+    treefile = os.path.expanduser(f"~/RAxML_bipartitions.{args.prefix}"
+                                  f"_p{x}x{y}")
+
     print(f"Reading {treefile}")
+    sys.exit()
     mp_treefile = f"{fasta_from_bam_trimmed}.mp.treefile"
     from ete3 import Tree
     tree = Tree(treefile, format=0)
