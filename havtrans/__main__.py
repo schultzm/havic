@@ -153,7 +153,7 @@ def main():
                            fasta_from_bam)
         print(cmd)
         robjects.r(cmd)
-    except:
+    except OSError:
         sys.exit("bam2fasta error")
     # 4.1 Trim the alignment to get rid of gap-only
     # sites at 5" and 3" end of aln
@@ -179,7 +179,8 @@ def main():
         redo = " -redo"
     else:
         redo = ""
-    cmd = f"iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m TN+I+G4{redo}"
+    cmd = f"iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m " \
+          f"TN+I+G4{redo}"
     print(cmd)
     os.system(cmd)
     # 5.1 Midpoint root the phylogeny using ete3
@@ -198,8 +199,9 @@ def main():
           f"{mp_treefile} 70 95 {args.n_snps/args.seqlen} 15 valid"
     print(cmd)
     os.system(cmd)
-    # cmd = (f"cp {fasta_from_bam_trimmed}.mp_clusterPicks.nwk {fasta_from_bam_trimmed}.div_{args.n_snps}SNPsIn{args.seqlen}bp.mp_clusterPicks.nwk")
-    cmd = f"cp {fasta_from_bam_trimmed}.mp_clusterPicks.nwk.figTree {fasta_from_bam_trimmed}.div_{args.n_snps}SNPsIn{args.seqlen}bp.mp_clusterPicks.nwk.figTree"
+    cmd = f"cp {fasta_from_bam_trimmed}.mp_clusterPicks.nwk.figTree " \
+          f"{fasta_from_bam_trimmed}.div_{args.n_snps}SNPsIn{args.seqlen}" \
+          f"bp.mp_clusterPicks.nwk.figTree"
     os.system(cmd)
     # 6 Link tree to alignment and plot it
     # treestring = open(f"{fasta_from_bam_trimmed}.mp.treefile", "r").read()
