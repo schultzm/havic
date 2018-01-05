@@ -179,12 +179,31 @@ def main():
         redo = " -redo"
     else:
         redo = ""
-    cmd = f"iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m " \
-          f"TN+I+G4{redo}"
+    # cmd = f"iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m " \
+    #       f"TN+I+G4{redo}"
+    import random
+    x = random.randint(1, 10000000000000)
+    y = random.randint(1, 10000000000000)
+    cmd = f"raxmlHPC-PTHREADS -T 4 -f a -p {x} " \
+          f"-s {fasta_from_bam_trimmed} -x {y} " \
+          f"-N autoMRE_IGN -m GTRGAMMAX -n {args.prefix}{x}"
+    cmd2 = cmd.replace(f"-f a ", "-y ").replace(f" -x {y} -N autoMRE_IGN", "")
+    print(cmd2)
+    os.system(cmd2)
+    with open(os.path.expanduser(f"~/RAxML_info.{args.prefix}{x}")) as info:
+        patterns = [
+            int(line.strip().split(": ")[-1]) for line in info.readlines()
+            if 'Alignment Patterns' in line
+        ]
+        print(patterns)
     print(cmd)
+
+    sys.exit()
+    # sys.exit()
     os.system(cmd)
     # 5.1 Midpoint root the phylogeny using ete3
-    treefile = f"{fasta_from_bam_trimmed}.treefile"
+    # treefile = f"{fasta_from_bam_trimmed}.treefile"
+    treefile = os.path.expanduser(f"~/RAxML_bipartitions.{args.prefix}")
     print(f"Reading {treefile}")
     mp_treefile = f"{fasta_from_bam_trimmed}.mp.treefile"
     from ete3 import Tree
