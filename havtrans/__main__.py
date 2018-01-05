@@ -190,12 +190,17 @@ def main():
     cmd2 = cmd.replace(f"-f a ", "-y ").replace(f" -x {y} -N autoMRE_IGN", "")
     print(cmd2)
     os.system(cmd2)
+    cpus = None
     with open(os.path.expanduser(f"~/RAxML_info.{args.prefix}{x}")) as info:
         patterns = [
             int(line.strip().split(": ")[-1]) for line in info.readlines()
             if 'Alignment Patterns' in line
-        ]
-        print(patterns)
+        ][0]
+        import math
+        cpus = math.ceil(patterns / 500)
+    if cpus < 2:
+        cpus = 2
+        print(cpus)
     print(cmd)
 
     sys.exit()
