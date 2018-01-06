@@ -186,13 +186,14 @@ def main():
     y = random.randint(1, 1000000)
     cmd = f"raxmlHPC-PTHREADS -T 4 -y -p {x} " \
           f"-s {fasta_from_bam_trimmed} " \
-          f" -m GTRGAMMAX -n {args.prefix}{x}"
+          f" -m GTRGAMMAX -n {args.prefix}SEEDp{x}"
 
     os.system(cmd)
     # Check the number of alignment patterns to determine number of CPUs for
     # job.  Use 1 CPU per 500 alignment patterns.  Refer RAxML manual.
     cpus = None
-    with open(os.path.expanduser(f"~/RAxML_info.{args.prefix}{x}")) as info:
+    with open(os.path.expanduser(
+            f"~/RAxML_info.{args.prefix}_SEEDp{x}")) as info:
         patterns = [
             int(line.strip().split(": ")[-1]) for line in info.readlines()
             if 'Alignment Patterns' in line
@@ -208,7 +209,7 @@ def main():
 
     cmd = f"raxmlHPC-PTHREADS -T {cpus} -f a -p {x} " \
           f"-s {fasta_from_bam_trimmed} -x {y} " \
-          f"-N autoMRE_IGN -m GTRGAMMAX -n {args.prefix}_p{x}x{y}"
+          f"-N autoMRE_IGN -m GTRGAMMAX -n {args.prefix}_SEEDSp{x}x{y}"
 
     print(cmd)
 
@@ -217,18 +218,21 @@ def main():
     # 5.1 Midpoint root the phylogeny using ete3
     # treefile = f"{fasta_from_bam_trimmed}.treefile"
     treefile = os.path.expanduser(f"~/RAxML_bipartitions.{args.prefix}"
-                                  f"_p{x}x{y}")
+                                  f"_SEEDSp{x}x{y}")
 
     print(f"Reading {treefile}")
-    sys.exit()
     mp_treefile = f"{fasta_from_bam_trimmed}.mp.treefile"
     from ete3 import Tree
     tree = Tree(treefile, format=0)
     print(tree.write())
     root = tree.get_midpoint_outgroup()
     tree.set_outgroup(root)
-    tree.ladderize(direction=1)
-    tree.write(outfile=mp_treefile)
+    tree.ladderize(direction=1, )
+    # tree.resolve_polytomy(default_dist=0.01)
+    print(tree.write())
+    # dist_formatter is to prevent scientific notation.
+    # with branch lengths in scientific notation, ClusterPicker dies.
+    tree.write(outfile=mp_treefile, dist_formatter="%0.32f")
     # 6 Run CLUSTER_PICKER on the tree and alignment
     cmd = f"java -jar {CLUSTER_PICKER} {fasta_from_bam_trimmed} " \
           f"{mp_treefile} 70 95 {args.n_snps/args.seqlen} 15 valid"
