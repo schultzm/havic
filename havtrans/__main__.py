@@ -176,11 +176,12 @@ def main():
     AlignIO.write(alignment_trimmed, fasta_from_bam_trimmed, "fasta")
     # 5 Run iqtree on the extracted bam2fasta
     if args.redo:
-        redo = " -redo"
+        redo = "redo -redo"
     else:
-        redo = ""
-    cmd = f"iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m " \
-          f"TN+I+G4{redo}"
+        redo = " TEST"
+    cmd = f"iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m{redo}"
+    # TN+I+G4{redo}"
+    os.system(cmd)
     # import random
     # x = random.randint(1, 1000000)
     # y = random.randint(1, 1000000)
