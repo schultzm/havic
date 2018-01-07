@@ -11,12 +11,12 @@ seqlen <- b
 kmer <- k
 tree <- read.newick(file=paste0(basename, '.mp.treefile'))
 tree_clust <- read.newick(file=paste0(basename, '.mp_clusterPicks.nwk'))
-cluster_picks <- matrix(nrow = 0, ncol = 2) 
+cluster_picks <- matrix(nrow = 0, ncol = 2)
 colnames(cluster_picks) <- c('Isolate', 'Cluster')
 cluster_picks
 
 for(tip in tree_clust$tip.label[grep('Clust', tree_clust$tip.label)]){
-    outp_list_of_lists <- strsplit(tip, split = '_') 
+    outp_list_of_lists <- strsplit(tip, split = '_')
     output_list <- outp_list_of_lists[[1]]
     cluster_picks <- rbind(cluster_picks, c(paste0(output_list[2:length(output_list)], collapse='_'), output_list[1]))
     }
@@ -27,7 +27,7 @@ cluster_picks
 
 list_of_clusters <- split(cluster_picks$Isolate, cluster_picks$Cluster)
 
-p <- ggtree(tree) %<+% cluster_picks
+p <- ggtree(tree, size=0.1) %<+% cluster_picks
 offst <- 0.4401 *max(dist.nodes(tree))+-0.4526
 if(offst <= 0){
     offst <- 0.1
@@ -39,12 +39,12 @@ library('qualpalr')
 pal <- qualpal(n = length(names(list_of_clusters)), list(h = c(0, 360), s = c(0.5, 1), l = c(0.4, 0.4)))
 #plot(pal)
 #rownames(pal$HSL)
-q <- p + geom_tiplab(aes(label=label, color=Cluster), size=fntsz, linesize=0.2, align=TRUE) +
+q <- p + geom_tiplab(aes(label=label, color=Cluster), size=fntsz, linesize=0.1, align=TRUE) +
     # theme(legend.position = "right") +
     geom_tippoint(aes(color=Cluster), size=fntsz, na.rm=T) +
-    geom_text2(aes(x=branch, label=as.integer(label), vjust=-0.3, hjust=1, subset=(isTip!=TRUE), na.rm=TRUE), size=fntsz, na.rm=TRUE) +
-    geom_treescale(x=0.01, y =-2, offset=1, fontsize = fntsz) +
-    annotate("text", x = 0.015, y=-4, label = "Substitutions per site", size=fntsz) + 
+    geom_text2(aes(x=branch, label=as.integer(label), vjust=-0.3, hjust=1, subset=(isTip!=TRUE & as.integer(label)>=70), na.rm=TRUE), size=fntsz, na.rm=TRUE) +
+    geom_treescale(x=0.01, y =-2, offset=1, fontsize = fntsz, linesize=0.1) +
+    annotate("text", x = 0.015, y=-4, label = "Substitutions per site", size=fntsz) +
     ggtitle(label = "ML IQtree with bootstrap %, tips cluster-picked (left); fasta alignment (right)", subtitle = paste0('Clusters (coloured tips) have been picked as clades with >=95% support and divergence <= ', nsnps/seqlen*100, '%', '(i.e., <= ', nsnps, ' SNPs in ', seqlen, ' bp)')) +
     scale_colour_manual(values=rownames(pal$HSL), na.value = "black")
 #q
@@ -106,13 +106,13 @@ heatmap_data <- snps[[2]]
 # re_name <- function(iname, trmatrix) {
 #     if(iname %in% trmatrix[,1]){
 #         row <- which(trmatrix[,1]==iname)
-#         return(paste0(trmatrix[row,1], ' ', trmatrix[row,2])) 
+#         return(paste0(trmatrix[row,1], ' ', trmatrix[row,2]))
 #     }
 #     else{
 #         return(iname)
 #     }
 # }
-# 
+#
 # colnames(heatmap_data) <- lapply(colnames(heatmap_data),
 #                                  re_name,
 #                                  cluster_picks)
