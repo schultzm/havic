@@ -9,7 +9,7 @@ Steps:
     Trim the alignment.
 """
 
-from havtrans.classes.classes import Input_file, Check_dependency
+from havtrans.utils.input_file import Input_file, Check_dependency
 from havtrans.tests import check_r_dependencies
 from havtrans.tests.dependencies import SOFTWAREZ, R_LIBS, CLUSTER_PICKER
 from havtrans.mapping.bam2fasta import bam2fasta
