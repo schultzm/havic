@@ -8,9 +8,10 @@ Steps:
     Run the pipeline.
     Trim the alignment.
 """
-
+import sys
 from havtrans.utils.input_file import Input_file
 from havtrans.utils.check_dependency import Check_dependency
+from havtrans.utils.trim_alignment import Trimmed_alignment
 from havtrans.tests import check_r_dependencies
 from havtrans.tests.dependencies import SOFTWAREZ, R_LIBS, CLUSTER_PICKER
 from havtrans.mapping.bam2fasta import bam2fasta
@@ -37,6 +38,14 @@ def main():
         "run", help="Run the analysis.", description="Run the pipeline.")
     subparser_run.add_argument(
         "-q", "--query_files", help="Query file", nargs="+", required=True)
+    subparser_run.add_argument(
+        "-i",
+        "--database_matches",
+        help="""Fasta files containing HAVNET database matches.  The purpose
+                of this feature is to trim whole genome database matches to
+                length of the reference amplicon.""",
+        nargs="+",
+        required=True)
     subparser_run.add_argument(
         "-s",
         "--subject_file",
@@ -89,7 +98,14 @@ def main():
     if not args.subparser_name:
         os.system("havtrans -h")
         sys.exit()
-    queries = [Input_file(file, "Query").filename for file in args.query_files]
+    database_matches = [Input_file(file, 'database_match') \
+                        .filename for file in args.database_matches]
+    queries = [
+        Input_file(file, "Query").filename for file in args.query_files
+        if Input_file(file, "Query").filename not in database_matches
+    ]
+
+    print(database_matches, queries)
     if args.subject_file is not None:
         subject = Input_file(args.subject_file, "Subject").filename
     else:
@@ -160,6 +176,8 @@ def main():
     # sites at 5" and 3" end of aln
     from Bio import AlignIO
     alignment = AlignIO.read(open(fasta_from_bam, "r"), "fasta")
+    aln_trim = Trimmed_alignment(alignment, SeqIO.read(io.StringIO(havnet_ampliconseq), "fasta").id)._get_isolate_coords
+    sys.exit()
     print(alignment)
     site_set = {"-"}
     start_pos = 0
