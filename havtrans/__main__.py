@@ -111,12 +111,12 @@ def main():
     else:
         subject = pkg_resources.resource_filename(__parent_dir__, __ref_seq__)
     print(f"Will map amplicons to {subject}")
-    for dep in SOFTWAREZ:
-        path = Check_dependency(dep)
-        path.check_software()
-    for dep in R_LIBS:  # move this to class
-        check_r_dependencies.importr_tryhard(dep)
-        print(f"R library {dep}".ljust(28) + ": ok", file=sys.stderr)
+    # for dep in SOFTWAREZ:
+    #     path = Check_dependency(dep)
+    #     path.check_software()
+    # for dep in R_LIBS:  # move this to class
+    #     check_r_dependencies.importr_tryhard(dep)
+    #     print(f"R library {dep}".ljust(28) + ": ok", file=sys.stderr)
     # 1 Compile the query fasta files to single file
     from Bio import SeqIO
     quality_controlled_seqs = []
@@ -176,7 +176,8 @@ def main():
     # sites at 5" and 3" end of aln
     from Bio import AlignIO
     alignment = AlignIO.read(open(fasta_from_bam, "r"), "fasta")
-    aln_trim = Trimmed_alignment(alignment, SeqIO.read(io.StringIO(havnet_ampliconseq), "fasta").id)._get_isolate_coords
+    aln_trim = Trimmed_alignment(alignment, SeqIO.read(io.StringIO(havnet_ampliconseq), "fasta").id)._get_isolate_coords()
+    print(aln_trim)
     sys.exit()
     print(alignment)
     site_set = {"-"}
