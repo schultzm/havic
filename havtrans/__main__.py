@@ -176,7 +176,7 @@ def main():
     # sites at 5" and 3" end of aln
     from Bio import AlignIO
     alignment = AlignIO.read(open(fasta_from_bam, "r"), "fasta")
-    aln_trim = Trimmed_alignment(alignment, SeqIO.read(io.StringIO(havnet_ampliconseq), "fasta").id)._get_isolate_coords()
+    aln_trim = Trimmed_alignment(alignment, SeqIO.read(io.StringIO(havnet_ampliconseq), "fasta").id, '-')._get_isolate_coords()
     print(aln_trim)
     sys.exit()
     print(alignment)

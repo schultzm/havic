@@ -17,47 +17,50 @@ class Trimmed_alignment():
     Given an alignment, trim the 5' and 3' gap-only regions.
     """
 
-    def __init__(self, alignment, refisolate):
+    def __init__(self, alignment, refisolate, gap_char):
 
         self.alignment = alignment
-        self.isolate = refisolate
+        self.refisolate = refisolate
+        self.gap_char = gap_char
 
     def _get_isolate_coords(self):
         """
         Get the coords of the sequence excluding the 5' and 3' gap padding.
 
-        We'll use the following MSA as an example:
-        >>> from Bio.Alphabet import generic_dna
-        >>> from Bio.Seq import Seq
-        >>> from Bio.SeqRecord import SeqRecord
-        >>> from Bio.Align import MultipleSeqAlignment
-        >>> a = SeqRecord(Seq("---AAAACGT--A", generic_dna), id="Alpha")
-        >>> b = SeqRecord(Seq("---AAA-CGT---", generic_dna), id="Beta")
-        >>> c = SeqRecord(Seq("---AAAAGGT---", generic_dna), id="Gamma")
-        >>> d = SeqRecord(Seq("---AAAACGT---", generic_dna), id="Delta")
-        >>> e = SeqRecord(Seq("---AAA-GGT---", generic_dna), id="Epsilon")
-        >>> align = MultipleSeqAlignment([a, b, c, d, e], generic_dna)
-        >>> print(align)
-        DNAAlphabet() alignment with 5 rows and 13 columns
-        ---AAAACGT--A Alpha
-        ---AAA-CGT--- Beta
-        ---AAAAGGT--- Gamma
-        ---AAAACGT--- Delta
-        ---AAA-GGT--- Epsilon
-        >>> refiso = Trimmed_alignment(align, 'Beta').isolate
-        >>> print(refiso)
-        Beta
-        >>> for record in align:
-        ...     if record.id == refiso:
-        ...         print(record)
-        ID: Beta
-        Name: <unknown name>
-        Description: <unknown description>
-        Number of features: 0
-        Seq('---AAA-CGT---', DNAAlphabet())
-        
-
         """
-        pass
+        start_pos = None
+        end_pos = None
+        for seq in self.alignment:
+            if seq.id == self.refisolate:
+                print(str(seq.seq))
+
+                from re import finditer
+                for match in finditer(f"{self.gap_char}[A-Z]",
+                                      str(seq.seq).upper()):
+                    start_pos = (match.span())
+                for match in finditer(f"{self.gap_char}[A-Z]",
+                                      str(seq.seq).upper()[::-1]):
+                    end_pos = (-match.end(), -match.start())
+                    # end_pos = (match.span(), match.group())
+                print(seq.seq[start_pos[0] + 1:end_pos[0] + 1])
+                break
+
+                # print('reverse', start_pos, end_pos)
+            # break
+
+        # site_set = {"-"}
+        # start_pos = 0
+        # while len(site_set) == 1:
+        #     site_set = set(alignment[:, start_pos])
+        #     start_pos += 1
+        # site_set = {"-"}
+        # # subtract one due to 0 and 1-based indexing issues
+        # end_pos = alignment.get_alignment_length() - 1
+        # while len(site_set) == 1:
+        #     site_set = set(alignment[:, end_pos])
+        #     end_pos -= 1
+        #
+        #
+        # pass
 
         # print(dir(self.alignment))
