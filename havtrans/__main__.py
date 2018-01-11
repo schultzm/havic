@@ -41,9 +41,10 @@ def main():
     subparser_run.add_argument(
         "-t",
         "--trim_seqs",
-        help="""Fasta headers of sequences to be trimmed to match length of 
+        help="""Fasta headers of sequences to be trimmed to match length of
                 reference amplicon in the alignment.""",
-        nargs="+", required=False)
+        nargs="+",
+        required=False)
     subparser_run.add_argument(
         "-s",
         "--subject_file",
@@ -172,33 +173,12 @@ def main():
     aln_trim = Trimmed_alignment(alignment,
                                  SeqIO.read(
                                      io.StringIO(havnet_ampliconseq),
-                                     "fasta").id,
-                                 '-', args.trim_seqs)  #._get_refseq_boundary()
+                                     "fasta").id, '-', args.trim_seqs)
     aln_trim._get_refseq_boundary()
     aln_trim.trim_seqs_to_ref()
-    # 4.1.1 Convert the Trimmed_alignment object back to instance of MSA.
+    # 4.1.1 Depad the alignment.
     aln_trim.depad_alignment()
-    print(aln_trim.alignment)
-    sys.exit()
-    # from Bio.Align import MultipleSeqAlignment
-    # alignment = MultipleSeqAlignment(aln_trim.alignment)
-
-    # # 4.2 Trim the whole alignment to get rid of gap-only
-    # # sites at 5" and 3" end of aln
-    # site_set = {"-"}
-    # start_pos = 0
-    # while len(site_set) == 1:
-    #     site_set = set(alignment[:, start_pos])
-    #     start_pos += 1
-    # site_set = {"-"}
-    # # subtract one due to 0 and 1-based indexing issues
-    # end_pos = alignment.get_alignment_length() - 1
-    # while len(site_set) == 1:
-    #     site_set = set(alignment[:, end_pos])
-    #     end_pos -= 1
-    # # .format("fasta") #Add 2, again due to indexing discrepancies
-    # alignment_trimmed = alignment[:, start_pos:end_pos + 2]
-    AlignIO.write(aln_trim.depad_alignment, fasta_from_bam_trimmed, "fasta")
+    AlignIO.write(aln_trim.alignment, fasta_from_bam_trimmed, "fasta")
     # 5 Run iqtree on the extracted bam2fasta
     if args.redo:
         redo = "redo -redo"
