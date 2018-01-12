@@ -8,20 +8,19 @@ Steps:
     Run the pipeline.
     Trim the alignment.
 """
-import sys
-from havtrans.utils.input_file import Input_file
-from havtrans.utils.check_dependency import Check_dependency
-from havtrans.utils.trim_alignment import Trimmed_alignment
-from havtrans.tests import check_r_dependencies
-from havtrans.tests.dependencies import SOFTWAREZ, R_LIBS, CLUSTER_PICKER
-from havtrans.mapping.bam2fasta import bam2fasta
-# from havtrans.plotters.plottree import plottree
-from havtrans.plotters.treeplot_snpplot import plot_functions
-# from havtrans.plotters.pdfloop import looper
-from havtrans.data.havnet_amplicon import havnet_ampliconseq
-from havtrans import (__ref_seq__, __parent_dir__, __version__,
-                      __version_date__, __author__, __author_email__,
-                      __github_username__, __download_url__)
+
+from .utils.input_file import Input_file
+from .utils.check_dependency import Check_dependency
+# from .utils.trim_alignment import Trimmed_alignment
+from .utils.version import Version
+# from .tests import check_r_dependencies
+from .mapping.bam2fasta import bam2fasta
+# from .plotters.plottree import plottree
+from .plotters.treeplot_snpplot import plot_functions
+# from .plotters.pdfloop import looper
+from .data.havnet_amplicon import havnet_ampliconseq
+from . import __ref_seq__, __parent_dir__
+
 import pkg_resources
 import io
 
@@ -31,86 +30,98 @@ def main():
     import argparse
     import os
     import sys
-    parser = argparse.ArgumentParser(description="Run HAVTrans")
+    parser = argparse.ArgumentParser(
+        prog='havtrans',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     subparsers = parser.add_subparsers(
         title="Sub-commands help", help="", metavar="", dest="subparser_name")
-    subparser_run = subparsers.add_parser(
-        "run", help="Run the analysis.", description="Run the pipeline.")
-    subparser_run.add_argument(
+    subparser = subparsers.add_parser(
+        "run", help="Run the analysis.", description="Run the pipeline.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    subparser.add_argument(
         "-q", "--query_files", help="Query file", nargs="+", required=True)
-    subparser_run.add_argument(
+    subparser.add_argument(
         "-t",
         "--trim_seqs",
         help="""Fasta headers of sequences to be trimmed to match length of
                 reference amplicon in the alignment.""",
         nargs="+",
         required=False)
-    subparser_run.add_argument(
+    subparser.add_argument(
         "-s",
         "--subject_file",
         help="""Subject file.
-               Default is the complete HAVNET reference genome:
-               NC_001489.1 Hepatitis A virus.""",
+                Default is the complete HAVNET reference genome:
+                NC_001489.1 Hepatitis A virus.""",
         default=None,
         required=False)
-    subparser_run.add_argument(
+    subparser.add_argument(
         "-r",
         "--redo",
         help="Redo all  (force redo).",
         default=False,
         action="store_true",
         required=False)
-    subparser_run.add_argument(
+    subparser.add_argument(
         "-n",
         "--n_snps",
         help="""Number of SNPS in distance
-                                       fraction (numerator, default=3).""",
+                                       fraction (numerator).""",
         default=3,
         type=int,
         required=False)
-    subparser_run.add_argument(
+    subparser.add_argument(
         "-l",
         "--seqlen",
         help="""Sequence length in distance
-                                       fraction (denominator, default=300).""",
+                                       fraction (denominator).""",
         default=300,
         type=int,
         required=False)
-    subparser_run.add_argument(
+    subparser.add_argument(
         "-p",
         "--prefix",
         help="""Filename prefix.""",
         default="_test_",
         required=False)
-    subparser_run.add_argument(
+    subparser.add_argument(
         "-k",
         "--minimap2_kmer",
-        help="""k-mer size for minimap2 step.
-                                       Default=5.""",
+        help="""k-mer size for minimap2 step.""",
         default=5,
         type=int,
         choices=[3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27],
         required=False)
-    subparser_version = subparsers.add_parser(
+    subparsers.add_parser(
         "version", help="Print version.", description="Print version.")
-    args = parser.parse_args()
-    if not args.subparser_name:
-        os.system("havtrans -h")
-        sys.exit()
-    queries = [Input_file(file, "Query").filename for file in args.query_files]
+    subparsers.add_parser(
+        "check", help="Check dependencies are in path.",
+        description="Check dependencies.")
 
+    args = parser.parse_args()
+    import sys
+    if not args.subparser_name:
+        parser.print_help()
+        sys.exit()
+    elif args.subparser_name == 'check':
+        for dep in SOFTWAREZ:
+            Check_dependency(dep).check_software()
+        for dep in R_LIBS:  # move this to class
+            check_r_dependencies.importr_tryhard(dep)
+            print(f"R library {dep}".ljust(28) + ": ok", file=sys.stderr)
+        sys.exit()
+    elif args.subparser_name == 'version':
+        Version()
+        sys.exit()
+
+    queries = [Input_file(file, "Query").filename for file in args.query_files]
     print(args.trim_seqs, queries)
-    if args.subject_file is not None:
-        subject = Input_file(args.subject_file, "Subject").filename
-    else:
+    if args.subject_file is None:
         subject = pkg_resources.resource_filename(__parent_dir__, __ref_seq__)
+    else:
+        subject = Input_file(args.subject_file, "Subject").filename
     print(f"Will map amplicons to {subject}")
-    # for dep in SOFTWAREZ:
-    #     path = Check_dependency(dep)
-    #     path.check_software()
-    # for dep in R_LIBS:  # move this to class
-    #     check_r_dependencies.importr_tryhard(dep)
-    #     print(f"R library {dep}".ljust(28) + ": ok", file=sys.stderr)
+
     # 1 Compile the fasta files to single file
     from Bio import SeqIO
     quality_controlled_seqs = []
@@ -124,10 +135,10 @@ def main():
         print(query_file)
         for record in SeqIO.parse(query_file, "fasta"):
             record.id = record.id.replace("_(reversed)", "") \
-                              .replace("(", "").replace(")", "")
+                .replace("(", "").replace(")", "")
             # 1.02 Remove duplicates.
             if record.id not in [
-                    record.id for record in quality_controlled_seqs
+                record.id for record in quality_controlled_seqs
             ]:
                 quality_controlled_seqs.append(record)
             else:

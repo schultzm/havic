@@ -11,7 +11,7 @@ from Bio.Seq import MutableSeq
 from Bio.Alphabet import generic_dna
 
 
-class Trimmed_alignment():
+class Trimmed_alignment(MultipleSeqAlignment):
     """Trim a BioPython MSA object.
 
     Given an alignment, trim the 5' and 3' gap-only regions.
@@ -41,7 +41,7 @@ class Trimmed_alignment():
                     start_pos = (match.span())
                 for match in finditer(f"{self.gap_char}[A-Z]",
                                       str(seq.seq).upper()[::-1]):
-                    end_pos = (len(str(seq.seq).upper())-match.end(),
+                    end_pos = (len(str(seq.seq).upper()) - match.end(),
                                -match.start())
                     # end_pos = (match.span(), match.group())
                 self.boundary = [start_pos[0] + 1, end_pos[0] + 1]
@@ -56,11 +56,11 @@ class Trimmed_alignment():
                 sequence = MutableSeq(str(seq.seq), generic_dna)
                 # print(help(sequence))
                 sequence[0:self.boundary[0]] = self.gap_char * \
-                    (self.boundary[0]-0)
+                                               (self.boundary[0] - 0)
                 # print(len(sequence))
                 # print(self.boundary)
                 sequence[self.boundary[1]:] = self.gap_char * \
-                    (len(sequence)-self.boundary[1]) 
+                                              (len(sequence) - self.boundary[1])
                 seq.seq = sequence
 
     def depad_alignment(self):
@@ -88,6 +88,4 @@ class Trimmed_alignment():
                 break
             else:
                 end_pos -= 1
-        self.alignment = self.alignment[:, start_pos:end_pos+1]
-
-
+        self.alignment = self.alignment[:, start_pos:end_pos + 1]
