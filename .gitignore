@@ -8,8 +8,9 @@ __pycache__/
 *.so
 ./*/.ropeproject
 .DS_Store
-/.DS_Store
-/*/.DS_Store
+./.DS_Store
+./*/.DS_Store
+./*/*/.DS_Store
 
 .idea/
 # Distribution / packaging
