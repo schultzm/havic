@@ -108,9 +108,9 @@ def main():
         from .utils.version import Version
         Version()
     elif args.subparser_name == 'run':
+        # 0 Read in the infiles
         queries = [Input_file(file, "Query").filename for file in
                    args.query_files]
-        print(args.trim_seqs, queries)
         if args.subject_file is None:
             subject = pkg_resources.resource_filename(__parent_dir__,
                                                       __ref_seq__)
@@ -130,6 +130,7 @@ def main():
         for query_file in queries:
             print(query_file)
             for record in SeqIO.parse(query_file, "fasta"):
+                # 1.01 Fix fasta headers
                 record.id = record.id.replace("_(reversed)", "") \
                     .replace("(", "").replace(")", "")
                 # 1.02 Remove duplicates.
@@ -140,7 +141,7 @@ def main():
                 else:
                     print(f"Duplicate record found (only one copy of this " +
                           "added to quality_controlled_seqs): {record.id}")
-        # 1.01 Append the reference amplicon
+        # 1.01 Append the reference amplicon to the alignment
         quality_controlled_seqs.append(
             SeqIO.read(io.StringIO(havnet_ampliconseq), "fasta"))
         SeqIO.write(quality_controlled_seqs, tmp_fasta, "fasta")
@@ -157,7 +158,7 @@ def main():
         os.system(cmd)
         cmd = f"samtools index {tmp_bam}"
         os.system(cmd)
-        # 3.1 find the unmapped sequences.
+        # 3.1 print the unmapped sequences.
         cmd = f"samtools view -f 4 {tmp_bam} | cut -f 1"
         print(f"Unmapped reads at k-mer {args.minimap2_kmer}:")
         os.system(cmd)
