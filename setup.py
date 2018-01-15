@@ -53,7 +53,7 @@ setup(
     author = havtrans.__author__,
     author_email = havtrans.__author_email__,
     license = havtrans.__license__,
-    include_package_data = True,
+    package_data = {'':['*.fa']},
     install_requires = ['ete3>=3.1.1',
                         'ruffus==2.6.2'],
     )

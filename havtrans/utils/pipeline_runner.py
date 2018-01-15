@@ -62,11 +62,11 @@ class Pipeline:
                    self.query_files]
         print('trim seqs', self.trim_seqs, 'queries', self.queries)
         if self.subject_file is None:
-            subject = pkg_resources.resource_filename(__parent_dir__,
+            self.subject = pkg_resources.resource_filename(__parent_dir__,
                                                       __ref_seq__)
         else:
-            subject = Input_file(self.subject_file, "Subject").filename
-        print(f"Will map amplicons to {subject}")
+            self.subject = Input_file(self.subject_file, "Subject").filename
+        print(f"Will map amplicons to {self.subject}")
 
         # 1 Compile the fasta files to single file
         from Bio import SeqIO
@@ -105,12 +105,12 @@ class Pipeline:
         SeqIO.write(quality_controlled_seqs, outfiles['tmp_fasta'], "fasta")
         # todo - 1.1 trim the sequences to remove primers
         # 2 get ref and ref stats
-        refseq = SeqIO.read(subject, "fasta")
+        refseq = SeqIO.read(self.subject, "fasta")
         reflen = len(refseq.seq)
         header = refseq.id
         # 3 get minimap2 done
         import os
-        cmd = f"minimap2 -k {self.minimap2_kmer} -a {subject} " \
+        cmd = f"minimap2 -k {self.minimap2_kmer} -a {self.subject} " \
               f"{outfiles['tmp_fasta']} " \
               f"| samtools sort > {outfiles['tmp_bam']}"
         print(cmd)
