@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """A class for trimming a BioPython MultipleSeqAlignment object.
 
 Inherits from BioPython MultipleSeqAlignment

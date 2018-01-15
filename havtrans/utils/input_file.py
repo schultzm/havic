@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 class Input_file:
     '''
 
@@ -13,7 +15,7 @@ class Input_file:
         /Users/mschultz/tests/test_headers.fa
         """
         import os
-        if os.path.exists(os.path.abspath(filename)):
+        if os.path.isfile(os.path.abspath(filename)):
             self.filename = os.path.abspath(filename)
         else:
             raise IOError(f'{file_category} file {filename} not found.')

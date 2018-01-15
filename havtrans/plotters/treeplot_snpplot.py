@@ -28,6 +28,8 @@ cluster_picks
 
 
 list_of_clusters <- split(cluster_picks$Isolate, cluster_picks$Cluster)
+print(paste('list of clusters', list_of_clusters))
+#todo fix this when no clusters are detected
 
 p <- ggtree(tree, size=0.1) %<+% cluster_picks
 offst <- 0.4401 *max(dist.nodes(tree))+-0.4526

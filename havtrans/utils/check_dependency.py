@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from havtrans.tests import check_r_dependencies
 
 
