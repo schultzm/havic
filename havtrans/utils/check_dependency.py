@@ -51,3 +51,7 @@ class Dependency:
             except ImportError:
                 print(f"R library {self.software}".ljust(28) + ": not found",
                       file=sys.stderr)
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
