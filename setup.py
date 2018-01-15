@@ -19,7 +19,6 @@ from setuptools import setup, find_packages
 import havtrans
 import os
 
-
 LONG_DESCRIPTION = 'HAV Transmission Cluster Detection'
 
 if os.path.exists('README'):
@@ -27,9 +26,8 @@ if os.path.exists('README'):
 
 setup(
 
-
-    name = havtrans.__name__,
-    version = havtrans.__version__,
+    name=havtrans.__name__,
+    version=havtrans.__version__,
     packages=find_packages(),
     entry_points={
         'console_scripts': [
@@ -37,23 +35,23 @@ setup(
         ]
     },
 
-    description = havtrans.__description__,
+    description=havtrans.__description__,
     long_description=LONG_DESCRIPTION,
-    classifiers = ['Development Status :: 3 - Alpha',
-                   'License :: OSI Approved :: GNU Affero General ' +
-                   'Public License v3 or later (AGPLv3+)',
-                   'Programming Language :: Python :: 3.5',
-                   'Topic :: Scientific/Engineering :: Bio-Informatics',
-                   'Topic :: Scientific/Engineering :: Medical Science Apps.',
-                   'Intended Audience :: Science/Research'],
-    keywords = ['Hepatitis',
-                'transmission',
-                'cluster'],
-    download_url = havtrans.__install__,
-    author = havtrans.__author__,
-    author_email = havtrans.__author_email__,
-    license = havtrans.__license__,
-    package_data = {'':['*.fa']},
-    install_requires = ['ete3>=3.1.1',
-                        'ruffus==2.6.2'],
-    )
+    classifiers=['Development Status :: 3 - Alpha',
+                 'License :: OSI Approved :: GNU Affero General ' +
+                 'Public License v3 or later (AGPLv3+)',
+                 'Programming Language :: Python :: 3.5',
+                 'Topic :: Scientific/Engineering :: Bio-Informatics',
+                 'Topic :: Scientific/Engineering :: Medical Science Apps.',
+                 'Intended Audience :: Science/Research'],
+    keywords=['Hepatitis',
+              'transmission',
+              'cluster'],
+    download_url=havtrans.__install__,
+    author=havtrans.__author__,
+    author_email=havtrans.__author_email__,
+    license=havtrans.__license__,
+    package_data={'': ['*.fa']},
+    install_requires=['ete3>=3.1.1',
+                      'ruffus==2.6.2'],
+)
