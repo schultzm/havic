@@ -11,13 +11,16 @@ Steps:
 todo: doctest in classes
 """
 
-from .utils.input_file import Input_file
-from .mapping.bam2fasta import bam2fasta
-from .plotters.treeplot_snpplot import plot_functions
-from .data.havnet_amplicon import havnet_ampliconseq
 from . import __ref_seq__, __parent_dir__
 import pkg_resources
 import io
+import tempfile
+from ruffus import (mkdir,
+                    follows,
+                    files,
+                    jobs_limit,
+                    pipeline_run,
+                    pipeline_printout_graph, )
 
 
 def main():
@@ -80,6 +83,12 @@ def main():
         default="_test_",
         required=False)
     subparser.add_argument(
+        "-o",
+        "--outdir",
+        help="""Output directory.""",
+        default=tempfile.mkdtemp(dir=os.path.abspath('.')),
+        required=False)
+    subparser.add_argument(
         "-k",
         "--minimap2_kmer",
         help="""k-mer size for minimap2 step.""",
@@ -92,8 +101,8 @@ def main():
     subparsers.add_parser(
         "check", help="Check dependencies are in path.",
         description="Check dependencies.")
-
     args = parser.parse_args()
+
     import sys
     if not args.subparser_name:
         parser.print_help()
@@ -108,6 +117,7 @@ def main():
         from .utils.version import Version
         Version()
     elif args.subparser_name == 'run':
+        from .utils.input_file import Input_file
         queries = [Input_file(file, "Query").filename for file in
                    args.query_files]
         print(args.trim_seqs, queries)
@@ -121,12 +131,20 @@ def main():
         # 1 Compile the fasta files to single file
         from Bio import SeqIO
         quality_controlled_seqs = []
-        tmp_fasta = os.path.expanduser(f"~/{args.prefix}all_tmp.fa")
-        tmp_bam = os.path.expanduser(f"~/{args.prefix}HAV_all_minimap2.bam")
-        fasta_from_bam = os.path.expanduser(
-            f"~/{args.prefix}HAV_all_minimap2.stack.fa")
-        fasta_from_bam_trimmed = os.path.expanduser(
-            f"~/{args.prefix}HAV_all_minimap2" + ".stack.trimmed.fa")
+        if not os.path.exists(os.path.abspath(args.outdir)):
+            os.mkdir(os.path.abspath(args.outdir))
+        outfiles = {
+            'tmp_fasta': os.path.join(os.path.abspath(args.outdir),
+                                      args.prefix + "all_tmp.fa"),
+            'tmp_bam': os.path.join(os.path.abspath(args.outdir),
+                                    args.prefix + "HAV_all_minimap2.bam"),
+            'fasta_from_bam': os.path.join(
+                os.path.abspath(args.outdir),
+                args.prefix + "HAV_all_minimap2.stack.fa"),
+            'fasta_from_bam_trimmed': os.path.join(
+                os.path.abspath(args.outdir),
+                args.prefix + "HAV_all_minimap2" + ".stack.trimmed.fa")
+        }
         for query_file in queries:
             print(query_file)
             for record in SeqIO.parse(query_file, "fasta"):
@@ -141,9 +159,10 @@ def main():
                     print(f"Duplicate record found (only one copy of this " +
                           "added to quality_controlled_seqs): {record.id}")
         # 1.01 Append the reference amplicon
+        from .data.havnet_amplicon import havnet_ampliconseq
         quality_controlled_seqs.append(
             SeqIO.read(io.StringIO(havnet_ampliconseq), "fasta"))
-        SeqIO.write(quality_controlled_seqs, tmp_fasta, "fasta")
+        SeqIO.write(quality_controlled_seqs, outfiles['tmp_fasta'], "fasta")
         # todo - 1.1 trim the sequences to remove primers
         # 2 get ref and ref stats
         refseq = SeqIO.read(subject, "fasta")
@@ -151,14 +170,14 @@ def main():
         header = refseq.id
         # 3 get minimap2 done
         import os
-        cmd = f"minimap2 -k {args.minimap2_kmer} -a {subject} {tmp_fasta} " \
-              f"| samtools sort > {tmp_bam}"
+        cmd = f"minimap2 -k {args.minimap2_kmer} -a {subject} {outfiles['tmp_fasta']} " \
+              f"| samtools sort > {outfiles['tmp_bam']}"
         print(cmd)
         os.system(cmd)
-        cmd = f"samtools index {tmp_bam}"
+        cmd = f"samtools index {outfiles['tmp_bam']}"
         os.system(cmd)
         # 3.1 find the unmapped sequences.
-        cmd = f"samtools view -f 4 {tmp_bam} | cut -f 1"
+        cmd = f"samtools view -f 4 {outfiles['tmp_bam']} | cut -f 1"
         print(f"Unmapped reads at k-mer {args.minimap2_kmer}:")
         os.system(cmd)
         # 4 get the fasta from the bam using bam2fasta
@@ -167,17 +186,21 @@ def main():
         from rpy2.rinterface import RRuntimeWarning
         warnings.filterwarnings("ignore", category=RRuntimeWarning)
         try:
-            cmd = bam2fasta % (tmp_bam, f"{tmp_bam}.bai", header, 1, reflen,
-                               fasta_from_bam)
+            from .mapping.bam2fasta import bam2fasta
+            cmd = bam2fasta % (
+            outfiles['tmp_bam'], f"{outfiles['tmp_bam']}.bai", header, 1,
+            reflen,
+            outfiles['fasta_from_bam'])
             print(cmd)
             robjects.r(cmd)
         except OSError:
             sys.exit("bam2fasta error")
         # 4.0 Import the alignment
         from Bio import AlignIO
-        alignment = AlignIO.read(open(fasta_from_bam, "r"), "fasta")
+        alignment = AlignIO.read(open(outfiles['fasta_from_bam'], "r"), "fasta")
         # 4.1 Trim the alignment for isolates in arg.trim_seq to match
         # refamplicon.
+        from .utils.trim_alignment import Trimmed_alignment
         aln_trim = Trimmed_alignment(alignment,
                                      SeqIO.read(
                                          io.StringIO(havnet_ampliconseq),
@@ -186,20 +209,22 @@ def main():
         aln_trim.trim_seqs_to_ref()
         # 4.1.1 Depad the alignment.
         aln_trim.depad_alignment()
-        AlignIO.write(aln_trim.alignment, fasta_from_bam_trimmed, "fasta")
+        AlignIO.write(aln_trim.alignment, outfiles['fasta_from_bam_trimmed'],
+                      "fasta")
         # 5 Run iqtree on the extracted bam2fasta
         if args.redo:
             redo = "redo -redo"
         else:
             redo = " TEST"
-        cmd = f"iqtree -s {fasta_from_bam_trimmed} -nt AUTO -bb 1000 -m{redo}"
+        cmd = f"iqtree -s {outfiles['fasta_from_bam_trimmed']} -nt AUTO -bb " \
+              f"1000 -m{redo}"
         # TN+I+G4{redo}"
         os.system(cmd)
         # 5.1 Midpoint root the phylogeny using ete3
-        treefile = f"{fasta_from_bam_trimmed}.treefile"
+        treefile = f"{outfiles['fasta_from_bam_trimmed']}.treefile"
 
         print(f"Reading {treefile}")
-        mp_treefile = f"{fasta_from_bam_trimmed}.mp.treefile"
+        mp_treefile = f"{outfiles['fasta_from_bam_trimmed']}.mp.treefile"
         from ete3 import Tree
         tree = Tree(treefile, format=0)
         print(tree.write())
@@ -212,25 +237,31 @@ def main():
         # with branch lengths in scientific notation, ClusterPicker dies.
         tree.write(outfile=mp_treefile, dist_formatter="%0.16f")
         # 6 Run CLUSTER_PICKER on the tree and alignment
-        cmd = f"java -jar {CLUSTER_PICKER} {fasta_from_bam_trimmed} " \
+        from .tests.dependencies import CLUSTER_PICKER
+        cmd = f"java -jar {CLUSTER_PICKER} {outfiles['fasta_from_bam_trimmed']} " \
               f"{mp_treefile} 70 95 {args.n_snps/args.seqlen} 15 valid"
         print(cmd)
         os.system(cmd)
-        cmd = f"cp {fasta_from_bam_trimmed}.mp_clusterPicks.nwk.figTree " \
-              f"{fasta_from_bam_trimmed}.div_{args.n_snps}SNPsIn{args.seqlen}" \
+        cmd = f"cp {outfiles['fasta_from_bam_trimmed']}.mp_clusterPicks.nwk" \
+              f".figTree " \
+              f"{outfiles['fasta_from_bam_trimmed']}.div_{args.n_snps}SNPsIn{args.seqlen}" \
               f"bp.mp_clusterPicks.nwk.figTree"
         os.system(cmd)
         # 6 Link tree to alignment and plot it
-        # treestring = open(f"{fasta_from_bam_trimmed}.mp.treefile", "r").read()
-        with open(f"{fasta_from_bam_trimmed}.Rplot.R", "w") as out_r:
+        # treestring = open(f"{outfiles[
+        # 'fasta_from_bam_trimmed'].mp.treefile", "r").read()
+        with open(f"{outfiles['fasta_from_bam_trimmed']}.Rplot.R",
+                  "w") as out_r:
+            from .plotters.treeplot_snpplot import plot_functions
             cmd = plot_functions.replace("<- z", "<- \"" +
-                                         fasta_from_bam_trimmed + "\"") \
+                                         outfiles[
+                                             'fasta_from_bam_trimmed'] + "\"") \
                 .replace("<- a", "<- " + str(args.n_snps)) \
                 .replace("<- b", "<- " + str(args.seqlen)) \
                 .replace("<- k", "<- " + str(args.minimap2_kmer))
             print(cmd)
             out_r.write(cmd)
-        os.system(f"Rscript {fasta_from_bam_trimmed}.Rplot.R")
+        os.system(f"Rscript {outfiles['fasta_from_bam_trimmed']}.Rplot.R")
 
 
 if __name__ == "__main__":
