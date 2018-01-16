@@ -37,10 +37,19 @@ if(offst <= 0){
     offst <- 0.1
 }
 fntsz <- -0.005093*length(tree$tip.label)+1.955556
+if(fntsz < 0.5) {
+    fntsz <- 0.5
+    }
+print(paste('FontSize for plot', fntsz))
+
 wdth <- 1
 library('qualpalr')
 #see https://cran.r-project.org/web/packages/qualpalr/README.html
-pal <- qualpal(n = length(names(list_of_clusters)), list(h = c(0, 360), s = c(0.5, 1), l = c(0.4, 0.4)))
+ncolours <- length(names(list_of_clusters))
+if(length(names(list_of_clusters)) < 2){
+    ncolours <- 2
+    }
+pal <- qualpal(n = ncolours, list(h = c(0, 360), s = c(0.5, 1), l = c(0.4, 0.4)))
 #plot(pal)
 #rownames(pal$HSL)
 q <- p + geom_tiplab(aes(label=label, color=Cluster), size=fntsz, linesize=0.1, align=TRUE) +
