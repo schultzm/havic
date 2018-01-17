@@ -1,5 +1,5 @@
-# HAVTrans
-Hepatitis A Virus transmission cluster detection
+# HAVic
+Hepatitis A Virus infection cluster detection
 
 
 ## Installation
