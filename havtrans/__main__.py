@@ -119,6 +119,8 @@ def main():
                             args.prefix,
                             args.outdir,
                             args.minimap2_kmer)
+        for key, value in pipevars.__dict__.items():
+            print(f"{key}: {value}\n")
         pipevars.piperun()
 
 
