@@ -3,10 +3,7 @@
 A pipeline for aligning amplicons and picking transmission clusters.
 
 Steps:
-    Parse fasta files (remove spaces in descriptor etc).
-    Concatenate to single file.
-    Run the pipeline.
-    Trim the alignment.
+    See the output svg file after running.
 
 todo: doctest in classes
 """
@@ -21,7 +18,7 @@ def main():
     import os
     import sys
     parser = argparse.ArgumentParser(
-        prog='havtrans',
+        prog='havic',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     subparsers = parser.add_subparsers(
         title="Sub-commands help", help="", metavar="", dest="subparser_name")

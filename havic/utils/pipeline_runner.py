@@ -18,7 +18,7 @@ from ruffus import (mkdir,
                     formatter,
                     jobs_limit,
                     pipeline_run,
-                    pipeline_printout_graph, )
+                    pipeline_printout_graph)
 
 
 class Pipeline:
@@ -192,7 +192,10 @@ class Pipeline:
         tree.write(outfile=self.mp_treefile, dist_formatter="%0.16f")
 
     def _clusterpick(self):
-        # 6 Run CLUSTER_PICKER on the tree and alignment
+        """
+        Run CLUSTER_PICKER on the tree and alignment
+        :return: None
+        """
         from ..tests.dependencies import CLUSTER_PICKER
         cmd = f"java -jar {CLUSTER_PICKER} " \
               f"{self.outfiles['fasta_from_bam_trimmed']} " \
@@ -203,9 +206,11 @@ class Pipeline:
         os.system(cmd)
 
     def _plot_results(self):
-        # 6 Link tree to alignment and plot it
-        # treestring = open(f"{self.outfiles[
-        # 'fasta_from_bam_trimmed'].mp.treefile", "r").read()
+        """
+        Link the alignment to the tree and plot it.
+
+        :return: None
+        """
         with open(f"{self.outfiles['fasta_from_bam_trimmed']}.Rplot.R",
                   "w") as out_r:
             from ..plotters.treeplot_snpplot import plot_functions
@@ -222,10 +227,10 @@ class Pipeline:
 
     def piperun(self):
         """
+        Run the pipeline using Ruffus.
 
         :return: None
         """
-
         # Pipeline starts here
         @mkdir(self.outdir)
         def create_outdir():
@@ -266,25 +271,21 @@ class Pipeline:
         @follows(midpoint_root_iqtree)
         @transform([self.outfiles['fasta_from_bam_trimmed'], self.mp_treefile], formatter(None),
                    self.clusterpicked_tree)
-        def clusterpick(infiles, outfile):
+        def clusterpick_from_iqtree_and_cleaned_fasta(infiles, outfile):
             self._clusterpick()
 
-        @follows(clusterpick)
+        @follows(clusterpick_from_iqtree_and_cleaned_fasta)
         @transform([self.outfiles['fasta_from_bam_trimmed'], self.mp_treefile, self.clusterpicked_tree],
                    formatter(None), self.treeplotr)
         def plot_results(infiles, outfiles):
             self._plot_results()
 
+        # Run the pipeline
         if self.redo:
             pipeline_run(forcedtorun_tasks=compile_input_fasta)
         else:
             pipeline_run()
-        pipeline_printout_graph(os.path.join(self.outdir, self.prefix + "_pipeline_graph.jpg"), "jpg")
-        # sys.exit()
-        # # todo - 1.1 trim the sequences to remove primers
-        #
-        #
-        #
-        #
-        # self._clusterpick()
-        # self._plot_results()
+
+        # Print out the pipeline graph
+        pipeline_printout_graph(os.path.join(self.outdir, self.prefix + "_pipeline_graph.svg"), "svg")
+        # todo - 1.1 trim the sequences to remove primers

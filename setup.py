@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 from setuptools import setup, find_packages
-import havtrans
+import havic
 import os
 
 LONG_DESCRIPTION = 'HAV Transmission Cluster Detection'
@@ -26,16 +26,16 @@ if os.path.exists('README'):
 
 setup(
 
-    name=havtrans.__name__,
-    version=havtrans.__version__,
+    name=havic.__name__,
+    version=havic.__version__,
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'havtrans = havtrans.__main__:main'
+            'havic = havic.__main__:main'
         ]
     },
 
-    description=havtrans.__description__,
+    description=havic.__description__,
     long_description=LONG_DESCRIPTION,
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: OSI Approved :: GNU Affero General ' +
@@ -47,10 +47,10 @@ setup(
     keywords=['Hepatitis',
               'transmission',
               'cluster'],
-    download_url=havtrans.__install__,
-    author=havtrans.__author__,
-    author_email=havtrans.__author_email__,
-    license=havtrans.__license__,
+    download_url=havic.__install__,
+    author=havic.__author__,
+    author_email=havic.__author_email__,
+    license=havic.__license__,
     package_data={'': ['*.fa']},
     install_requires=['ete3>=3.1.1',
                       'ruffus==2.6.2'],

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from havtrans.tests import check_r_dependencies
+from havic.tests import check_r_dependencies
 
 
 class Dependency:
