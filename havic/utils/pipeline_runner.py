@@ -225,7 +225,7 @@ class Pipeline:
             out_r.write(cmd)
         os.system(f"Rscript {self.outfiles['fasta_from_bam_trimmed']}.Rplot.R")
 
-    def piperun(self):
+    def run(self):
         """
         Run the pipeline using Ruffus.
 

@@ -23,7 +23,7 @@ def main():
     subparsers = parser.add_subparsers(
         title="Sub-commands help", help="", metavar="", dest="subparser_name")
     subparser = subparsers.add_parser(
-        "run", help="Run the analysis.", description="Run the pipeline.",
+        "detect", help="Start the Hepatitis A Virus infection cluster detection.", description="Start the Hepatitis A Virus infection cluster detection.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     subparser.add_argument(
         "-q", "--query_files", help="Query file", nargs="+", required=True)
@@ -92,7 +92,6 @@ def main():
         description="Check dependencies.")
     args = parser.parse_args()
 
-    import sys
     if not args.subparser_name:
         parser.print_help()
     elif args.subparser_name == 'check':
@@ -105,9 +104,9 @@ def main():
     elif args.subparser_name == 'version':
         from .utils.version import Version
         Version()
-    elif args.subparser_name == 'run':
+    elif args.subparser_name == 'detect':
         from .utils.pipeline_runner import Pipeline
-        pipevars = Pipeline(args.query_files,
+        detection_pipeline = Pipeline(args.query_files,
                             args.trim_seqs,
                             args.subject_file,
                             args.redo,
@@ -116,9 +115,9 @@ def main():
                             args.prefix,
                             args.outdir,
                             args.minimap2_kmer)
-        for key, value in pipevars.__dict__.items():
+        for key, value in detection_pipeline.__dict__.items():
             print(f"{key}: {value}\n")
-        pipevars.piperun()
+        detection_pipeline.run()
 
 
 
