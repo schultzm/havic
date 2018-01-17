@@ -1,5 +1,5 @@
 # HAVIC
-Detect __H__\epatitis __A__ __V__\irus __I__\nfection _C_lusters from HAVNET amplicon sequences.  
+Detect **H**epatitis __A__ __V__\irus __I__\nfection _C_lusters from HAVNET amplicon sequences.  
 
 ## Usage
 havic
