@@ -155,8 +155,10 @@ def main():
             print(f"{key}: {value}\n")
         detection_pipeline.run()
 
+    print(f"\nTotal runtime (HRS:MIN:SECS): {str(datetime.now() - STARTTIME)}")
+    print(f"Results in {args.outdir} 😷")
+
 
 if __name__ == "__main__":
     main()
-    print(f"\nTotal runtime (HRS:MIN:SECS): {str(datetime.now() - STARTTIME)}")
-    print(f"Results in {self.outdir} 😷")
+

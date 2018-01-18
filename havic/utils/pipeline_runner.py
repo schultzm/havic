@@ -165,7 +165,7 @@ class Pipeline:
         try:
             from ..mapping.bam2fasta import bam2fasta
             cmd = bam2fasta % (
-                self.outfiles['tmp_bam'], f"{self.outfiles['tmp_bam']}.bai",
+                self.outfiles['tmp_bam'], self.outfiles['tmp_bam_idx'],
                 self.header, 1,
                 self.reflen,
                 self.outfiles['fasta_from_bam'])
@@ -241,8 +241,8 @@ class Pipeline:
 
         :return: None
         """
-        with open(f"{self.outfiles['fasta_from_bam_trimmed']}.Rplot.R",
-                  "w") as out_r:
+        print("Starting plot results using R")
+        with open(self.outfiles['treeplotr'], "w") as out_r:
             from ..plotters.treeplot_snpplot import plot_functions
             cmd = plot_functions.replace("<- z", "<- \"" +
                                          self.outfiles[
@@ -251,9 +251,9 @@ class Pipeline:
                 .replace("<- a", "<- " + str(self.n_snps)) \
                 .replace("<- b", "<- " + str(self.seqlen)) \
                 .replace("<- k", "<- " + str(self.minimap2_kmer))
-            print(cmd)
+            # print(cmd)
             out_r.write(cmd)
-        os.system(f"Rscript {self.outfiles['fasta_from_bam_trimmed']}.Rplot.R")
+        os.system(f"Rscript {self.outfiles['treeplotr']}")
 
     def run(self):
         """
@@ -273,7 +273,6 @@ class Pipeline:
         def compile_input_fasta(infile, outfile, refamplicon):
             self._compile_input_fasta()
 
-        #
         @follows(compile_input_fasta)
         @transform(self.outfiles['tmp_fasta'], formatter(None),
                    self.outfiles['tmp_bam'])
