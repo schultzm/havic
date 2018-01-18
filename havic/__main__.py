@@ -158,7 +158,7 @@ def main():
         detection_pipeline.run()
 
     print(f"\nTotal runtime (HRS:MIN:SECS): {str(datetime.now() - STARTTIME)}")
-    print(f"Results in {args.outdir} 😷")
+    print(f"Results in {os.path.abspath(args.outdir)} 😷")
 
 
 if __name__ == "__main__":
