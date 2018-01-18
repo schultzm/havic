@@ -32,7 +32,6 @@ class Dependency:
         >>> Dependency('grep', 'software').check()
         grep                        : ok (/usr/bin/grep)
         >>> Dependency('Rsamtools', 'rmodule').check()
-
         """
         import sys
         if self.category == 'software':

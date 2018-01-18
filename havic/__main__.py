@@ -8,7 +8,6 @@ Steps:
 todo: doctest in classes
 """
 
-
 import tempfile
 
 
@@ -22,7 +21,10 @@ def main():
     subparsers = parser.add_subparsers(
         title="Sub-commands help", help="", metavar="", dest="subparser_name")
     subparser = subparsers.add_parser(
-        "detect", help="Start the Hepatitis A Virus infection cluster detection.", description="Start the Hepatitis A Virus infection cluster detection.",
+        "detect",
+        help="""Detect Hepatitis A Virus infection clusters from HAVNET
+                protocol amplicon sequences.""",
+        description="Start the infection cluster detection pipeline.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     subparser.add_argument(
         "-q", "--query_files", help="Query file", nargs="+", required=True)
@@ -106,18 +108,17 @@ def main():
     elif args.subparser_name == 'detect':
         from .utils.pipeline_runner import Pipeline
         detection_pipeline = Pipeline(args.query_files,
-                            args.trim_seqs,
-                            args.subject_file,
-                            args.redo,
-                            args.n_snps,
-                            args.seqlen,
-                            args.prefix,
-                            args.outdir,
-                            args.minimap2_kmer)
+                                      args.trim_seqs,
+                                      args.subject_file,
+                                      args.redo,
+                                      args.n_snps,
+                                      args.seqlen,
+                                      args.prefix,
+                                      args.outdir,
+                                      args.minimap2_kmer)
         for key, value in detection_pipeline.__dict__.items():
             print(f"{key}: {value}\n")
         detection_pipeline.run()
-
 
 
 if __name__ == "__main__":

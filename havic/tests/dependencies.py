@@ -11,8 +11,6 @@ R_LIBS = ['GenomicAlignments',
     'devtools',
     'plotly',
     'pheatmap',
-    # 'RColorBrewer',
-    # 'rwantshue',
     'qualpalr'
 ]
 
