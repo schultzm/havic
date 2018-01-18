@@ -63,11 +63,11 @@ class Pipeline:
                             query_files]
         self.trim_seqs = trim_seqs
 
-        if subject_file is None:
+        if subject_file:
+            self.subject = Input_file(self.subject_file, "Subject").filename
+        else:
             self.subject = pkg_resources.resource_filename(__parent_dir__,
                                                            __ref_seq__)
-        else:
-            self.subject = Input_file(self.subject_file, "Subject").filename
         print(f"Will map amplicons to {self.subject}")
 
         self.refseq = SeqIO.read(self.subject, "fasta")
