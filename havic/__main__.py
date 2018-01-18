@@ -16,7 +16,6 @@ def main():
     """Perform the main routine."""
     import argparse
     import os
-    import sys
     parser = argparse.ArgumentParser(
         prog='havic',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)

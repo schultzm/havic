@@ -2,8 +2,7 @@
 
 SOFTWAREZ = ['iqtree', 'minimap2', 'R', 'raxmlHPC-PTHREADS', 'samtools']
 
-R_LIBS = ['dplyr',
-    'GenomicAlignments',
+R_LIBS = ['GenomicAlignments',
     'Rsamtools',
     'ggtree',
     'tidyverse',

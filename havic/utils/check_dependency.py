@@ -31,6 +31,8 @@ class Dependency:
         :return: result to stdout
         >>> Dependency('grep', 'software').check()
         grep                        : ok (/usr/bin/grep)
+        >>> Dependency('Rsamtools', 'rmodule').check()
+
         """
         import sys
         if self.category == 'software':
@@ -45,10 +47,12 @@ class Dependency:
                     file=sys.stderr)
         if self.category == 'rmodule':
             try:
-                check_r_dependencies.importr_tryhard(self.software)
+                result = check_r_dependencies.importr_tryhard(self.software)
+                # print(result)
                 print(f"R library {self.software}".ljust(28) + ": ok",
                       file=sys.stderr)
             except ImportError:
+                check_r_dependencies.importr_tryhard(self.software)
                 print(f"R library {self.software}".ljust(28) + ": not found",
                       file=sys.stderr)
 
