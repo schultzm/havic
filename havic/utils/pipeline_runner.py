@@ -262,7 +262,8 @@ class Pipeline:
         :return: None
         """
 
-        # Pipeline starts here
+        # Pipeline starts here without Ruffus
+        # For development and testing.
         # os.mkdir(self.outdir)
         # self._compile_input_fasta()
         # self._minimap2_input_fasta_to_ref()
@@ -273,6 +274,7 @@ class Pipeline:
         # self._clusterpick()
         # self._plot_results()
 
+        # Pipeline starts here with Ruffus
         @mkdir(self.outdir)
         def create_outdir():
             print(f"Creating output directory {self.outdir}")
