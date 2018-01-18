@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Run the pipeline.
 
@@ -19,6 +21,18 @@ from ruffus import (mkdir,
                     jobs_limit,
                     pipeline_run,
                     pipeline_printout_graph)
+
+
+def make_path(outdir, prefix, filename):
+    """
+    Make a filepath
+    :param outdir:
+    :param prefix:
+    :param filename:
+    :return: filepath
+    """
+    import os
+    return os.path.join(os.path.abspath(outdir), prefix + filename)
 
 
 class Pipeline:
@@ -65,30 +79,43 @@ class Pipeline:
         self.prefix = prefix
         self.outdir = outdir
         self.outfiles = {
-            'tmp_fasta': os.path.join(os.path.abspath(self.outdir),
-                                      self.prefix + "all_tmp.fa"),
-            'tmp_bam': os.path.join(os.path.abspath(self.outdir),
-                                    self.prefix + "HAV_all_minimap2.bam"),
-            'tmp_bam_idx': os.path.join(os.path.abspath(self.outdir),
-                                        self.prefix + "HAV_all_minimap2.bam.bai"),
-            'fasta_from_bam': os.path.join(
-                os.path.abspath(self.outdir),
-                self.prefix + "HAV_all_minimap2.stack.fa"),
-            'fasta_from_bam_trimmed': os.path.join(
-                os.path.abspath(self.outdir),
-                self.prefix + "HAV_all_minimap2" + ".stack.trimmed.fa")
+            'tmp_fasta': make_path(self.outdir, self.prefix,
+                                   "HAV_all_tmpfasta.fa"),
+            'tmp_bam': make_path(self.outdir,
+                                 self.prefix, "HAV_all_minimap2.bam"),
+            'tmp_bam_idx': make_path(self.outdir, self.prefix,
+                                     "HAV_all_minimap2.bam.bai"),
+            'fasta_from_bam': make_path(self.outdir, self.prefix,
+                                        "HAV_all_minimap2.stack.fa"),
+            'fasta_from_bam_trimmed': make_path(self.outdir, self.prefix,
+                                                "HAV_all_minimap2.stack"
+                                                f".trimmed.fa"),
+            'treefile': make_path(self.outdir, self.prefix,
+                                  f"HAV_all_minimap2.stack.trimmed.fa"
+                                  f".treefile"),
+            'mp_treefile': make_path(self.outdir, self.prefix,
+                                     f"HAV_all_minimap2.stack.trimmed"
+                                     f".fa.mp.treefile"),
+            'clusterpicked_tree': make_path(self.outdir, self.prefix,
+                                            f"HAV_all_minimap2.stack.trimmed"
+                                            f".fa.mp_clusterPicks.nwk"
+                                            f".FigTree"),
+            'clusterpicked_tree_bkp': make_path(self.outdir, self.prefix,
+                                                f"HAV_all_minimap2.stack"
+                                                f".trimmed.fa.div_"
+                                                f"{self.n_snps}SNPsIn"
+                                                f"{self.seqlen}"
+                                                f"bp.mp_clusterPicks"
+                                                f".nwk.figTree"),
+            'treeplotr': make_path(self.outdir, self.prefix,
+                                   f"HAV_all_minimap2.stack.trimmed.fa"
+                                   f".Rplot.R")
+
         }
 
         self.minimap2_kmer = minimap2_kmer
         from ..data.havnet_amplicon import havnet_ampliconseq
         self.havnet_ampliconseq = havnet_ampliconseq
-        self.treefile = f"{self.outfiles['fasta_from_bam_trimmed']}.treefile"
-        self.mp_treefile = f"{self.outfiles['fasta_from_bam_trimmed']}.mp.treefile"
-        self.clusterpicked_tree = f"{self.outfiles['fasta_from_bam_trimmed']}.mp_clusterPicks.nwk.FigTree"
-        self.clusterpicked_tree_bkp = f"{self.outfiles['fasta_from_bam_trimmed']}.div_{self.n_snps}" \
-                                      f"SNPsIn{self.seqlen}" \
-                                      f"bp.mp_clusterPicks.nwk.figTree"
-        self.treeplotr = f"{self.outfiles['fasta_from_bam_trimmed']}.Rplot.R"
 
     def _compile_input_fasta(self):
         # 1 Compile the fasta files to single file
@@ -113,7 +140,8 @@ class Pipeline:
         # 1.01 Append the reference amplicon
         quality_controlled_seqs.append(
             SeqIO.read(io.StringIO(self.havnet_ampliconseq), "fasta"))
-        SeqIO.write(quality_controlled_seqs, self.outfiles['tmp_fasta'], "fasta")
+        SeqIO.write(quality_controlled_seqs, self.outfiles['tmp_fasta'],
+                    "fasta")
 
     def _minimap2_input_fasta_to_ref(self):
         cmd = f"minimap2 -k {self.minimap2_kmer} -a {self.subject} " \
@@ -140,7 +168,8 @@ class Pipeline:
         try:
             from ..mapping.bam2fasta import bam2fasta
             cmd = bam2fasta % (
-                self.outfiles['tmp_bam'], f"{self.outfiles['tmp_bam']}.bai", self.header, 1,
+                self.outfiles['tmp_bam'], f"{self.outfiles['tmp_bam']}.bai",
+                self.header, 1,
                 self.reflen,
                 self.outfiles['fasta_from_bam'])
             print(cmd)
@@ -163,7 +192,8 @@ class Pipeline:
         aln_trim.trim_seqs_to_ref()
         # 4.1.1 Depad the alignment.
         aln_trim.depad_alignment()
-        AlignIO.write(aln_trim.alignment, self.outfiles['fasta_from_bam_trimmed'],
+        AlignIO.write(aln_trim.alignment,
+                      self.outfiles['fasta_from_bam_trimmed'],
                       "fasta")
 
     def _run_iqtree(self):
@@ -171,16 +201,16 @@ class Pipeline:
             redo = "redo -redo"
         else:
             redo = " TEST"
-        cmd = f"iqtree -s {self.outfiles['fasta_from_bam_trimmed']} -nt AUTO -bb " \
-              f"1000 -m{redo}"
+        cmd = f"iqtree -s {self.outfiles['fasta_from_bam_trimmed']} " \
+              f"-nt AUTO -bb 1000 -m{redo}"
         print(cmd)
         os.system(cmd)
 
     def _midpoint_root_iqtree(self):
         # 5.1 Midpoint root the phylogeny using ete3
         from ete3 import Tree
-        print(f"Reading {self.treefile}")
-        tree = Tree(self.treefile, format=0)
+        print(f"Reading {self.outfiles['treefile']}")
+        tree = Tree(self.outfiles['treefile'], format=0)
         print(tree.write())
         root = tree.get_midpoint_outgroup()
         tree.set_outgroup(root)
@@ -189,7 +219,8 @@ class Pipeline:
         print(tree.write())
         # dist_formatter is to prevent scientific notation.
         # with branch lengths in scientific notation, ClusterPicker dies.
-        tree.write(outfile=self.mp_treefile, dist_formatter="%0.16f")
+        tree.write(outfile=self.outfiles["mp_treefile"],
+                   dist_formatter="%0.16f")
 
     def _clusterpick(self):
         """
@@ -199,10 +230,12 @@ class Pipeline:
         from ..tests.dependencies import CLUSTER_PICKER
         cmd = f"java -jar {CLUSTER_PICKER} " \
               f"{self.outfiles['fasta_from_bam_trimmed']} " \
-              f"{self.mp_treefile} 70 95 {self.n_snps/self.seqlen} 15 valid"
+              f"{self.outfiles['mp_treefile']} 70 95 " \
+              f"{self.n_snps/self.seqlen} 15 valid"
         print(cmd)
         os.system(cmd)
-        cmd = f"cp {self.clusterpicked_tree} {self.clusterpicked_tree_bkp}"
+        cmd = f"cp {self.outfiles['clusterpicked_tree']} " \
+              f"{self.outfiles['clusterpicked_tree_bkp']}"
         os.system(cmd)
 
     def _plot_results(self):
@@ -231,19 +264,22 @@ class Pipeline:
 
         :return: None
         """
+
         # Pipeline starts here
         @mkdir(self.outdir)
         def create_outdir():
             print(f"Creating output directory {self.outdir}")
 
         @follows(create_outdir)
-        @transform(self.query_files, formatter(None), self.outfiles['tmp_fasta'], self.havnet_ampliconseq)
+        @transform(self.query_files, formatter(None),
+                   self.outfiles['tmp_fasta'], self.havnet_ampliconseq)
         def compile_input_fasta(infile, outfile, refamplicon):
             self._compile_input_fasta()
 
         #
         @follows(compile_input_fasta)
-        @transform(self.outfiles['tmp_fasta'], formatter(None), self.outfiles['tmp_bam'])
+        @transform(self.outfiles['tmp_fasta'], formatter(None),
+                   self.outfiles['tmp_bam'])
         def minimap2_input_fasta_to_ref(infile, outfile):
             self._minimap2_input_fasta_to_ref()
 
@@ -254,29 +290,36 @@ class Pipeline:
             self._bam2fasta()
 
         @follows(bam2fasta)
-        @transform(self.outfiles['fasta_from_bam'], formatter(None), self.outfiles['fasta_from_bam_trimmed'])
+        @transform(self.outfiles['fasta_from_bam'], formatter(None),
+                   self.outfiles['fasta_from_bam_trimmed'])
         def get_cleaned_fasta(infile, outfile):
             self._get_clean_fasta_alignment()
 
         @follows(get_cleaned_fasta)
-        @transform(self.outfiles['fasta_from_bam_trimmed'], formatter(None), self.mp_treefile)
+        @transform(self.outfiles['fasta_from_bam_trimmed'], formatter(None),
+                   self.outfiles["mp_treefile"])
         def run_iqtree(infile, outfile):
             self._run_iqtree()
 
         @follows(run_iqtree)
-        @transform(self.treefile, formatter(None), self.mp_treefile)
+        @transform(self.outfiles['treefile'], formatter(None),
+                   self.outfiles['mp_treefile'])
         def midpoint_root_iqtree(infile, outfile):
             self._midpoint_root_iqtree()
 
         @follows(midpoint_root_iqtree)
-        @transform([self.outfiles['fasta_from_bam_trimmed'], self.mp_treefile], formatter(None),
-                   self.clusterpicked_tree)
+        @transform([self.outfiles['fasta_from_bam_trimmed'],
+                    self.outfiles['mp_treefile']],
+                   formatter(None),
+                   self.outfiles["clusterpicked_tree"])
         def clusterpick_from_iqtree_and_cleaned_fasta(infiles, outfile):
             self._clusterpick()
 
         @follows(clusterpick_from_iqtree_and_cleaned_fasta)
-        @transform([self.outfiles['fasta_from_bam_trimmed'], self.mp_treefile, self.clusterpicked_tree],
-                   formatter(None), self.treeplotr)
+        @transform([self.outfiles['fasta_from_bam_trimmed'],
+                    self.outfiles['mp_treefile'],
+                    self.outfiles['clusterpicked_tree']],
+                   formatter(None), self.outfiles['treeplotr'])
         def plot_results(infiles, outfiles):
             self._plot_results()
 
@@ -287,5 +330,12 @@ class Pipeline:
             pipeline_run()
 
         # Print out the pipeline graph
-        pipeline_printout_graph(os.path.join(self.outdir, self.prefix + "_pipeline_graph.svg"), "svg")
+        pipeline_printout_graph(
+            make_path(self.outdir, self.prefix, "_pipeline_graph.svg"),
+            "svg")
         # todo - 1.1 trim the sequences to remove primers
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()

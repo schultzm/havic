@@ -91,3 +91,8 @@ class Trimmed_alignment(MultipleSeqAlignment):
             else:
                 end_pos -= 1
         self.alignment = self.alignment[:, start_pos:end_pos + 1]
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()

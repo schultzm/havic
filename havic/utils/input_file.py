@@ -19,3 +19,7 @@ class Input_file:
             self.filename = os.path.abspath(filename)
         else:
             raise IOError(f'{file_category} file {filename} not found.')
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from .. import (__version__, __version_date__, __author__, __author_email__,
                 __github_username__, __download_url__, )
 
@@ -12,3 +14,8 @@ class Version:
         print("Author email:", __author_email__)
         print("Github username:", __github_username__)
         print("Download url:", __download_url__)
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
