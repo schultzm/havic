@@ -117,9 +117,6 @@ def main():
             Dependency(software, 'software').check()
         for rlib in R_LIBS:
             Dependency(rlib, 'rmodule').check()
-    elif args.subparser_name == 'version':
-        from .utils.version import Version
-        Version()
     elif args.subparser_name == 'test':
         print(f"Running test suite...")
         from . import __parent_dir__, __test_seqs__, __test_seq_totrim__
@@ -156,6 +153,11 @@ def main():
         for key, value in detection_pipeline.__dict__.items():
             print(f"{key}: {value}\n")
         detection_pipeline.run()
+        
+        elif args.subparser_name == 'version':
+            from .utils.version import Version
+            Version()
+
 
     print(f"\nTotal runtime (HRS:MIN:SECS): {str(datetime.now() - STARTTIME)}")
     print(f"Results in {os.path.abspath(args.outdir)} 😷")
