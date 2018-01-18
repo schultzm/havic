@@ -4,9 +4,10 @@ Detect **H**epatitis **A** **V**irus **I**nfection **C**lusters from HAVNET ampl
 ## Usage
 
     havic
-    havic detect -h
-    havic check -h
-    havic version -h
+    havic check
+    havic test
+    havic detect
+    havic version
 
 
 
