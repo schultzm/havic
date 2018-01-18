@@ -253,7 +253,7 @@ class Pipeline:
                 .replace("<- k", "<- " + str(self.minimap2_kmer))
             # print(cmd)
             out_r.write(cmd)
-        os.system(f"Rscript {self.outfiles['treeplotr']}")
+        os.system(f"R CMD BATCH {self.outfiles['treeplotr']}")
 
     def run(self):
         """
@@ -263,59 +263,69 @@ class Pipeline:
         """
 
         # Pipeline starts here
+        # os.mkdir(self.outdir)
+        # self._compile_input_fasta()
+        # self._minimap2_input_fasta_to_ref()
+        # self._bam2fasta()
+        # self._get_clean_fasta_alignment()
+        # self._run_iqtree()
+        # self._midpoint_root_iqtree()
+        # self._clusterpick()
+        # self._plot_results()
+
         @mkdir(self.outdir)
         def create_outdir():
             print(f"Creating output directory {self.outdir}")
 
         @follows(create_outdir)
-        @transform(self.query_files, formatter(None),
+        @files(self.query_files,
                    self.outfiles['tmp_fasta'], self.havnet_ampliconseq)
         def compile_input_fasta(infile, outfile, refamplicon):
             self._compile_input_fasta()
 
         @follows(compile_input_fasta)
-        @transform(self.outfiles['tmp_fasta'], formatter(None),
+        @files(self.outfiles['tmp_fasta'],
                    self.outfiles['tmp_bam'])
         def minimap2_input_fasta_to_ref(infile, outfile):
             self._minimap2_input_fasta_to_ref()
 
         @follows(minimap2_input_fasta_to_ref)
-        @transform(self.outfiles['tmp_bam'], formatter(None),
+        @files(self.outfiles['tmp_bam'],
                    self.outfiles['fasta_from_bam'])
         def bam2fasta(infile, outfile):
             self._bam2fasta()
 
         @follows(bam2fasta)
-        @transform(self.outfiles['fasta_from_bam'], formatter(None),
+        @files(self.outfiles['fasta_from_bam'],
                    self.outfiles['fasta_from_bam_trimmed'])
         def get_cleaned_fasta(infile, outfile):
             self._get_clean_fasta_alignment()
 
         @follows(get_cleaned_fasta)
-        @transform(self.outfiles['fasta_from_bam_trimmed'], formatter(None),
+        @files(self.outfiles['fasta_from_bam_trimmed'],
                    self.outfiles["mp_treefile"])
         def run_iqtree(infile, outfile):
             self._run_iqtree()
 
         @follows(run_iqtree)
-        @transform(self.outfiles['treefile'], formatter(None),
+        @files(self.outfiles['treefile'],
                    self.outfiles['mp_treefile'])
         def midpoint_root_iqtree(infile, outfile):
             self._midpoint_root_iqtree()
 
         @follows(midpoint_root_iqtree)
-        @transform([self.outfiles['fasta_from_bam_trimmed'],
+        @files([self.outfiles['fasta_from_bam_trimmed'],
                     self.outfiles['mp_treefile']],
-                   formatter(None),
+
                    self.outfiles["clusterpicked_tree"])
         def clusterpick_from_iqtree_and_cleaned_fasta(infiles, outfile):
             self._clusterpick()
 
         @follows(clusterpick_from_iqtree_and_cleaned_fasta)
-        @transform([self.outfiles['fasta_from_bam_trimmed'],
+        @files([self.outfiles['fasta_from_bam_trimmed'],
                     self.outfiles['mp_treefile'],
                     self.outfiles['clusterpicked_tree']],
-                   formatter(None), self.outfiles['treeplotr'])
+                    self.outfiles['treeplotr'])
         def plot_results(infiles, outfiles):
             self._plot_results()
 

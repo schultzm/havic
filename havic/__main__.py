@@ -8,8 +8,9 @@ Steps:
 todo: doctest in classes
 """
 
-import tempfile
 from datetime import datetime
+import random
+import string
 
 STARTTIME = datetime.now()
 
@@ -70,7 +71,8 @@ def main():
         "-o",
         "--outdir",
         help="""Output directory.""",
-        default=tempfile.mkdtemp(dir=os.path.abspath('.')),
+        default="tmp"+(''.join(
+            [random.choice(string.ascii_letters) for i in range(7)])),
         required=False)
     subparser_args1.add_argument(
         "-k",
@@ -161,4 +163,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
