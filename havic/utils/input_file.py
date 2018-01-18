@@ -9,10 +9,6 @@ class Input_file:
     def __init__(self, filename, file_category):
         """
         Initialise the class instance with a filename.
-
-        >>> fname = Input_file('tests/test_headers.fa', 'fasta')
-        >>> print(fname.filename)
-        /Users/mschultz/tests/test_headers.fa
         """
         import os
         if os.path.isfile(os.path.abspath(filename)):

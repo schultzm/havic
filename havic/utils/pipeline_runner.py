@@ -119,11 +119,11 @@ class Pipeline:
 
     def _compile_input_fasta(self):
         # 1 Compile the fasta files to single file
-        import os
         from Bio import SeqIO
         quality_controlled_seqs = []
-        # if not os.path.exists(os.path.abspath(self.outdir)):
-        #     os.mkdir(os.path.abspath(self.outdir))
+        # 1.01 Append the reference amplicon
+        quality_controlled_seqs.append(
+            SeqIO.read(io.StringIO(self.havnet_ampliconseq), "fasta"))
         for query_file in self.query_files:
             print(query_file)
             for record in SeqIO.parse(query_file, "fasta"):
@@ -135,11 +135,8 @@ class Pipeline:
                 ]:
                     quality_controlled_seqs.append(record)
                 else:
-                    print(f"Duplicate record found (only one copy of this " +
-                          "added to quality_controlled_seqs): {record.id}")
-        # 1.01 Append the reference amplicon
-        quality_controlled_seqs.append(
-            SeqIO.read(io.StringIO(self.havnet_ampliconseq), "fasta"))
+                    print(f"Duplicate record found (only one copy of this "
+                          f"added to quality_controlled_seqs): {record.id}")
         SeqIO.write(quality_controlled_seqs, self.outfiles['tmp_fasta'],
                     "fasta")
 
