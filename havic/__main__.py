@@ -14,6 +14,12 @@ import string
 
 STARTTIME = datetime.now()
 
+def get_execution_time():
+    "Calculate length of run."
+    print(
+        f"\nTotal runtime (HRS:MIN:SECS): {str(datetime.now() - STARTTIME)}")
+    print(f"Results in {os.path.abspath(args.outdir)} 😷")
+
 
 def main():
     """Perform the main routine."""
@@ -71,8 +77,7 @@ def main():
         "-o",
         "--outdir",
         help="""Output directory.""",
-        default="tmp"+(''.join(
-            [random.choice(string.ascii_letters) for i in range(7)])),
+        default=f"tmp{(''.join([random.choice(string.ascii_letters) for i in range(7)]))}",
         required=False)
     subparser_args1.add_argument(
         "-k",
@@ -138,6 +143,7 @@ def main():
         for key, value in detection_pipeline.__dict__.items():
             print(f"{key}: {value}\n")
         detection_pipeline.run()
+        get_execution_time()
 
     elif args.subparser_name == 'detect':
         from .utils.pipeline_runner import Pipeline
@@ -153,14 +159,11 @@ def main():
         for key, value in detection_pipeline.__dict__.items():
             print(f"{key}: {value}\n")
         detection_pipeline.run()
-        
+        get_execution_time()
+
     elif args.subparser_name == 'version':
         from .utils.version import Version
         Version()
-
-
-    print(f"\nTotal runtime (HRS:MIN:SECS): {str(datetime.now() - STARTTIME)}")
-    print(f"Results in {os.path.abspath(args.outdir)} 😷")
 
 
 if __name__ == "__main__":
