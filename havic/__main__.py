@@ -14,12 +14,12 @@ import string
 
 STARTTIME = datetime.now()
 
-def get_execution_time():
+def get_execution_time(outdir):
     import os
     "Calculate length of run."
     print(
         f"\nTotal runtime (HRS:MIN:SECS): {str(datetime.now() - STARTTIME)}")
-    print(f"Results in {os.path.abspath(args.outdir)} 😷")
+    print(f"Results in {os.path.abspath(outdir)} 😷")
 
 
 def main():
@@ -143,7 +143,7 @@ def main():
         for key, value in detection_pipeline.__dict__.items():
             print(f"{key}: {value}\n")
         detection_pipeline.run()
-        get_execution_time()
+        get_execution_time(args.outdir)
 
     elif args.subparser_name == 'detect':
         from .utils.pipeline_runner import Pipeline
@@ -159,7 +159,7 @@ def main():
         for key, value in detection_pipeline.__dict__.items():
             print(f"{key}: {value}\n")
         detection_pipeline.run()
-        get_execution_time()
+        get_execution_time(args.outdir)
 
     elif args.subparser_name == 'version':
         from .utils.version import Version
