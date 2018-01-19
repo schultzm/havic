@@ -15,6 +15,7 @@ import string
 STARTTIME = datetime.now()
 
 def get_execution_time():
+    import os
     "Calculate length of run."
     print(
         f"\nTotal runtime (HRS:MIN:SECS): {str(datetime.now() - STARTTIME)}")
@@ -24,7 +25,6 @@ def get_execution_time():
 def main():
     """Perform the main routine."""
     import argparse
-    import os
     parser = argparse.ArgumentParser(
         prog='havic',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
