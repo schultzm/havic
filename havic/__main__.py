@@ -154,9 +154,9 @@ def main():
             print(f"{key}: {value}\n")
         detection_pipeline.run()
         
-        elif args.subparser_name == 'version':
-            from .utils.version import Version
-            Version()
+    elif args.subparser_name == 'version':
+        from .utils.version import Version
+        Version()
 
 
     print(f"\nTotal runtime (HRS:MIN:SECS): {str(datetime.now() - STARTTIME)}")
