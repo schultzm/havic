@@ -323,7 +323,7 @@ class Pipeline:
         def clusterpick_from_mpr_iqtree_and_cleaned_fasta(infiles, outfile):
             self._clusterpick()
 
-        @follows(clusterpick_from_iqtree_and_cleaned_fasta)
+        @follows(clusterpick_from_mpr_iqtree_and_cleaned_fasta)
         @files([self.outfiles['fasta_from_bam_trimmed'],
                     self.outfiles['mp_treefile'],
                     self.outfiles['clusterpicked_tree']],
