@@ -320,7 +320,7 @@ class Pipeline:
                     self.outfiles['mp_treefile']],
 
                    self.outfiles["clusterpicked_tree"])
-        def clusterpick_from_iqtree_and_cleaned_fasta(infiles, outfile):
+        def clusterpick_from_mpr_iqtree_and_cleaned_fasta(infiles, outfile):
             self._clusterpick()
 
         @follows(clusterpick_from_iqtree_and_cleaned_fasta)
@@ -328,7 +328,7 @@ class Pipeline:
                     self.outfiles['mp_treefile'],
                     self.outfiles['clusterpicked_tree']],
                     self.outfiles['treeplotr'])
-        def plot_results(infiles, outfiles):
+        def plot_results_ggtree(infiles, outfiles):
             self._plot_results()
 
         # Run the pipeline
