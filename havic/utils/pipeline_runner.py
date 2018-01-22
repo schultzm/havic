@@ -234,6 +234,7 @@ class Pipeline:
         os.system(cmd)
         cmd = f"cp {self.outfiles['clusterpicked_tree']} " \
               f"{self.outfiles['clusterpicked_tree_bkp']}"
+        print(cmd)
         os.system(cmd)
 
     def _plot_results(self):
@@ -321,13 +322,12 @@ class Pipeline:
                     self.outfiles['mp_treefile']],
 
                    self.outfiles["clusterpicked_tree"])
-        def clusterpick_from_mpr_iqtree_and_cleaned_fasta(infiles, outfile):
+        def clusterpick_from_mpr_iqtree_and_cleaned_fasta(infile, outfile):
             self._clusterpick()
 
         @follows(clusterpick_from_mpr_iqtree_and_cleaned_fasta)
         @files([self.outfiles['fasta_from_bam_trimmed'],
-                    self.outfiles['mp_treefile'],
-                    self.outfiles['clusterpicked_tree']],
+                    self.outfiles['mp_treefile']],
                     self.outfiles['treeplotr'])
         def plot_results_ggtree(infiles, outfiles):
             self._plot_results()
