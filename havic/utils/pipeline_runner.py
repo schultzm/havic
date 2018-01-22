@@ -85,6 +85,8 @@ class Pipeline:
                                  self.prefix, "HAV_all_minimap2.bam"),
             'tmp_bam_idx': make_path(self.outdir, self.prefix,
                                      "HAV_all_minimap2.bam.bai"),
+            'bam2fasta': make_path(self.outdir, self.prefix,
+                                   f"HAV_all_minimap2.bam2fasta.R"),
             'fasta_from_bam': make_path(self.outdir, self.prefix,
                                         "HAV_all_minimap2.stack.fa"),
             'fasta_from_bam_trimmed': make_path(self.outdir, self.prefix,
@@ -158,21 +160,19 @@ class Pipeline:
 
         :return: fasta from input bam file
         """
-        from rpy2 import robjects
-        import warnings
-        from rpy2.rinterface import RRuntimeWarning
-        warnings.filterwarnings("ignore", category=RRuntimeWarning)
         try:
-            from ..mapping.bam2fasta import bam2fasta
-            cmd = bam2fasta % (
-                self.outfiles['tmp_bam'], self.outfiles['tmp_bam_idx'],
-                self.header, 1,
-                self.reflen,
-                self.outfiles['fasta_from_bam'])
+            with open(self.outfiles['bam2fasta'], 'w') as out_r:
+                from ..mapping.bam2fasta import bam2fasta
+                cmd = bam2fasta % (
+                    self.outfiles['tmp_bam'], self.outfiles['tmp_bam_idx'],
+                    self.header, 1,
+                    self.reflen,
+                    self.outfiles['fasta_from_bam'])
+                out_r.write(cmd)
             print(cmd)
-            robjects.r(cmd)
+            os.system(f"R CMD BATCH {self.outfiles['bam2fasta']}")
         except OSError:
-            sys.exit("bam2fasta error")
+            sys.exit("bam2fasta error.  Run 'havic check'.")
 
     def _get_clean_fasta_alignment(self):
         from Bio import AlignIO

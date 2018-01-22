@@ -53,6 +53,5 @@ setup(
     license=havic.__license__,
     package_data={'': ['*.fa']},
     install_requires=['ete3>=3.1.1',
-                      'ruffus>=2.6.2',
-                      'rpy2'],
+                      'ruffus>=2.6.2'],
 )
