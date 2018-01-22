@@ -117,7 +117,7 @@ class Pipeline:
         }
 
         self.minimap2_kmer = minimap2_kmer
-        self.path_to_clusterpicker = path_to_clusterpicker
+        self.path_to_clusterpicker = os.path.abspath(path_to_clusterpicker)
         from ..data.havnet_amplicon import havnet_ampliconseq
         self.havnet_ampliconseq = havnet_ampliconseq
 
@@ -276,6 +276,8 @@ class Pipeline:
         # self._clusterpick()
         # self._plot_results()
 
+        if not os.path.exists(self.path_to_clusterpicker):
+            sys.exit(f"Check {self.path_to_clusterpicker} exists and re-try.")
         # Pipeline starts here with Ruffus
         @mkdir(self.outdir)
         def create_outdir():
