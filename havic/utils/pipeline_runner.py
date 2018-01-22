@@ -45,7 +45,8 @@ class Pipeline:
                  seqlen,
                  prefix,
                  outdir,
-                 minimap2_kmer):
+                 minimap2_kmer,
+                 path_to_clusterpicker):
         """
         Receive the arguments from argparse:
 
@@ -116,6 +117,7 @@ class Pipeline:
         }
 
         self.minimap2_kmer = minimap2_kmer
+        self.path_to_clusterpicker = path_to_clusterpicker
         from ..data.havnet_amplicon import havnet_ampliconseq
         self.havnet_ampliconseq = havnet_ampliconseq
 
@@ -224,8 +226,7 @@ class Pipeline:
         Run CLUSTER_PICKER on the tree and alignment
         :return: None
         """
-        from ..tests.dependencies import CLUSTER_PICKER
-        cmd = f"java -jar {CLUSTER_PICKER} " \
+        cmd = f"java -jar {self.path_to_clusterpicker} " \
               f"{self.outfiles['fasta_from_bam_trimmed']} " \
               f"{self.outfiles['mp_treefile']} 70 95 " \
               f"{self.n_snps/self.seqlen} 15 valid"

@@ -13,6 +13,22 @@ Detect **H**epatitis **A** **V**irus **I**nfection **C**lusters from HAVNET ampl
 
 ## Installation
 ```
-brew install pyqt --with-python3
-pip3 install git+https://github.com/schultzm/HAVIC.git
+#brew install pyqt --with-python3
+pip3 install git+https://github.com/schultzm/HAVIC.git --user
+
+R
+install.packages("pheatmap",repos="https://cloud.r-project.org",quiet=TRUE)
+install.packages("qualpalr",repos="https://cloud.r-project.org",quiet=TRUE)
+install.packages("ape",repos="https://cloud.r-project.org",quiet=TRUE)
+install.packages("caper",repos="https://cloud.r-project.org",quiet=TRUE)
+install.packages("diversitree",repos="https://cloud.r-project.org",quiet=TRUE)
+install.packages("geiger",repos="https://cloud.r-project.org",quiet=TRUE)
+install.packages("nlme",repos="https://cloud.r-project.org",quiet=TRUE)
+install.packages("OUwie",repos="https://cloud.r-project.org",quiet=TRUE)
+install.packages("phangorn",repos="https://cloud.r-project.org",quiet=TRUE)
+install.packages("phytools",repos="https://cloud.r-project.org",quiet=TRUE)
+source("https://bioconductor.org/biocLite.R")
+biocLite("GenomicAlignments")
+biocLite("Rsamtools")
+biocLite("ggtree")
 ```

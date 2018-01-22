@@ -87,6 +87,14 @@ def main():
         type=int,
         choices=[3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27],
         required=False)
+    subparser_args1.add_argument(
+        "-c",
+        "--path_to_clusterpicker",
+        help="""Path to ClusterPicker.jar file.  Follow instructions at
+                http://hiv.bio.ed.ac.uk/software.html""",
+        default="/Applications/ClusterPicker_1.2.5.jar",
+        required=False,
+    )
     subparser_args2 = argparse.ArgumentParser(add_help=False)
     subparser_args2.add_argument(
         "-q", "--query_files", help="Query file", nargs="+", required=True)
@@ -109,7 +117,8 @@ def main():
     subparser_modules.add_parser(
         "test", help="Run HAVIC test using pre-packaged example data.",
         description="Run HAVIC test using pre-packaged example data.",
-        parents=[subparser_args1])
+        parents=[subparser_args1],
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     args = parser.parse_args()
 
@@ -139,7 +148,8 @@ def main():
                                       args.seqlen,
                                       args.prefix,
                                       args.outdir,
-                                      args.minimap2_kmer)
+                                      args.minimap2_kmer,
+                                      args.path_to_clusterpicker)
         for key, value in detection_pipeline.__dict__.items():
             print(f"{key}: {value}\n")
         detection_pipeline.run()
@@ -155,7 +165,8 @@ def main():
                                       args.seqlen,
                                       args.prefix,
                                       args.outdir,
-                                      args.minimap2_kmer)
+                                      args.minimap2_kmer,
+                                      args.path_to_clusterpicker)
         for key, value in detection_pipeline.__dict__.items():
             print(f"{key}: {value}\n")
         detection_pipeline.run()

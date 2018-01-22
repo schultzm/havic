@@ -1,15 +1,15 @@
 # These dependencies are required to run.
 
-SOFTWAREZ = ['iqtree', 'minimap2', 'R', 'raxmlHPC-PTHREADS', 'samtools']
+SOFTWAREZ = ['iqtree', 'minimap2', 'R', 'samtools']
 
 R_LIBS = ['GenomicAlignments',
     'Rsamtools',
     'ggtree',
-    'tidyverse',
+    # 'tidyverse',
     'phytools',
-    'ape',
-    'devtools',
-    'plotly',
+    # 'ape',
+    # 'devtools',
+    # 'plotly',
     'pheatmap',
     'qualpalr'
 ]
