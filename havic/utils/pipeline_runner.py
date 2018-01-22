@@ -232,10 +232,13 @@ class Pipeline:
               f"{self.n_snps/self.seqlen} 15 valid"
         print(cmd)
         os.system(cmd)
+
+    def _bkp_clusterpickedtree(self):
         cmd = f"cp {self.outfiles['clusterpicked_tree']} " \
               f"{self.outfiles['clusterpicked_tree_bkp']}"
         print(cmd)
         os.system(cmd)
+
 
     def _plot_results(self):
         """
@@ -278,6 +281,7 @@ class Pipeline:
 
         if not os.path.exists(self.path_to_clusterpicker):
             sys.exit(f"Check {self.path_to_clusterpicker} exists and re-try.")
+
         # Pipeline starts here with Ruffus
         @mkdir(self.outdir)
         def create_outdir():
@@ -326,6 +330,12 @@ class Pipeline:
                    self.outfiles["clusterpicked_tree"])
         def clusterpick_from_mpr_iqtree_and_cleaned_fasta(infile, outfile):
             self._clusterpick()
+
+        @follows(clusterpick_from_mpr_iqtree_and_cleaned_fasta)
+        @files(self.outfiles['clusterpicked_tree'],
+               self.outfiles['clusterpicked_tree_bkp'])
+        def backup_clusterpicked_figtree(infile_outfile):
+            self._bkp_clusterpickedtree()
 
         @follows(clusterpick_from_mpr_iqtree_and_cleaned_fasta)
         @files([self.outfiles['fasta_from_bam_trimmed'],
