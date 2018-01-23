@@ -102,7 +102,7 @@ class Pipeline:
             'clusterpicked_tree': make_path(self.outdir, self.prefix,
                                             f"HAV_all_minimap2.stack.trimmed"
                                             f".fa.mp_clusterPicks.nwk"
-                                            f".FigTree"),
+                                            f".figTree"),
             'clusterpicked_tree_bkp': make_path(self.outdir, self.prefix,
                                                 f"HAV_all_minimap2.stack"
                                                 f".trimmed.fa.div_"
@@ -115,7 +115,9 @@ class Pipeline:
                                    f".Rplot.R")
 
         }
-
+        for k, v in self.outfiles.items():
+            print(k, v)
+        print(self.outfiles)
         self.minimap2_kmer = minimap2_kmer
         self.path_to_clusterpicker = os.path.abspath(path_to_clusterpicker)
         from ..data.havnet_amplicon import havnet_ampliconseq
@@ -334,7 +336,7 @@ class Pipeline:
         @follows(clusterpick_from_mpr_iqtree_and_cleaned_fasta)
         @files(self.outfiles['clusterpicked_tree'],
                self.outfiles['clusterpicked_tree_bkp'])
-        def backup_clusterpicked_figtree(infile_outfile):
+        def backup_clusterpicked_figtree(infile, outfile):
             self._bkp_clusterpickedtree()
 
         @follows(clusterpick_from_mpr_iqtree_and_cleaned_fasta)
