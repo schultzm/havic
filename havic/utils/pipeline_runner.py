@@ -239,7 +239,6 @@ class Pipeline:
         print(cmd)
         os.system(cmd)
 
-
     def _plot_results(self):
         """
         Link the alignment to the tree and plot it.
@@ -279,7 +278,9 @@ class Pipeline:
         # self._clusterpick()
         # self._plot_results()
 
-        if not os.path.exists(self.path_to_clusterpicker):
+        if not os.path.exists(
+                self.path_to_clusterpicker) or 'cluster' not in \
+                self.path_to_clusterpicker.lower():
             sys.exit(f"Check {self.path_to_clusterpicker} exists and re-try.")
 
         # Pipeline starts here with Ruffus
@@ -289,45 +290,45 @@ class Pipeline:
 
         @follows(create_outdir)
         @files(self.query_files,
-                   self.outfiles['tmp_fasta'], self.havnet_ampliconseq)
+               self.outfiles['tmp_fasta'], self.havnet_ampliconseq)
         def compile_input_fasta(infile, outfile, refamplicon):
             self._compile_input_fasta()
 
         @follows(compile_input_fasta)
         @files(self.outfiles['tmp_fasta'],
-                   self.outfiles['tmp_bam'])
+               self.outfiles['tmp_bam'])
         def minimap2_input_fasta_to_ref(infile, outfile):
             self._minimap2_input_fasta_to_ref()
 
         @follows(minimap2_input_fasta_to_ref)
         @files(self.outfiles['tmp_bam'],
-                   self.outfiles['fasta_from_bam'])
+               self.outfiles['fasta_from_bam'])
         def bam2fasta(infile, outfile):
             self._bam2fasta()
 
         @follows(bam2fasta)
         @files(self.outfiles['fasta_from_bam'],
-                   self.outfiles['fasta_from_bam_trimmed'])
+               self.outfiles['fasta_from_bam_trimmed'])
         def get_cleaned_fasta(infile, outfile):
             self._get_clean_fasta_alignment()
 
         @follows(get_cleaned_fasta)
         @files(self.outfiles['fasta_from_bam_trimmed'],
-                   self.outfiles["mp_treefile"])
+               self.outfiles["mp_treefile"])
         def run_iqtree(infile, outfile):
             self._run_iqtree()
 
         @follows(run_iqtree)
         @files(self.outfiles['treefile'],
-                   self.outfiles['mp_treefile'])
+               self.outfiles['mp_treefile'])
         def midpoint_root_iqtree(infile, outfile):
             self._midpoint_root_iqtree()
 
         @follows(midpoint_root_iqtree)
         @files([self.outfiles['fasta_from_bam_trimmed'],
-                    self.outfiles['mp_treefile']],
+                self.outfiles['mp_treefile']],
 
-                   self.outfiles["clusterpicked_tree"])
+               self.outfiles["clusterpicked_tree"])
         def clusterpick_from_mpr_iqtree_and_cleaned_fasta(infile, outfile):
             self._clusterpick()
 
@@ -339,8 +340,8 @@ class Pipeline:
 
         @follows(clusterpick_from_mpr_iqtree_and_cleaned_fasta)
         @files([self.outfiles['fasta_from_bam_trimmed'],
-                    self.outfiles['mp_treefile']],
-                    self.outfiles['treeplotr'])
+                self.outfiles['mp_treefile']],
+               self.outfiles['treeplotr'])
         def plot_results_ggtree(infiles, outfiles):
             self._plot_results()
 
@@ -359,4 +360,5 @@ class Pipeline:
 
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod()
