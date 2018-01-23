@@ -282,7 +282,8 @@ class Pipeline:
 
         if not os.path.exists(self.path_to_clusterpicker) or 'cluster' not in \
                 self.path_to_clusterpicker.lower():
-            sys.exit(f"Check {self.path_to_clusterpicker} exists and re-try.")
+            sys.exit(f"ClusterPicker error: " \
+                     f"Check {self.path_to_clusterpicker} exists and re-try.")
 
         # Pipeline starts here with Ruffus
         @mkdir(self.outdir)
