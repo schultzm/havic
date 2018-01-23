@@ -279,8 +279,7 @@ class Pipeline:
         # self._plot_results()
 
         if not os.path.exists(
-                self.path_to_clusterpicker) or 'cluster' not in \
-                self.path_to_clusterpicker.lower():
+                self.path_to_clusterpicker):
             sys.exit(f"Check {self.path_to_clusterpicker} exists and re-try.")
 
         # Pipeline starts here with Ruffus
