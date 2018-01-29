@@ -184,6 +184,8 @@ class Pipeline:
         # 4.1 Trim the alignment for isolates in arg.trim_seq to match
         # refamplicon.
         from ..utils.trim_alignment import Trimmed_alignment
+        if not self.trim_seqs:
+            self.trim_seqs = ''
         aln_trim = Trimmed_alignment(alignment,
                                      SeqIO.read(
                                          io.StringIO(self.havnet_ampliconseq),
