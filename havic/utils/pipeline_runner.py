@@ -117,7 +117,6 @@ class Pipeline:
         }
         for k, v in self.outfiles.items():
             print(k, v)
-        print(self.outfiles)
         self.minimap2_kmer = minimap2_kmer
         self.path_to_clusterpicker = os.path.abspath(path_to_clusterpicker)
         from ..data.havnet_amplicon import havnet_ampliconseq
