@@ -262,7 +262,7 @@ class Pipeline:
             out_r.write(cmd)
         os.system(f"R CMD BATCH {self.outfiles['treeplotr']}")
 
-    def run(self):
+    def _run(self):
         """
         Run the pipeline using Ruffus.
 
@@ -283,7 +283,7 @@ class Pipeline:
 
         if not os.path.exists(self.path_to_clusterpicker) or 'cluster' not in \
                 self.path_to_clusterpicker.lower():
-            sys.exit(f"ClusterPicker error: " \
+            sys.exit(f"ClusterPicker error: "
                      f"Check {self.path_to_clusterpicker} exists and re-try.")
 
         # Pipeline starts here with Ruffus
@@ -359,6 +359,45 @@ class Pipeline:
             make_path(self.outdir, self.prefix, "_pipeline_graph.svg"),
             "svg")
         # todo - 1.1 trim the sequences to remove primers
+
+    def pipeline_of_pipelines(self):
+        """
+        Run the pipeline repeatedly.
+        :return: None
+        """
+
+        
+        def run():
+            self._run()
+
+        def run():
+            self._run()
+
+        def run():
+            self._run()
+
+        def run():
+            self._run()
+
+        def run():
+            self._run()
+
+        def run():
+            self._run()
+
+        def run():
+            self._run()
+
+        def run():
+            self._run()
+
+        def run():
+            self._run()
+
+        def run():
+            self._run()
+
+        pipeline_run()
 
 
 if __name__ == "__main__":

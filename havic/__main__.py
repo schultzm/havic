@@ -94,8 +94,7 @@ def main():
         help="""Path to ClusterPicker.jar file.  Follow instructions at
                 http://hiv.bio.ed.ac.uk/software.html""",
         default="/Applications/ClusterPicker_1.2.5.jar",
-        required=False,
-    )
+        required=False)
     subparser_args2 = argparse.ArgumentParser(add_help=False)
     subparser_args2.add_argument(
         "-q", "--query_files", help="Query file", nargs="+", required=True)
@@ -153,7 +152,7 @@ def main():
                                       args.path_to_clusterpicker)
         for key, value in detection_pipeline.__dict__.items():
             print(f"{key}: {value}\n")
-        detection_pipeline.run()
+        detection_pipeline.pipeline_of_pipelines()
         get_execution_time(args.outdir)
 
     elif args.subparser_name == 'detect':
@@ -170,7 +169,7 @@ def main():
                                       args.path_to_clusterpicker)
         for key, value in detection_pipeline.__dict__.items():
             print(f"{key}: {value}\n")
-        detection_pipeline.run()
+        detection_pipeline.pipeline_of_pipelines()
         get_execution_time(args.outdir)
 
     elif args.subparser_name == 'version':
