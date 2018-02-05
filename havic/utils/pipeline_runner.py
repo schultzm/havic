@@ -20,7 +20,8 @@ from ruffus import (mkdir,
                     formatter,
                     jobs_limit,
                     pipeline_run,
-                    pipeline_printout_graph)
+                    pipeline_printout_graph,
+                    originate)
 
 
 def make_path(outdir, prefix, filename):
@@ -110,6 +111,13 @@ class Pipeline:
                                                 f"{self.seqlen}"
                                                 f"bp.mp_clusterPicks"
                                                 f".nwk.figTree"),
+            'cluster_assignments': make_path(self.outdir, self.prefix,
+                                             f"HAV_all_minimap2.stack.trimmed"
+                                             f".fa.mp_clusterPicks_log.txt"),
+            'clusters_assigned': make_path(self.outdir, self.prefix,
+                                           f"HAV_all_minimap2.stack.trimmed"
+                                           f".fa.mp_clusterPicks_summarised"
+                                           f".txt"),
             'treeplotr': make_path(self.outdir, self.prefix,
                                    f"HAV_all_minimap2.stack.trimmed.fa"
                                    f".Rplot.R")
@@ -179,8 +187,9 @@ class Pipeline:
 
     def _get_clean_fasta_alignment(self):
         from Bio import AlignIO
+        from Bio.Alphabet import generic_dna
         alignment = AlignIO.read(open(self.outfiles['fasta_from_bam'], "r"),
-                                 "fasta")
+                                 "fasta", alphabet=generic_dna)
         # 4.1 Trim the alignment for isolates in arg.trim_seq to match
         # refamplicon.
         from ..utils.trim_alignment import Trimmed_alignment
@@ -196,7 +205,7 @@ class Pipeline:
         aln_trim.depad_alignment()
         AlignIO.write(aln_trim.alignment,
                       self.outfiles['fasta_from_bam_trimmed'],
-                      "fasta")
+                      "nexus")
 
     def _run_iqtree(self):
         if self.redo:
@@ -241,6 +250,25 @@ class Pipeline:
               f"{self.outfiles['clusterpicked_tree_bkp']}"
         print(cmd)
         os.system(cmd)
+
+    def _summarise_cluster_assignments(self):
+        from subprocess import Popen, PIPE
+        import shlex
+        cmd = f"grep ClusterNumber {self.outfiles['cluster_assignments']} -n"
+        proc = Popen(shlex.split(cmd), stdout=PIPE)
+        line_number = int(proc.communicate()[0].decode('UTF-8').split(":")[0])
+        import pandas as pd
+        df = pd.read_table(self.outfiles["cluster_assignments"],
+                           skiprows=line_number - 1, header=0)
+        with open(self.outfiles["clusters_assigned"], "w") as output_handle:
+            output_handle.write(f"Isolate\tClusterNumber\n")
+            for i in df.index.values:
+                if isinstance(df.loc[i, "TipNames"], str):
+                    tips = [j.replace("[", "").replace("]", "").strip() for j
+                            in df.loc[i, "TipNames"].split(",")]
+                    for tip in tips:
+                        output_handle.write(
+                            f"{tip}\tCluster_{df.loc[i, 'ClusterNumber']}\n")
 
     def _plot_results(self):
         """
@@ -330,10 +358,15 @@ class Pipeline:
         @follows(midpoint_root_iqtree)
         @files([self.outfiles['fasta_from_bam_trimmed'],
                 self.outfiles['mp_treefile']],
-
                self.outfiles["clusterpicked_tree"])
         def clusterpick_from_mpr_iqtree_and_cleaned_fasta(infile, outfile):
             self._clusterpick()
+
+        @follows(clusterpick_from_mpr_iqtree_and_cleaned_fasta)
+        @files(self.outfiles["cluster_assignments"],
+               self.outfiles["clusters_assigned"])
+        def summarise_cluster_assignments(infile, outfile):
+            self._summarise_cluster_assignments()
 
         @follows(clusterpick_from_mpr_iqtree_and_cleaned_fasta)
         @files(self.outfiles['clusterpicked_tree'],
@@ -359,45 +392,45 @@ class Pipeline:
             make_path(self.outdir, self.prefix, "_pipeline_graph.svg"),
             "svg")
         # todo - 1.1 trim the sequences to remove primers
-
-    def pipeline_of_pipelines(self):
-        """
-        Run the pipeline repeatedly.
-        :return: None
-        """
-
-        
-        def run():
-            self._run()
-
-        def run():
-            self._run()
-
-        def run():
-            self._run()
-
-        def run():
-            self._run()
-
-        def run():
-            self._run()
-
-        def run():
-            self._run()
-
-        def run():
-            self._run()
-
-        def run():
-            self._run()
-
-        def run():
-            self._run()
-
-        def run():
-            self._run()
-
-        pipeline_run()
+    #
+    # def pipeline_of_pipelines(self):
+    #     """
+    #     Run the pipeline repeatedly.
+    #     :return: None
+    #     """
+    #
+    #     @originate(self.outdir)
+    #     def run(self.outdir):
+    #         self._run()
+    #
+    #     def run():
+    #         self._run()
+    #
+    #     def run():
+    #         self._run()
+    #
+    #     def run():
+    #         self._run()
+    #
+    #     def run():
+    #         self._run()
+    #
+    #     def run():
+    #         self._run()
+    #
+    #     def run():
+    #         self._run()
+    #
+    #     def run():
+    #         self._run()
+    #
+    #     def run():
+    #         self._run()
+    #
+    #     def run():
+    #         self._run()
+    #
+    #     pipeline_run()
 
 
 if __name__ == "__main__":
