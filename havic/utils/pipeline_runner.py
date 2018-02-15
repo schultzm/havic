@@ -205,7 +205,7 @@ class Pipeline:
         aln_trim.depad_alignment()
         AlignIO.write(aln_trim.alignment,
                       self.outfiles['fasta_from_bam_trimmed'],
-                      "nexus")
+                      "fasta")
 
     def _run_iqtree(self):
         if self.redo:
