@@ -33,4 +33,5 @@ biocLite("GenomicAlignments")
 biocLite("Rsamtools")
 biocLite("ggtree")
 biocLite("Biobase")
+biocLite("matrixStats")
 ```
