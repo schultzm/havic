@@ -32,4 +32,5 @@ biocLite("RCurl")
 biocLite("GenomicAlignments")
 biocLite("Rsamtools")
 biocLite("ggtree")
+biocLite("Biobase")
 ```
