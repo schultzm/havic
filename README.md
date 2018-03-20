@@ -34,4 +34,6 @@ biocLite("Rsamtools")
 biocLite("ggtree")
 biocLite("Biobase")
 biocLite("matrixStats")
+biocLite("plotly")
+biocLite("tidyverse")
 ```
