@@ -95,6 +95,13 @@ def main():
                 http://hiv.bio.ed.ac.uk/software.html""",
         default="/Applications/ClusterPicker_1.2.5.jar",
         required=False)
+    subparser_args1.add_argument(
+        "-z",
+        "--iqtree_threads",
+        help="""Number of threads for IQtree""",
+        default=1,
+        type=int,
+        required=False)
     subparser_args2 = argparse.ArgumentParser(add_help=False)
     subparser_args2.add_argument(
         "-q", "--query_files", help="Query file", nargs="+", required=True)
@@ -149,7 +156,8 @@ def main():
                                       args.prefix,
                                       args.outdir,
                                       args.minimap2_kmer,
-                                      args.path_to_clusterpicker)
+                                      args.path_to_clusterpicker,
+                                      args.iqtree_threads)
         for key, value in detection_pipeline.__dict__.items():
             print(f"{key}: {value}\n")
         detection_pipeline._run()
@@ -166,7 +174,8 @@ def main():
                                       args.prefix,
                                       args.outdir,
                                       args.minimap2_kmer,
-                                      args.path_to_clusterpicker)
+                                      args.path_to_clusterpicker,
+                                      args.iqtree_threads)
         for key, value in detection_pipeline.__dict__.items():
             print(f"{key}: {value}\n")
         detection_pipeline._run()

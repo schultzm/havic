@@ -47,7 +47,8 @@ class Pipeline:
                  prefix,
                  outdir,
                  minimap2_kmer,
-                 path_to_clusterpicker):
+                 path_to_clusterpicker,
+                 iqtree_threads):
         """
         Receive the arguments from argparse:
 
@@ -126,6 +127,10 @@ class Pipeline:
         for k, v in self.outfiles.items():
             print(k, v)
         self.minimap2_kmer = minimap2_kmer
+        self.iqtree_threads = iqtree_threads
+        from multiprocessing import cpu_count
+        if iqtree_threads < 0 or iqtree_threads > cpu_count():
+            self.cpu_count = "AUTO"
         self.path_to_clusterpicker = os.path.abspath(path_to_clusterpicker)
         from ..data.havnet_amplicon import havnet_ampliconseq
         self.havnet_ampliconseq = havnet_ampliconseq
@@ -213,7 +218,7 @@ class Pipeline:
         else:
             redo = " TEST"
         cmd = f"iqtree -s {self.outfiles['fasta_from_bam_trimmed']} " \
-              f"-nt AUTO -bb 1000 -m{redo}"
+              f"-nt {self.iqtree_threads} -bb 1000 -m{redo}"
         print(cmd)
         os.system(cmd)
 
