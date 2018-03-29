@@ -387,10 +387,32 @@ class Pipeline:
             self._plot_results()
 
         # Run the pipeline
-        if self.redo:
-            pipeline_run(forcedtorun_tasks=compile_input_fasta)
-        else:
-            pipeline_run()
+        import tempfile
+
+        def mv_tmp_sqlite(temp_sqlite_db, perm_sqlite_db):
+            try:
+                os.popen(f'mv {temp_sqlite_db} {perm_sqlite_db}')
+            except IOError:
+                print(f'Unable to move {temp_sqlite_db} to {self.outdir}',
+                      file=sys.stderr)
+
+        with tempfile.TemporaryDirectory() as tmpfile:
+            db_name = '.ruffus_history.sqlite'
+            temp_sqlite_db = os.path.join(tmpfile, db_name)
+            perm_sqlite_db = os.path.join(os.path.abspath(self.outdir),
+                                          db_name)
+            if os.path.exists(perm_sqlite_db):
+                os.popen(f'cp {perm_sqlite_db} {temp_sqlite_db}')
+                print(f'SQLite db temp is at {temp_sqlite_db}.')
+            else:
+                print(f'Making new SQLite db at {temp_sqlite_db}')
+            if self.redo:
+                pipeline_run(forcedtorun_tasks=compile_input_fasta,
+                             history_file=temp_sqlite_db)
+                mv_tmp_sqlite(temp_sqlite_db, perm_sqlite_db)
+            else:
+                pipeline_run(history_file=temp_sqlite_db)
+                mv_tmp_sqlite(temp_sqlite_db, perm_sqlite_db)
 
         # Print out the pipeline graph
         pipeline_printout_graph(
