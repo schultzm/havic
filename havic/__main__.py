@@ -99,8 +99,7 @@ def main():
         "-z",
         "--iqtree_threads",
         help="""Number of threads for IQtree""",
-        default=1,
-        type=int,
+        default="'AUTO'",
         required=False)
     subparser_args2 = argparse.ArgumentParser(add_help=False)
     subparser_args2.add_argument(

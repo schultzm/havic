@@ -407,6 +407,8 @@ class Pipeline:
             else:
                 print(f'Making new SQLite db at {temp_sqlite_db}')
             if self.redo:
+                self.outdir = tmpfile
+                print('self.outdir', self.outdir)
                 pipeline_run(forcedtorun_tasks=compile_input_fasta,
                              history_file=temp_sqlite_db)
                 mv_tmp_sqlite(temp_sqlite_db, perm_sqlite_db)
@@ -414,10 +416,10 @@ class Pipeline:
                 pipeline_run(history_file=temp_sqlite_db)
                 mv_tmp_sqlite(temp_sqlite_db, perm_sqlite_db)
 
-        # Print out the pipeline graph
-        pipeline_printout_graph(
-            make_path(self.outdir, self.prefix, "_pipeline_graph.svg"),
-            "svg")
+            # Print out the pipeline graph
+            pipeline_printout_graph(
+                make_path(self.outdir, self.prefix, "_pipeline_graph.svg"),
+                "svg")
         # todo - 1.1 trim the sequences to remove primers
     #
     # def pipeline_of_pipelines(self):
