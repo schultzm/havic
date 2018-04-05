@@ -89,6 +89,8 @@ class Pipeline:
                                      "HAV_all_minimap2.bam.bai"),
             'bam2fasta': make_path(self.outdir, self.prefix,
                                    f"HAV_all_minimap2.bam2fasta.R"),
+            'bam2fasta_Rout': make_path(self.outdir, self.prefix,
+                                   f"HAV_all_minimap2.bam2fasta.Rout"),
             'fasta_from_bam': make_path(self.outdir, self.prefix,
                                         "HAV_all_minimap2.stack.fa"),
             'fasta_from_bam_trimmed': make_path(self.outdir, self.prefix,
@@ -120,7 +122,10 @@ class Pipeline:
                                            f".txt"),
             'treeplotr': make_path(self.outdir, self.prefix,
                                    f"HAV_all_minimap2.stack.trimmed.fa"
-                                   f".Rplot.R")
+                                   f".Rplot.R"),
+            'treeplotr_out': make_path(self.outdir, self.prefix,
+                                   f"HAV_all_minimap2.stack.trimmed.fa"
+                                   f".Rplot.Rout")
 
         }
         self.minimap2_kmer = minimap2_kmer
@@ -180,7 +185,7 @@ class Pipeline:
                     self.outfiles['fasta_from_bam'])
                 out_r.write(cmd)
             print(cmd)
-            os.system(f"R CMD BATCH {self.outfiles['bam2fasta']}")
+            os.system(f"R CMD BATCH {self.outfiles['bam2fasta']} {self.outfiles['bam2fasta_Rout']}")
         except OSError:
             sys.exit("bam2fasta error.  Run 'havic check'.")
 
@@ -291,7 +296,7 @@ class Pipeline:
                 .replace("<- k", "<- " + str(self.minimap2_kmer))
             # print(cmd)
             out_r.write(cmd)
-        os.system(f"R CMD BATCH {self.outfiles['treeplotr']}")
+        os.system(f"R CMD BATCH {self.outfiles['treeplotr']} {self.outfiles['treeplotr_out']}")
 
     def _run(self):
         """
