@@ -65,14 +65,13 @@ class Pipeline:
         self.query_files = [Input_file(file, "Query").filename for file in
                             query_files]
         self.trim_seqs = trim_seqs
-
+        self.subject = subject_file
         if subject_file:
-            self.subject = Input_file(self.subject_file, "Subject").filename
+            self.subject = Input_file(self.subject, "Subject").filename
         else:
             self.subject = pkg_resources.resource_filename(__parent_dir__,
                                                            __ref_seq__)
         print(f"Will map amplicons to {self.subject}")
-
         self.refseq = SeqIO.read(self.subject, "fasta")
         self.reflen = len(self.refseq.seq)
         self.header = self.refseq.id
@@ -124,8 +123,6 @@ class Pipeline:
                                    f".Rplot.R")
 
         }
-        for k, v in self.outfiles.items():
-            print(k, v)
         self.minimap2_kmer = minimap2_kmer
         self.iqtree_threads = iqtree_threads
         self.path_to_clusterpicker = os.path.abspath(path_to_clusterpicker)
@@ -201,13 +198,17 @@ class Pipeline:
                                      SeqIO.read(
                                          io.StringIO(self.havnet_ampliconseq),
                                          "fasta").id, '-', self.trim_seqs)
-        aln_trim._get_refseq_boundary()
-        aln_trim.trim_seqs_to_ref()
-        # 4.1.1 Depad the alignment.
-        aln_trim.depad_alignment()
-        AlignIO.write(aln_trim.alignment,
-                      self.outfiles['fasta_from_bam_trimmed'],
-                      "fasta")
+        if len(aln_trim.alignment) > 2:
+            aln_trim._get_refseq_boundary()
+            aln_trim.trim_seqs_to_ref()
+            # 4.1.1 Depad the alignment.
+            aln_trim.depad_alignment()
+            AlignIO.write(aln_trim.alignment,
+                          self.outfiles['fasta_from_bam_trimmed'],
+                          "fasta")
+        else:
+            return aln_trim.alignment
+
 
     def _run_iqtree(self):
         if self.redo:
@@ -343,8 +344,13 @@ class Pipeline:
         @files(self.outfiles['fasta_from_bam'],
                self.outfiles['fasta_from_bam_trimmed'])
         def get_cleaned_fasta(infile, outfile):
-            self._get_clean_fasta_alignment()
-
+            aln = self._get_clean_fasta_alignment()
+            if len(aln) < 3:
+                exit_statement = f'{aln}\n' +\
+                                 f'Need at least three sequences in ' +\
+                                 f'alignment to continue (n={len(aln)})'
+                import sys
+                sys.exit(exit_statement)
         @follows(get_cleaned_fasta)
         @files(self.outfiles['fasta_from_bam_trimmed'],
                self.outfiles["mp_treefile"])

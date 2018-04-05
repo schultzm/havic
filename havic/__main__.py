@@ -40,15 +40,15 @@ def main():
     subparser_args1.add_argument(
         "-s",
         "--subject_file",
-        help="""Subject file.
-                Default is the complete HAVNET reference genome:
+        help="""Subject file.  If not provided,
+                uses the pre-packaged complete HAVNET reference genome:
                 NC_001489.1 Hepatitis A virus.""",
         default=None,
         required=False)
     subparser_args1.add_argument(
         "-r",
         "--redo",
-        help="Redo all  (force redo).",
+        help="Redo all  (not yet implemented).",
         default=False,
         action="store_true",
         required=False)
@@ -72,13 +72,13 @@ def main():
         "-p",
         "--prefix",
         help="""Filename prefix.""",
-        default="_test_",
+        default=f"_{''.join([random.choice(string.ascii_letters) for i in range(4)])}_",
         required=False)
     subparser_args1.add_argument(
         "-o",
         "--outdir",
         help="""Output directory.""",
-        default=f"tmp{(''.join([random.choice(string.ascii_letters) for i in range(7)]))}",
+        default=''.join([random.choice(string.ascii_letters) for i in range(10)]),
         required=False)
     subparser_args1.add_argument(
         "-k",
@@ -88,12 +88,13 @@ def main():
         type=int,
         choices=[3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27],
         required=False)
+    import os
     subparser_args1.add_argument(
         "-c",
         "--path_to_clusterpicker",
         help="""Path to ClusterPicker.jar file.  Follow instructions at
                 http://hiv.bio.ed.ac.uk/software.html""",
-        default="/Applications/ClusterPicker_1.2.5.jar",
+        default=os.path.expanduser("~/ClusterPicker_1.2.5.jar"),
         required=False)
     from multiprocessing import cpu_count
     subparser_args1.add_argument(
