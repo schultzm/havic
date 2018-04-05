@@ -246,7 +246,7 @@ class Pipeline:
         Run CLUSTER_PICKER on the tree and alignment
         :return: None
         """
-        cmd = f"java -jar {self.path_to_clusterpicker} " \
+        cmd = f"/usr/bin/java -jar {self.path_to_clusterpicker} " \
               f"{self.outfiles['fasta_from_bam_trimmed']} " \
               f"{self.outfiles['mp_treefile']} 70 95 " \
               f"{self.n_snps/self.seqlen} 15 valid"
