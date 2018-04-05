@@ -345,7 +345,7 @@ class Pipeline:
                self.outfiles['fasta_from_bam_trimmed'])
         def get_cleaned_fasta(infile, outfile):
             aln = self._get_clean_fasta_alignment()
-            if len(aln) < 3:
+            if aln and len(aln) < 3:
                 exit_statement = f'{aln}\n' +\
                                  f'Need at least three sequences in ' +\
                                  f'alignment to continue (n={len(aln)})'

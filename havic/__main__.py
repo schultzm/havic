@@ -78,7 +78,7 @@ def main():
         "-o",
         "--outdir",
         help="""Output directory.""",
-        default=''.join([random.choice(string.ascii_letters) for i in range(10)]),
+        default=f"tmpHAVIC_{''.join([random.choice(string.ascii_letters) for i in range(10)])}",
         required=False)
     subparser_args1.add_argument(
         "-k",
