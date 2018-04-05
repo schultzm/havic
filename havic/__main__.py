@@ -95,11 +95,13 @@ def main():
                 http://hiv.bio.ed.ac.uk/software.html""",
         default="/Applications/ClusterPicker_1.2.5.jar",
         required=False)
+    from multiprocessing import cpu_count
     subparser_args1.add_argument(
         "-z",
         "--iqtree_threads",
         help="""Number of threads for IQtree""",
-        default="'AUTO'",
+        default="AUTO",
+        choices=['AUTO'] + [i+1 for i in range(cpu_count())],
         required=False)
     subparser_args2 = argparse.ArgumentParser(add_help=False)
     subparser_args2.add_argument(

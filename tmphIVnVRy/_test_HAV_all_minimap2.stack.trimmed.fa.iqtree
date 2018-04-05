@@ -1,0 +1,503 @@
+IQ-TREE 1.5.5 built Jun  5 2017
+
+Input file name: /Users/mschultz/Desktop/MDU_DAMG/MDU/HAVNET/HAVIC/tmphIVnVRy/_test_HAV_all_minimap2.stack.trimmed.fa
+Type of analysis: ModelFinder + tree reconstruction + ultrafast bootstrap (1000 replicates)
+Random seed number: 146112
+
+REFERENCES
+----------
+
+To cite ModelFinder please use: 
+
+Subha Kalyaanamoorthy, Bui Quang Minh, Thomas KF Wong, Arndt von Haeseler,
+and Lars S Jermiin (2017) ModelFinder: Fast model selection for
+accurate phylogenetic estimates. Nature Methods, 14:587–589.
+http://dx.doi.org/10.1038/nmeth.4285
+
+To cite IQ-TREE please use:
+
+Lam-Tung Nguyen, Heiko A. Schmidt, Arndt von Haeseler, and Bui Quang Minh
+(2015) IQ-TREE: A fast and effective stochastic algorithm for estimating
+maximum likelihood phylogenies. Mol Biol Evol, 32:268-274.
+http://dx.doi.org/10.1093/molbev/msu300
+
+Since you used ultrafast bootstrap (UFBoot) please also cite: 
+
+Bui Quang Minh, Minh Anh Thi Nguyen, and Arndt von Haeseler (2013)
+Ultrafast approximation for phylogenetic bootstrap. Mol Biol Evol, 30:1188-95.
+http://dx.doi.org/10.1093/molbev/mst024
+
+SEQUENCE ALIGNMENT
+------------------
+
+Input data: 83 sequences with 585 nucleotide sites
+Number of constant sites: 426 (= 72.8205% of all sites)
+Number of invariant (constant or ambiguous constant) sites: 426 (= 72.8205% of all sites)
+Number of distinct site patterns: 233
+
+ModelFinder
+-----------
+
+Best-fit model according to BIC: TN+I+G4
+
+List of models sorted by BIC scores: 
+
+Model             LogL          AIC      w-AIC      AICc     w-AICc       BIC      w-BIC
+TN+I+G4          -2457.2092   5142.4183 + 0.2212   5198.2056 + 0.3098   5640.7821 + 0.3317
+TN+I             -2460.6984   5147.3968 + 0.0184   5202.0974 + 0.0443   5641.3889 + 0.2449
+TN+G4            -2460.9773   5147.9546 - 0.0139   5202.6552 + 0.0335   5641.9467 + 0.1853
+TIM+I+G4         -2456.1963   5142.3926 + 0.2241   5199.2796 + 0.1811   5645.1280 + 0.0378
+TIM2+I+G4        -2456.2419   5142.4838 + 0.2141   5199.3708 + 0.1730   5645.2192 + 0.0361
+TIM+I            -2459.5644   5147.1289 + 0.0210   5202.9161 + 0.0294   5645.4926 + 0.0315
+TIM2+G4          -2459.6913   5147.3825 + 0.0185   5203.1698 + 0.0259   5645.7463 + 0.0277
+TIM2+I           -2459.7122   5147.4244 + 0.0181   5203.2116 + 0.0253   5645.7882 + 0.0271
+TIM+G4           -2459.8091   5147.6182 + 0.0164   5203.4054 + 0.0230   5645.9819 + 0.0246
+TIM3+I+G4        -2456.8163   5143.6327 + 0.1205   5200.5197 + 0.0974   5646.3680 + 0.0203
+TIM3+I           -2460.1633   5148.3265 - 0.0115   5204.1137 - 0.0161   5646.6903 - 0.0173
+TIM3+G4          -2460.2998   5148.5996 - 0.0101   5204.3869 - 0.0141   5646.9634 - 0.0151
+GTR+I+G4         -2455.2526   5144.5053 + 0.0779   5203.6316 + 0.0205   5655.9839 - 0.0002
+GTR+G4           -2458.5440   5149.0880 - 0.0079   5207.0880 - 0.0036   5656.1950 - 0.0001
+GTR+I            -2458.7377   5149.4755 - 0.0065   5207.4755 - 0.0030   5656.5824 - 0.0001
+HKY+I+G4         -2470.0663   5166.1326 - 0.0000   5220.8332 - 0.0000   5660.1247 - 0.0000
+HKY+G4           -2473.4975   5170.9951 - 0.0000   5224.6222 - 0.0000   5660.6156 - 0.0000
+TPM2+G4          -2472.1789   5170.3578 - 0.0000   5225.0585 - 0.0000   5664.3500 - 0.0000
+HKY+I            -2475.3897   5174.7793 - 0.0000   5228.4065 - 0.0000   5664.3999 - 0.0000
+TPM2+I+G4        -2469.0271   5166.0542 - 0.0000   5221.8414 - 0.0000   5664.4179 - 0.0000
+TPM2u+G4         -2472.2460   5170.4921 - 0.0000   5225.1927 - 0.0000   5664.4842 - 0.0000
+TPM2u+I+G4       -2469.0894   5166.1787 - 0.0000   5221.9660 - 0.0000   5664.5425 - 0.0000
+K3Pu+I+G4        -2469.2471   5166.4942 - 0.0000   5222.2814 - 0.0000   5664.8579 - 0.0000
+K3Pu+G4          -2472.5691   5171.1381 - 0.0000   5225.8387 - 0.0000   5665.1302 - 0.0000
+TPM3u+I+G4       -2469.7435   5167.4870 - 0.0000   5223.2742 - 0.0000   5665.8507 - 0.0000
+TPM3+I+G4        -2469.7711   5167.5422 - 0.0000   5223.3294 - 0.0000   5665.9059 - 0.0000
+TPM3u+G4         -2472.9674   5171.9348 - 0.0000   5226.6354 - 0.0000   5665.9269 - 0.0000
+TPM3+G4          -2472.9809   5171.9617 - 0.0000   5226.6624 - 0.0000   5665.9539 - 0.0000
+TPM2+I           -2474.5275   5175.0551 - 0.0000   5229.7557 - 0.0000   5669.0472 - 0.0000
+K3Pu+I           -2474.5555   5175.1109 - 0.0000   5229.8116 - 0.0000   5669.1031 - 0.0000
+TPM2u+I          -2474.5700   5175.1399 - 0.0000   5229.8406 - 0.0000   5669.1321 - 0.0000
+TPM3u+I          -2475.0951   5176.1903 - 0.0000   5230.8909 - 0.0000   5670.1824 - 0.0000
+TPM3+I           -2475.1387   5176.2774 - 0.0000   5230.9780 - 0.0000   5670.2695 - 0.0000
+TVM+G4           -2471.2129   5172.4258 - 0.0000   5229.3128 - 0.0000   5675.1612 - 0.0000
+TVM+I+G4         -2468.2687   5168.5373 - 0.0000   5226.5373 - 0.0000   5675.6443 - 0.0000
+TVM+I            -2473.6622   5177.3243 - 0.0000   5234.2113 - 0.0000   5680.0597 - 0.0000
+TIM2e+G4         -2498.3011   5218.6022 - 0.0000   5271.1688 - 0.0000   5703.8511 - 0.0000
+TNe+G4           -2501.6121   5223.2241 - 0.0000   5274.7431 - 0.0000   5704.1014 - 0.0000
+TNe+I+G4         -2498.6064   5219.2127 - 0.0000   5271.7793 - 0.0000   5704.4616 - 0.0000
+TNe+I            -2501.8296   5223.6592 - 0.0000   5275.1782 - 0.0000   5704.5365 - 0.0000
+TIM2e+I+G4       -2495.9736   5215.9471 - 0.0000   5269.5743 - 0.0000   5705.5677 - 0.0000
+TIMe+G4          -2499.4945   5220.9890 - 0.0000   5273.5556 - 0.0000   5706.2379 - 0.0000
+TIM2e+I          -2500.0359   5222.0717 - 0.0000   5274.6383 - 0.0000   5707.3206 - 0.0000
+TIMe+I+G4        -2497.0315   5218.0630 - 0.0000   5271.6901 - 0.0000   5707.6835 - 0.0000
+TIMe+I           -2500.3713   5222.7426 - 0.0000   5275.3092 - 0.0000   5707.9915 - 0.0000
+K2P+G4           -2507.4968   5232.9936 - 0.0000   5283.4778 - 0.0000   5709.4993 - 0.0000
+TIM3e+G4         -2501.3035   5224.6069 - 0.0000   5277.1735 - 0.0000   5709.8559 - 0.0000
+K2P+I+G4         -2504.6379   5229.2758 - 0.0000   5280.7948 - 0.0000   5710.1531 - 0.0000
+TIM3e+I+G4       -2498.4002   5220.8003 - 0.0000   5274.4275 - 0.0000   5710.4209 - 0.0000
+TIM3e+I          -2501.8588   5225.7176 - 0.0000   5278.2842 - 0.0000   5710.9665 - 0.0000
+K3P+G4           -2505.5191   5231.0382 - 0.0000   5282.5572 - 0.0000   5711.9155 - 0.0000
+K2P+I            -2509.2104   5236.4209 - 0.0000   5286.9051 - 0.0000   5712.9266 - 0.0000
+K3P+I+G4         -2503.0499   5228.0997 - 0.0000   5280.6663 - 0.0000   5713.3486 - 0.0000
+SYM+G4           -2497.1098   5220.2197 - 0.0000   5274.9203 - 0.0000   5714.2118 - 0.0000
+SYM+I+G4         -2494.9907   5217.9814 - 0.0000   5273.7687 - 0.0000   5716.3452 - 0.0000
+K3P+I            -2507.7846   5235.5692 - 0.0000   5287.0882 - 0.0000   5716.4465 - 0.0000
+SYM+I            -2499.1029   5224.2057 - 0.0000   5278.9064 - 0.0000   5718.1979 - 0.0000
+TVMe+G4          -2503.4530   5230.9061 - 0.0000   5284.5332 - 0.0000   5720.5266 - 0.0000
+TVMe+I+G4        -2501.1960   5228.3920 - 0.0000   5283.0926 - 0.0000   5722.3841 - 0.0000
+TVMe+I           -2506.8079   5237.6158 - 0.0000   5291.2429 - 0.0000   5727.2364 - 0.0000
+TN               -2633.3505   5490.7010 - 0.0000   5544.3281 - 0.0000   5980.3216 - 0.0000
+TIM2             -2631.0932   5488.1863 - 0.0000   5542.8870 - 0.0000   5982.1785 - 0.0000
+TIM              -2631.5032   5489.0064 - 0.0000   5543.7070 - 0.0000   5982.9985 - 0.0000
+TIM3             -2632.5793   5491.1585 - 0.0000   5545.8592 - 0.0000   5985.1507 - 0.0000
+HKY              -2641.0383   5504.0766 - 0.0000   5556.6432 - 0.0000   5989.3255 - 0.0000
+TPM2             -2638.8815   5501.7631 - 0.0000   5555.3902 - 0.0000   5991.3836 - 0.0000
+TPM2u            -2638.8893   5501.7785 - 0.0000   5555.4056 - 0.0000   5991.3991 - 0.0000
+K3Pu             -2639.1869   5502.3738 - 0.0000   5556.0010 - 0.0000   5991.9944 - 0.0000
+GTR              -2629.9009   5489.8019 - 0.0000   5546.6889 - 0.0000   5992.5372 - 0.0000
+TPM3             -2639.9386   5503.8773 - 0.0000   5557.5044 - 0.0000   5993.4978 - 0.0000
+TPM3u            -2639.9400   5503.8799 - 0.0000   5557.5071 - 0.0000   5993.5005 - 0.0000
+TVM              -2637.3682   5502.7365 - 0.0000   5558.5237 - 0.0000   6001.1002 - 0.0000
+TIM2e            -2652.8360   5525.6720 - 0.0000   5577.1910 - 0.0000   6006.5493 - 0.0000
+TNe              -2656.9812   5531.9624 - 0.0000   5582.4466 - 0.0000   6008.4681 - 0.0000
+TIM3e            -2653.9085   5527.8170 - 0.0000   5579.3360 - 0.0000   6008.6943 - 0.0000
+TIMe             -2654.3884   5528.7768 - 0.0000   5580.2958 - 0.0000   6009.6541 - 0.0000
+K2P              -2661.5022   5539.0044 - 0.0000   5588.4666 - 0.0000   6011.1385 - 0.0000
+F81+I+G4         -2648.7871   5521.5742 - 0.0000   5575.2013 - 0.0000   6011.1947 - 0.0000
+F81+G4           -2652.1232   5526.2464 - 0.0000   5578.8130 - 0.0000   6011.4953 - 0.0000
+K3P              -2658.9081   5535.8162 - 0.0000   5586.3004 - 0.0000   6012.3219 - 0.0000
+SYM              -2649.5555   5523.1110 - 0.0000   5576.7381 - 0.0000   6012.7315 - 0.0000
+F81+I            -2653.7791   5529.5583 - 0.0000   5582.1249 - 0.0000   6014.8072 - 0.0000
+TVMe             -2653.9180   5529.8360 - 0.0000   5582.4026 - 0.0000   6015.0850 - 0.0000
+JC+I+G4          -2664.3555   5546.7110 - 0.0000   5597.1952 - 0.0000   6023.2167 - 0.0000
+JC+G4            -2667.5446   5551.0893 - 0.0000   5600.5514 - 0.0000   6023.2233 - 0.0000
+JC+I             -2669.2755   5554.5509 - 0.0000   5604.0131 - 0.0000   6026.6850 - 0.0000
+F81              -2783.2771   5786.5542 - 0.0000   5838.0732 - 0.0000   6267.4315 - 0.0000
+JC               -2796.4077   5806.8153 - 0.0000   5855.2681 - 0.0000   6274.5778 - 0.0000
+
+AIC, w-AIC   : Akaike information criterion scores and weights.
+AICc, w-AICc : Corrected AIC scores and weights.
+BIC, w-BIC   : Bayesian information criterion scores and weights.
+
+Plus signs denote the 95% confidence sets.
+Minus signs denote significant exclusion.
+
+SUBSTITUTION PROCESS
+--------------------
+
+Model of substitution: TN+F+I+G4
+
+Rate parameter R:
+
+  A-C: 1.0000
+  A-G: 10.4784
+  A-T: 1.0000
+  C-G: 1.0000
+  C-T: 28.7396
+  G-T: 1.0000
+
+State frequencies: (empirical counts from alignment)
+
+  pi(A) = 0.3117
+  pi(C) = 0.1519
+  pi(G) = 0.2322
+  pi(T) = 0.3042
+
+Rate matrix Q:
+
+  A   -0.6188   0.03253    0.5211   0.06515
+  C   0.06676    -1.989   0.04973     1.872
+  G    0.6996   0.03253   -0.7972   0.06515
+  T   0.06676     0.935   0.04973    -1.052
+
+Model of rate heterogeneity: Invar+Gamma with 4 categories
+Proportion of invariable sites: 0.6427
+Gamma shape alpha: 3.976
+
+ Category  Relative_rate  Proportion
+  0         0              0.6427
+  1         1.268          0.08932
+  2         2.167          0.08932
+  3         3.035          0.08932
+  4         4.725          0.08932
+Relative rates are computed as MEAN of the portion of the Gamma distribution falling in the category.
+
+MAXIMUM LIKELIHOOD TREE
+-----------------------
+
+Log-likelihood of the tree: -2443.2210 (s.e. 120.4509)
+Unconstrained log-likelihood (without tree): -2717.2539
+Number of free parameters (#branches + #model parameters): 114
+Akaike information criterion (AIC) score: 5114.4420
+Corrected Akaike information criterion (AICc) score: 5170.2292
+Bayesian information criterion (BIC) score: 5612.8058
+
+Total tree length (sum of branch lengths): 1.9615
+Sum of internal branch lengths: 1.5616 (79.6121% of tree length)
+
+WARNING: 22 near-zero internal branches (<0.0017) should be treated with caution
+         Such branches are denoted by '**' in the figure below
+
+NOTE: Tree is UNROOTED although outgroup taxon 'AY644337_55443_seq_1' is drawn at root
+Numbers in parentheses are  ultrafast bootstrap support (%)
+
++--AY644337_55443_seq_1
+|
+|                                                                                          +--CmvAXJTIqH
+|                                                                                       +--| (91)
+|                                                                                       |  +--WmMkFqpkLG
+|                                                                                    +--| (91)
+|                                                                                    |  |     +**NC_001489_1_ampliconseq_IB
+|                                                                                    |  |  +--| (100)
+|                                                                                    |  |  |  +**cQinUZImKe
+|                                                                                    |  +--| (83)
+|                                                                                    |     +--txxuVXWzfb
+|                                                                                 +--| (99)
+|                                                                                 |  +**MRzbEiFHqq
+|                                                                              +--| (39)
+|                                                                              |  |     +--mDfBZEPTAY
+|                                                                              |  |  +--| (99)
+|                                                                              |  |  |  |     +**NcucwNCEum
+|                                                                              |  |  |  |  +**| (47)
+|                                                                              |  |  |  |  |  +**NcucwNCEum_add20N
+|                                                                              |  |  |  +--| (94)
+|                                                                              |  |  |     +**NcucwNCEum_20ntTo1N
+|                                                                              |  +--| (30)
+|                                                                              |     |  +--zpgvDerSOj
+|                                                                              |     +--| (93)
+|                                                                              |        |     +**nwEmmaKPau
+|                                                                              |        |  +**| (78)
+|                                                                              |        |  |  +**WFKLYSlKNq
+|                                                                              |        +**| (66)
+|                                                                              |           +**YynUlMEhce
+|                                                                           +**| (26)
+|                                                                           |  +--GMxGZVpWKk
+|                                                                        +--| (51)
+|                                                                        |  |        +**nDNLdjthnv
+|                                                                        |  |     +**| (21)
+|                                                                        |  |     |  |     +**sohQbPXsQf
+|                                                                        |  |     |  |  +**| (49)
+|                                                                        |  |     |  |  |  |                                +**HIUOUhyuie_5primeSimulated
+|                                                                        |  |     |  |  |  |                             +**| (44)
+|                                                                        |  |     |  |  |  |                             |  +--FFJCbDghcz
+|                                                                        |  |     |  |  |  |                          +**| (20)
+|                                                                        |  |     |  |  |  |                          |  +**IfccnMzhWZ
+|                                                                        |  |     |  |  |  |                       +**| (62)
+|                                                                        |  |     |  |  |  |                       |  +**aJrTjuQeHf
+|                                                                        |  |     |  |  |  |                    +**| (37)
+|                                                                        |  |     |  |  |  |                    |  +**UgoxidomWm
+|                                                                        |  |     |  |  |  |                 +**| (30)
+|                                                                        |  |     |  |  |  |                 |  +**aeMmYoZCCw
+|                                                                        |  |     |  |  |  |              +**| (23)
+|                                                                        |  |     |  |  |  |              |  +**MFIdMzZSAS
+|                                                                        |  |     |  |  |  |           +**| (27)
+|                                                                        |  |     |  |  |  |           |  +**usHOecXenz
+|                                                                        |  |     |  |  |  |        +--| (98)
+|                                                                        |  |     |  |  |  |        |  +**cWiNpperYg
+|                                                                        |  |     |  |  |  |     +**| (71)
+|                                                                        |  |     |  |  |  |     |  +--qDpdFEktFk
+|                                                                        |  |     |  |  |  |  +**| (80)
+|                                                                        |  |     |  |  |  |  |  +--OiyxRrzPeU
+|                                                                        |  |     |  |  |  +**| (47)
+|                                                                        |  |     |  |  |     +**eXtNXWTOhY
+|                                                                        |  |     |  +**| (38)
+|                                                                        |  |     |     +**ycangsOXEz
+|                                                                        |  |  +--| (98)
+|                                                                        |  |  |  +**HCuyqxcQQz_5primeSimulated
+|                                                                        |  +--| (97)
+|                                                                        |     +--zOLdTjrZne
+|                                                                     +--| (57)
+|                                                                     |  |  +**zWAssKkmQI
+|                                                                     |  +--| (99)
+|                                                                     |     +**McVQAWNAGl
+|                                                                  +--| (53)
+|                                                                  |  |     +--qoXZJEvonc
+|                                                                  |  |  +--| (34)
+|                                                                  |  |  |  +--IGfhpnCATD
+|                                                                  |  +**| (42)
+|                                                                  |     |     +**ZGnNCydOHQ
+|                                                                  |     |  +--| (100)
+|                                                                  |     |  |  +--QfslVlgOxR
+|                                                                  |     +--| (65)
+|                                                                  |        +--wfLYsSuPgV
+|                                                               +--| (72)
+|                                                               |  +--UWDqGNwRqA
+|           +---------------------------------------------------| (100)
+|           |                                                   |     +**cGqMddiDAK
+|           |                                                   |  +**| (78)
+|           |                                                   |  |  +**fdXVUwLSaQ
+|           |                                                   +**| (83)
+|           |                                                      |  +**pMTkfOJytE
+|           |                                                      +**| (84)
+|           |                                                         +**VDBwZEToab
+|        +--| (85)
+|        |  +--uvmbzzrFvY
+|     +**| (75)
+|     |  +--qaSlwKDNpw
+|  +--| (84)
+|  |  +--DXcWvfLxfk
++--| (93)
+|  +--irMRPgfRAz
+|
+|        +--whKdgSWgnX
+|     +--| (82)
+|     |  |     +**PAvYXhYkLM
+|     |  |  +--| (100)
+|     |  |  |  +**CCHkiFhcxG
+|     |  +--| (76)
+|     |     +--rqIzUVDaAj
+|  +--| (82)
+|  |  +--SqVebwvfYL
++--| (86)
+   +--iSHfQkQbDW
+
+Tree in newick format:
+
+(AY644337_55443_seq_1:0.0093885318,((((((((((((((CmvAXJTIqH:0.0225648475,WmMkFqpkLG:0.0324007735)91:0.001963,((NC_001489_1_ampliconseq_IB:0.0000020403,cQinUZImKe:0.0000020398)100:0.023240,txxuVXWzfb:0.0188279021)83:0.005981)91:0.003454,MRzbEiFHqq:0.0000020324)99:0.080459,((mDfBZEPTAY:0.0167715646,((NcucwNCEum:0.0000026737,NcucwNCEum_add20N:0.0000026737)47:0.000002,NcucwNCEum_20ntTo1N:0.0000021352)94:0.003009)99:0.024008,(zpgvDerSOj:0.0023254670,((nwEmmaKPau:0.0000026737,WFKLYSlKNq:0.0000026737)78:0.000002,YynUlMEhce:0.0000026737)66:0.000002)93:0.010565)30:0.002151)39:0.004960,GMxGZVpWKk:0.0528284776)26:0.000002,(((nDNLdjthnv:0.0000026737,((sohQbPXsQf:0.0000020446,(((((((((((HIUOUhyuie_5primeSimulated:0.0000022219,FFJCbDghcz:0.0021925637)44:0.000003,IfccnMzhWZ:0.0000026737)20:0.000002,aJrTjuQeHf:0.0000026737)62:0.000003,UgoxidomWm:0.0000026737)37:0.000003,aeMmYoZCCw:0.0000026737)30:0.000002,MFIdMzZSAS:0.0000025845)23:0.000002,usHOecXenz:0.0000026737)27:0.000002,cWiNpperYg:0.0000020056)98:0.005712,qDpdFEktFk:0.0022103567)71:0.000003,OiyxRrzPeU:0.0024698962)80:0.000003,eXtNXWTOhY:0.0000026737)47:0.000002)49:0.000002,ycangsOXEz:0.0000026737)38:0.000002)21:0.000002,HCuyqxcQQz_5primeSimulated:0.0000022420)98:0.015102,zOLdTjrZne:0.0070895077)97:0.018617)51:0.002178,(zWAssKkmQI:0.0000026737,McVQAWNAGl:0.0000023284)99:0.016152)57:0.002036,((qoXZJEvonc:0.0108068553,IGfhpnCATD:0.0285297369)34:0.003596,((ZGnNCydOHQ:0.0000020286,QfslVlgOxR:0.0092815024)100:0.026910,wfLYsSuPgV:0.0227764213)65:0.002587)42:0.000002)53:0.007230,UWDqGNwRqA:0.0034569505)72:0.019286,((cGqMddiDAK:0.0000026737,fdXVUwLSaQ:0.0000026737)78:0.000003,(pMTkfOJytE:0.0000026737,VDBwZEToab:0.0000021608)84:0.000002)83:0.000002)100:1.283290,uvmbzzrFvY:0.0065574083)85:0.008314,qaSlwKDNpw:0.0073963259)75:0.000002,DXcWvfLxfk:0.0043789476)84:0.009478,irMRPgfRAz:0.0136449016)93:0.011640,(((whKdgSWgnX:0.0067205294,((PAvYXhYkLM:0.0000021384,CCHkiFhcxG:0.0000026195)100:0.017708,rqIzUVDaAj:0.0132502917)76:0.004113)82:0.002767,SqVebwvfYL:0.0217821581)82:0.002395,iSHfQkQbDW:0.0220511533)86:0.002729);
+
+CONSENSUS TREE
+--------------
+
+Consensus tree is constructed from 1000 bootstrap trees
+Log-likelihood of consensus tree: -2444.962318
+Robinson-Foulds distance between ML tree and consensus tree: 10
+
+Branches with bootstrap support >0.000000% are kept (extended consensus)
+Branch lengths are optimized by maximum likelihood on original alignment
+Numbers in parentheses are bootstrap supports (%)
+
++--AY644337_55443_seq_1
+|
+|                                                                                       +--CmvAXJTIqH
+|                                                                                    +--| (91)
+|                                                                                    |  +--WmMkFqpkLG
+|                                                                                 +--| (91)
+|                                                                                 |  |     +--NC_001489_1_ampliconseq_IB
+|                                                                                 |  |  +--| (100)
+|                                                                                 |  |  |  +--cQinUZImKe
+|                                                                                 |  +--| (83)
+|                                                                                 |     +--txxuVXWzfb
+|                                                                              +--| (99)
+|                                                                              |  +--MRzbEiFHqq
+|                                                                           +--| (41)
+|                                                                           |  |     +--nDNLdjthnv
+|                                                                           |  |  +--| (98)
+|                                                                           |  |  |  |        +--sohQbPXsQf
+|                                                                           |  |  |  |     +--| (49)
+|                                                                           |  |  |  |     |  |                                +--HIUOUhyuie_5primeSimulated
+|                                                                           |  |  |  |     |  |                             +--| (44)
+|                                                                           |  |  |  |     |  |                             |  +--FFJCbDghcz
+|                                                                           |  |  |  |     |  |                          +--| (43)
+|                                                                           |  |  |  |     |  |                          |  +--aJrTjuQeHf
+|                                                                           |  |  |  |     |  |                       +--| (62)
+|                                                                           |  |  |  |     |  |                       |  |                                               +**IfccnMzhWZ
+|                                                                           |  |  |  |     |  |                       |  |                                            +**|
+|                                                                           |  |  |  |     |  |                       |  |                                            |  +**GrHHiDYcqP
+|                                                                           |  |  |  |     |  |                       |  |                                         +**|
+|                                                                           |  |  |  |     |  |                       |  |                                         |  +**RBpIkeZqmE
+|                                                                           |  |  |  |     |  |                       |  |                                      +**|
+|                                                                           |  |  |  |     |  |                       |  |                                      |  +**iBWuYTvGYP
+|                                                                           |  |  |  |     |  |                       |  |                                   +**|
+|                                                                           |  |  |  |     |  |                       |  |                                   |  +**CamjhjGUXd
+|                                                                           |  |  |  |     |  |                       |  |                                +**|
+|                                                                           |  |  |  |     |  |                       |  |                                |  +**esPBejbKur
+|                                                                           |  |  |  |     |  |                       |  |                             +**|
+|                                                                           |  |  |  |     |  |                       |  |                             |  +**zpnhTQnZHM_reverse_complemented
+|                                                                           |  |  |  |     |  |                       |  |                          +**|
+|                                                                           |  |  |  |     |  |                       |  |                          |  +**zpnhTQnZHM
+|                                                                           |  |  |  |     |  |                       |  |                       +**|
+|                                                                           |  |  |  |     |  |                       |  |                       |  +**fVgbFXPvHT
+|                                                                           |  |  |  |     |  |                       |  |                    +**|
+|                                                                           |  |  |  |     |  |                       |  |                    |  +**rWwDfVIeRT
+|                                                                           |  |  |  |     |  |                       |  |                 +**|
+|                                                                           |  |  |  |     |  |                       |  |                 |  +**XlpmxLFHEo
+|                                                                           |  |  |  |     |  |                       |  |              +**|
+|                                                                           |  |  |  |     |  |                       |  |              |  +**MJTbLeTDIL
+|                                                                           |  |  |  |     |  |                       |  |           +**|
+|                                                                           |  |  |  |     |  |                       |  |           |  +**KBfVmEuNhT
+|                                                                           |  |  |  |     |  |                       |  |        +**|
+|                                                                           |  |  |  |     |  |                       |  |        |  +**dZCEqyUYmi
+|                                                                           |  |  |  |     |  |                       |  |     +**|
+|                                                                           |  |  |  |     |  |                       |  |     |  +**oOjfySHejg
+|                                                                           |  |  |  |     |  |                       |  |  +**|
+|                                                                           |  |  |  |     |  |                       |  |  |  +**iDdfsIPoFC
+|                                                                           |  |  |  |     |  |                       |  +--|
+|                                                                           |  |  |  |     |  |                       |     +**BliOsbLPPQ
+|                                                                           |  |  |  |     |  |                    +--| (37)
+|                                                                           |  |  |  |     |  |                    |  |                 +**UgoxidomWm
+|                                                                           |  |  |  |     |  |                    |  |              +**|
+|                                                                           |  |  |  |     |  |                    |  |              |  +**cQXHZzsIVK
+|                                                                           |  |  |  |     |  |                    |  |           +**|
+|                                                                           |  |  |  |     |  |                    |  |           |  +**avlKdTOYSi
+|                                                                           |  |  |  |     |  |                    |  |        +**|
+|                                                                           |  |  |  |     |  |                    |  |        |  +**EzXwzDyjSJ
+|                                                                           |  |  |  |     |  |                    |  |     +**|
+|                                                                           |  |  |  |     |  |                    |  |     |  +**EAEAqkoVEk
+|                                                                           |  |  |  |     |  |                    |  |  +**|
+|                                                                           |  |  |  |     |  |                    |  |  |  +**BWrCVSofvW
+|                                                                           |  |  |  |     |  |                    |  +--|
+|                                                                           |  |  |  |     |  |                    |     +**AjIgzYvISn
+|                                                                           |  |  |  |     |  |                 +--| (30)
+|                                                                           |  |  |  |     |  |                 |  +--aeMmYoZCCw
+|                                                                           |  |  |  |     |  |              +--| (23)
+|                                                                           |  |  |  |     |  |              |  +--MFIdMzZSAS
+|                                                                           |  |  |  |     |  |           +--| (27)
+|                                                                           |  |  |  |     |  |           |  +--usHOecXenz
+|                                                                           |  |  |  |     |  |        +--| (98)
+|                                                                           |  |  |  |     |  |        |  +--cWiNpperYg
+|                                                                           |  |  |  |     |  |     +--| (71)
+|                                                                           |  |  |  |     |  |     |  +--qDpdFEktFk
+|                                                                           |  |  |  |     |  |  +**| (80)
+|                                                                           |  |  |  |     |  |  |  +--OiyxRrzPeU
+|                                                                           |  |  |  |     |  +--| (47)
+|                                                                           |  |  |  |     |     +--eXtNXWTOhY
+|                                                                           |  |  |  |  +--| (38)
+|                                                                           |  |  |  |  |  +--ycangsOXEz
+|                                                                           |  |  |  +--| (35)
+|                                                                           |  |  |     +--HCuyqxcQQz_5primeSimulated
+|                                                                           |  +--| (97)
+|                                                                           |     +--zOLdTjrZne
+|                                                                        +--| (51)
+|                                                                        |  |        +--mDfBZEPTAY
+|                                                                        |  |     +--| (99)
+|                                                                        |  |     |  |        +**NcucwNCEum
+|                                                                        |  |     |  |     +--|
+|                                                                        |  |     |  |     |  +**NcucwNCEum_add20T
+|                                                                        |  |     |  |  +--| (47)
+|                                                                        |  |     |  |  |  +--NcucwNCEum_add20N
+|                                                                        |  |     |  +--| (94)
+|                                                                        |  |     |     +--NcucwNCEum_20ntTo1N
+|                                                                        |  |  +--| (33)
+|                                                                        |  |  |  +--GMxGZVpWKk
+|                                                                        |  +--| (8)
+|                                                                        |     |  +--zpgvDerSOj
+|                                                                        |     +--| (93)
+|                                                                        |        |     +--nwEmmaKPau
+|                                                                        |        |  +--| (78)
+|                                                                        |        |  |  +--WFKLYSlKNq
+|                                                                        |        +--| (66)
+|                                                                        |           +--YynUlMEhce
+|                                                                     +--| (57)
+|                                                                     |  |  +--zWAssKkmQI
+|                                                                     |  +--| (99)
+|                                                                     |     +--McVQAWNAGl
+|                                                                  +--| (53)
+|                                                                  |  |     +--qoXZJEvonc
+|                                                                  |  |  +--| (34)
+|                                                                  |  |  |  +--IGfhpnCATD
+|                                                                  |  +**| (42)
+|                                                                  |     |     +--ZGnNCydOHQ
+|                                                                  |     |  +--| (100)
+|                                                                  |     |  |  +--QfslVlgOxR
+|                                                                  |     +--| (65)
+|                                                                  |        +--wfLYsSuPgV
+|                                                               +--| (72)
+|                                                               |  +--UWDqGNwRqA
+|           +---------------------------------------------------| (100)
+|           |                                                   |              +**cGqMddiDAK
+|           |                                                   |           +**|
+|           |                                                   |           |  +**jigBsIRggY
+|           |                                                   |        +**|
+|           |                                                   |        |  +**qQbdJISdhp
+|           |                                                   |     +--|
+|           |                                                   |     |  +**pzhQzYWYGP
+|           |                                                   |  +--| (78)
+|           |                                                   |  |  +--fdXVUwLSaQ
+|           |                                                   +**| (83)
+|           |                                                      |        +**pMTkfOJytE
+|           |                                                      |     +**|
+|           |                                                      |     |  +**EznidPtrtV
+|           |                                                      |  +--|
+|           |                                                      |  |  +**ojGxisSHUU
+|           |                                                      +--| (84)
+|           |                                                         +--VDBwZEToab
+|        +--| (85)
+|        |  +--uvmbzzrFvY
+|     +**| (75)
+|     |  +--qaSlwKDNpw
+|  +--| (84)
+|  |  +--DXcWvfLxfk
++--| (93)
+|  +--irMRPgfRAz
+|
+|        +--whKdgSWgnX
+|     +--| (82)
+|     |  |     +--PAvYXhYkLM
+|     |  |  +--| (100)
+|     |  |  |  +--CCHkiFhcxG
+|     |  +--| (76)
+|     |     +--rqIzUVDaAj
+|  +--| (82)
+|  |  +--SqVebwvfYL
++--| (86)
+   +--iSHfQkQbDW
+
+
+Consensus tree in newick format: 
+
+(AY644337_55443_seq_1:0.0093880761,(((((((((((((CmvAXJTIqH:0.0224084660,WmMkFqpkLG:0.0324264961)91:0.0019510000,((NC_001489_1_ampliconseq_IB:0.0000026703,cQinUZImKe:0.0000026703)100:0.0232820000,txxuVXWzfb:0.0187920212)83:0.0059900000)91:0.0034710000,MRzbEiFHqq:0.0000026727)99:0.0853690000,((nDNLdjthnv:0.0000026703,(((sohQbPXsQf:0.0000026703,(((((((((((HIUOUhyuie_5primeSimulated:0.0000026703,FFJCbDghcz:0.0021904193)44:0.0000030000,aJrTjuQeHf:0.0000026703)43:0.0000030000,((((((((((((((((IfccnMzhWZ:0.0000000000,GrHHiDYcqP:0.0000000000):0.0000000000,RBpIkeZqmE:0.0000000000):0.0000000000,iBWuYTvGYP:0.0000000000):0.0000000000,CamjhjGUXd:0.0000000000):0.0000000000,esPBejbKur:0.0000000000):0.0000000000,zpnhTQnZHM_reverse_complemented:0.0000000000):0.0000000000,zpnhTQnZHM:0.0000000000):0.0000000000,fVgbFXPvHT:0.0000000000):0.0000000000,rWwDfVIeRT:0.0000000000):0.0000000000,XlpmxLFHEo:0.0000000000):0.0000000000,MJTbLeTDIL:0.0000000000):0.0000000000,KBfVmEuNhT:0.0000000000):0.0000000000,dZCEqyUYmi:0.0000000000):0.0000000000,oOjfySHejg:0.0000000000):0.0000000000,iDdfsIPoFC:0.0000000000):0.0000000000,BliOsbLPPQ:0.0000000000):0.0000030000)62:0.0000030000,((((((UgoxidomWm:0.0000000000,cQXHZzsIVK:0.0000000000):0.0000000000,avlKdTOYSi:0.0000000000):0.0000000000,EzXwzDyjSJ:0.0000000000):0.0000000000,EAEAqkoVEk:0.0000000000):0.0000000000,BWrCVSofvW:0.0000000000):0.0000000000,AjIgzYvISn:0.0000000000):0.0000030000)37:0.0000030000,aeMmYoZCCw:0.0000026703)30:0.0000030000,MFIdMzZSAS:0.0000026703)23:0.0000030000,usHOecXenz:0.0000026703)27:0.0000030000,cWiNpperYg:0.0000026703)98:0.0057040000,qDpdFEktFk:0.0022083315)71:0.0000030000,OiyxRrzPeU:0.0024659936)80:0.0000020000,eXtNXWTOhY:0.0000026703)47:0.0000030000)49:0.0000030000,ycangsOXEz:0.0000026703)38:0.0000030000,HCuyqxcQQz_5primeSimulated:0.0000026703)35:0.0000030000)98:0.0147730000,zOLdTjrZne:0.0072123241)97:0.0156580000)41:0.0036680000,(((mDfBZEPTAY:0.0152167986,(((NcucwNCEum:0.0000000000,NcucwNCEum_add20T:0.0000000000):0.0000030000,NcucwNCEum_add20N:0.0000026703)47:0.0000030000,NcucwNCEum_20ntTo1N:0.0000026703)94:0.0049280000)99:0.0226170000,GMxGZVpWKk:0.0502927716)33:0.0029060000,(zpgvDerSOj:0.0023231855,((nwEmmaKPau:0.0000026703,WFKLYSlKNq:0.0000026703)78:0.0000030000,YynUlMEhce:0.0000026703)66:0.0000030000)93:0.0154120000)8:0.0018290000)51:0.0022330000,(zWAssKkmQI:0.0000026703,McVQAWNAGl:0.0000026703)99:0.0159960000)57:0.0021570000,((qoXZJEvonc:0.0107962483,IGfhpnCATD:0.0284730449)34:0.0035940000,((ZGnNCydOHQ:0.0000026703,QfslVlgOxR:0.0092679750)100:0.0268740000,wfLYsSuPgV:0.0227401428)65:0.0025900000)42:0.0000020000)53:0.0072090000,UWDqGNwRqA:0.0034647408)72:0.0192530000,(((((cGqMddiDAK:0.0000000000,jigBsIRggY:0.0000000000):0.0000000000,qQbdJISdhp:0.0000000000):0.0000000000,pzhQzYWYGP:0.0000000000):0.0000030000,fdXVUwLSaQ:0.0000026703)78:0.0000030000,(((pMTkfOJytE:0.0000000000,EznidPtrtV:0.0000000000):0.0000000000,ojGxisSHUU:0.0000000000):0.0000030000,VDBwZEToab:0.0000026703)84:0.0000030000)83:0.0000020000)100:1.2785920000,uvmbzzrFvY:0.0062045611)85:0.0086220000,qaSlwKDNpw:0.0073976261)75:0.0000020000,DXcWvfLxfk:0.0043742365)84:0.0094760000,irMRPgfRAz:0.0136468544)93:0.0116370000,(((whKdgSWgnX:0.0067204071,((PAvYXhYkLM:0.0000026703,CCHkiFhcxG:0.0000026703)100:0.0177080000,rqIzUVDaAj:0.0132487809)76:0.0041140000)82:0.0027670000,SqVebwvfYL:0.0217817404)82:0.0023930000,iSHfQkQbDW:0.0220531455)86:0.0027300000);
+
+TIME STAMP
+----------
+
+Date and time: Thu Apr  5 09:52:16 2018
+Total CPU time used: 159.141741 seconds (0h:2m:39s)
+Total wall-clock time used: 207.528287 seconds (0h:3m:27s)
+

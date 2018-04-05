@@ -1,0 +1,132 @@
+
+R version 3.4.2 (2017-09-28) -- "Short Summer"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin16.7.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+> library(GenomicAlignments)
+Loading required package: BiocGenerics
+Loading required package: parallel
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:parallel’:
+
+    clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
+    clusterExport, clusterMap, parApply, parCapply, parLapply,
+    parLapplyLB, parRapply, parSapply, parSapplyLB
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, cbind, colMeans, colnames,
+    colSums, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, lengths, Map, mapply, match,
+    mget, order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rowMeans, rownames, rowSums, sapply, setdiff, sort,
+    table, tapply, union, unique, unsplit, which, which.max, which.min
+
+Loading required package: S4Vectors
+Loading required package: stats4
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:base’:
+
+    expand.grid
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: GenomicRanges
+Loading required package: SummarizedExperiment
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+Loading required package: DelayedArray
+Loading required package: matrixStats
+
+Attaching package: ‘matrixStats’
+
+The following objects are masked from ‘package:Biobase’:
+
+    anyMissing, rowMedians
+
+
+Attaching package: ‘DelayedArray’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colMaxs, colMins, colRanges, rowMaxs, rowMins, rowRanges
+
+The following object is masked from ‘package:base’:
+
+    apply
+
+Loading required package: Biostrings
+Loading required package: XVector
+
+Attaching package: ‘Biostrings’
+
+The following object is masked from ‘package:DelayedArray’:
+
+    type
+
+The following object is masked from ‘package:base’:
+
+    strsplit
+
+Loading required package: Rsamtools
+> library(Rsamtools)
+> bamFile <- BamFile('/Users/mschultz/Desktop/MDU_DAMG/MDU/HAVNET/HAVIC/tmphIVnVRy/_test_HAV_all_minimap2.bam', index = '/Users/mschultz/Desktop/MDU_DAMG/MDU/HAVNET/HAVIC/tmphIVnVRy/_test_HAV_all_minimap2.bam.bai')
+> bamFile
+class: BamFile 
+path: /Users/mschultz/Desktop/MDU_DAMG/MDU/HAVNET/.../_test_HAV_all_minimap2.bam
+index: /Users/mschultz/Desktop/MDU_DAMG/MDU/HA.../_test_HAV_all_minimap2.bam.bai
+isOpen: FALSE 
+yieldSize: NA 
+obeyQname: FALSE 
+asMates: FALSE 
+qnamePrefixEnd: NA 
+qnameSuffixStart: NA 
+> seqinfo(bamFile)
+Seqinfo object with 1 sequence from an unspecified genome:
+  seqnames    seqlengths isCircular genome
+  NC_001489.1       7478         NA   <NA>
+> outp <- stackStringsFromBam(bamFile,
++                             param=GRanges('NC_001489.1', IRanges(1, 7478)),
++                             Lpadding.letter='-',
++                             Rpadding.letter='-',
++                             use.names = T)
+> sink('/Users/mschultz/Desktop/MDU_DAMG/MDU/HAVNET/HAVIC/tmphIVnVRy/_test_HAV_all_minimap2.stack.fa')
+> for(i in 1:length(outp)){
++     cat('>',names(outp[i]), '
++ ', sep='')
++     cat(toString(outp[[i]]), '
++ ', sep='')
++ }
+> sink()
+> 
+> proc.time()
+   user  system elapsed 
+  9.265   0.446  10.922 

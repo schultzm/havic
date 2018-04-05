@@ -128,9 +128,6 @@ class Pipeline:
             print(k, v)
         self.minimap2_kmer = minimap2_kmer
         self.iqtree_threads = iqtree_threads
-        from multiprocessing import cpu_count
-        if iqtree_threads < 0 or iqtree_threads > cpu_count():
-            self.cpu_count = "AUTO"
         self.path_to_clusterpicker = os.path.abspath(path_to_clusterpicker)
         from ..data.havnet_amplicon import havnet_ampliconseq
         self.havnet_ampliconseq = havnet_ampliconseq
@@ -392,23 +389,24 @@ class Pipeline:
         def mv_tmp_sqlite(temp_sqlite_db, perm_sqlite_db):
             try:
                 os.popen(f'mv {temp_sqlite_db} {perm_sqlite_db}')
+                print(f"Moved {temp_sqlite_db} to {perm_sqlite_db}.")
             except IOError:
                 print(f'Unable to move {temp_sqlite_db} to {self.outdir}',
                       file=sys.stderr)
 
         with tempfile.TemporaryDirectory() as tmpfile:
+            # final_outfolder = self.outdir
+            # self.outdir = tmpfile
             db_name = '.ruffus_history.sqlite'
             temp_sqlite_db = os.path.join(tmpfile, db_name)
             perm_sqlite_db = os.path.join(os.path.abspath(self.outdir),
                                           db_name)
             if os.path.exists(perm_sqlite_db):
                 os.popen(f'cp {perm_sqlite_db} {temp_sqlite_db}')
-                print(f'SQLite db temp is at {temp_sqlite_db}.')
+                print(f'Copied {perm_sqlite_db} to {temp_sqlite_db}.')
             else:
                 print(f'Making new SQLite db at {temp_sqlite_db}')
             if self.redo:
-                self.outdir = tmpfile
-                print('self.outdir', self.outdir)
                 pipeline_run(forcedtorun_tasks=compile_input_fasta,
                              history_file=temp_sqlite_db)
                 mv_tmp_sqlite(temp_sqlite_db, perm_sqlite_db)
