@@ -114,17 +114,16 @@ exclusions <- tolower(c(names(IUPAC_CODE_MAP)[!(names(IUPAC_CODE_MAP) %in% c('A'
 snps <- snp_dists(aln, exclusions)
 heatmap_data <- snps[[2]]
 
-
+pdf(file = paste0(basename,
+                      '_SNPdists.pdf'),
+    width=11.69,
+    height=8.27)
 pheatmap(heatmap_data,
          show_rownames = T,
          show_colnames = T,
          display_numbers = TRUE,
          number_format = '%.0f',
-         fontsize = fntsz*2,
-         filename = paste0(basename,
-                           '_SNPdists.pdf'),
-         width=11.69,
-         height=8.27)
+         fontsize = fntsz*2)
 dev.off()
 write.csv(x=heatmap_data, file=paste0(basename,
                                       '_SNPdists.csv'),
