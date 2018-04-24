@@ -11,6 +11,7 @@ Input:
 from Bio.Align import MultipleSeqAlignment
 from Bio.Seq import MutableSeq
 from Bio.Alphabet import generic_dna
+import sys
 
 
 class Trimmed_alignment(MultipleSeqAlignment):
@@ -53,6 +54,7 @@ class Trimmed_alignment(MultipleSeqAlignment):
         """
         Trim the alignment.
         """
+        temp_aln = MultipleSeqAlignment([])
         for seq in self.alignment:
             if seq.id in self.trim_seqs:
                 sequence = MutableSeq(str(seq.seq), generic_dna)
@@ -64,6 +66,18 @@ class Trimmed_alignment(MultipleSeqAlignment):
                 sequence[self.boundary[1]:] = self.gap_char * \
                                               (len(sequence) - self.boundary[1])
                 seq.seq = sequence
+            if set(seq.seq) == set({self.gap_char}):
+                print(f"{seq.id} contains only gaps after trimming. "
+                      f"Removing {seq.id} from alignment.",
+                      file=sys.stderr)
+                pass
+            else:
+                temp_aln.append(seq)
+        self.alignment = temp_aln
+
+            # print(seq.id, set(seq.seq))
+        # import sys
+        # sys.exit()
 
     def depad_alignment(self):
         """
@@ -71,19 +85,18 @@ class Trimmed_alignment(MultipleSeqAlignment):
         """
         site_set = {self.gap_char}
         start_pos = 0
-        set(self.alignment[:, start_pos])
+        # Get the start position for trim
         while len(site_set) == 1:
             site_set = set(self.alignment[:, start_pos])
             if len(site_set) > 1:
                 break
             else:
                 start_pos += 1
-            # print(site_set)
         site_set = {self.gap_char}
         # subtract one to put slice position inside alignment
         end_pos = self.alignment.get_alignment_length() - 1
-        # site_set = set(self.alignment[:, end_pos])
-        # print(site_set)
+
+        # Get the end position for trim
         while len(site_set) == 1:
             site_set = set(self.alignment[:, end_pos])
             if len(site_set) > 1:

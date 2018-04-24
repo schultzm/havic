@@ -50,7 +50,7 @@ if(length(names(list_of_clusters)) < 2){
 pal <- qualpal(n = ncolours, list(h = c(0, 360), s = c(0.5, 1), l = c(0.4, 0.4)))
 #plot(pal)
 #rownames(pal$HSL)
-q <- plt + geom_tiplab(aes(label=label, color=Cluster), size=fntsz, linesize=0.1, align=TRUE) +
+q <- plt + geom_tiplab(aes(label=label, color=Cluster), size=fntsz, linesize=0.1) +
     # theme(legend.position = "right") +
     geom_tippoint(aes(color=Cluster), size=fntsz, na.rm=T) +
     geom_text2(aes(x=branch, label=as.integer(label), vjust=-0.3, hjust=1, subset=(isTip!=TRUE & as.integer(label)>=70), na.rm=TRUE), size=fntsz, na.rm=TRUE) +

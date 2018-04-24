@@ -142,15 +142,15 @@ def main():
             Dependency(rlib, 'rmodule').check()
     elif args.subparser_name == 'test':
         print(f"Running test suite...")
-        from . import __parent_dir__, __test_seqs__, __test_seq_totrim__
+        from . import __parent_dir__, __test_seqs__, __test_seqs_totrim__
         import pkg_resources
         from .utils.pipeline_runner import Pipeline
         test_query = [pkg_resources.resource_filename(__parent_dir__,
                                                       __test_seqs__)]
-        test_seq_totrim = pkg_resources.resource_filename(__parent_dir__,
-                                                          __test_seq_totrim__)
+        test_seqs_totrim = [test_seq_totrim for test_seq_totrim in
+                            __test_seqs_totrim__]
         detection_pipeline = Pipeline(test_query,
-                                      test_seq_totrim,
+                                      test_seqs_totrim,
                                       args.subject_file,
                                       args.redo,
                                       args.n_snps,

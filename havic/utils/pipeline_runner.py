@@ -325,7 +325,8 @@ class Pipeline:
         # Pipeline starts here with Ruffus
         @mkdir(self.outdir)
         def create_outdir():
-            print(f"Creating output directory {self.outdir}")
+            pass
+            # print(f"Creating output directory {self.outdir}")
 
         @follows(create_outdir)
         @files(self.query_files,
