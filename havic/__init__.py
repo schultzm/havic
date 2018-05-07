@@ -21,8 +21,8 @@ __ref_seq__ = 'data/NC_001489.fa'
 __test_seqs__ = 'tests/example.fa'
 __test_seqs_totrim__ = ['AY644337_55443_seq_1',
                         'RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty']
-__version__ = '0.0.02b'
-__version_date__ = 'Tue 24 April, 2018'
+__version__ = '0.0.03b'
+__version_date__ = 'Mon 7th May, 2018'
 __description__ = 'Detect Hepatitis A infection clusters'
 __author__ = 'Mark B Schultz'
 __author_email__ = 'dr.mark.schultz@gmail.com'
