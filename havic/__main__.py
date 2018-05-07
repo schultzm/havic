@@ -121,7 +121,7 @@ def main():
     subparser_modules.add_parser(
         "version", help="Print version.", description="Print version.")
     subparser_modules.add_parser(
-        "depcheck", help="Check dependencies are in path.",
+        "depcheck", help="Check dependencies are in path.  Requires Rpy2.",
         description="Check dependencies.")
     subparser_modules.add_parser(
         "test", help="Run HAVIC test using pre-packaged example data.",
@@ -134,12 +134,17 @@ def main():
     if not args.subparser_name:
         parser.print_help()
     elif args.subparser_name == 'depcheck':
+        try:
+            import rpy2
+        except ImportError as error:
+            import sys
+            sys.exit(f'\'havic {args.subparser_name}\' requires rpy2.\n'
+                     f'{error.__class__.__name__}\n'
+                     f'Please install rpy2 to use this feature.')
         from .utils.check_dependency import Dependency
         from .tests.dependencies import SOFTWAREZ, R_LIBS
         for software in SOFTWAREZ:
             Dependency(software, 'software').check()
-        for rlib in R_LIBS:
-            Dependency(rlib, 'rmodule').check()
     elif args.subparser_name == 'test':
         print(f"Running test suite...")
         from . import __parent_dir__, __test_seqs__, __test_seqs_totrim__
