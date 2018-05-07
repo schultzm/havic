@@ -121,7 +121,7 @@ def main():
     subparser_modules.add_parser(
         "version", help="Print version.", description="Print version.")
     subparser_modules.add_parser(
-        "check", help="Check dependencies are in path.",
+        "depcheck", help="Check dependencies are in path.",
         description="Check dependencies.")
     subparser_modules.add_parser(
         "test", help="Run HAVIC test using pre-packaged example data.",
@@ -133,7 +133,7 @@ def main():
 
     if not args.subparser_name:
         parser.print_help()
-    elif args.subparser_name == 'check':
+    elif args.subparser_name == 'depcheck':
         from .utils.check_dependency import Dependency
         from .tests.dependencies import SOFTWAREZ, R_LIBS
         for software in SOFTWAREZ:
