@@ -20,7 +20,8 @@ __parent_dir__ = 'havic'
 __ref_seq__ = 'data/NC_001489.fa'
 __test_seqs__ = 'tests/example.fa'
 __test_seqs_totrim__ = ['AY644337_55443_seq_1',
-                        'RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty']
+                        'RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty',
+                        'nDNLdjtgha#HashInSeqName']
 __version__ = '0.0.04b'
 __version_date__ = 'Tue 8th May, 2018'
 __description__ = 'Detect Hepatitis A infection clusters'

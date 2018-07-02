@@ -64,7 +64,7 @@ class Pipeline:
         """
         self.query_files = [Input_file(file, "Query").filename for file in
                             query_files]
-        self.trim_seqs = trim_seqs
+        self.trim_seqs = [i.replace('#', '_') for i in trim_seqs]
         self.subject = subject_file
         if subject_file:
             self.subject = Input_file(self.subject, "Subject").filename
@@ -145,7 +145,7 @@ class Pipeline:
             print(query_file)
             for record in SeqIO.parse(query_file, "fasta"):
                 record.id = record.id.replace("_(reversed)", "") \
-                    .replace("(", "").replace(")", "")
+                    .replace("(", "").replace(")", "").replace('#', '_')
                 # 1.02 Remove duplicates.
                 if record.id not in [
                     record.id for record in quality_controlled_seqs
