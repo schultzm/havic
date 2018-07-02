@@ -64,7 +64,7 @@ class Pipeline:
         """
         self.query_files = [Input_file(file, "Query").filename for file in
                             query_files]
-        self.trim_seqs = [i.replace('#', '_') for i in trim_seqs]
+        self.trim_seqs = [i.replace('#', '_').rstrip() for i in trim_seqs]
         self.subject = subject_file
         if subject_file:
             self.subject = Input_file(self.subject, "Subject").filename
