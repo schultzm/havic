@@ -167,7 +167,7 @@ def main():
                                       args.iqtree_threads)
         for key, value in detection_pipeline.__dict__.items():
             print(f"{key}: {value}\n")
-        detection_pipeline._run()
+        detection_pipeline.run()
         get_execution_time(args.outdir)
 
     elif args.subparser_name == 'detect':
@@ -185,7 +185,7 @@ def main():
                                       args.iqtree_threads)
         for key, value in detection_pipeline.__dict__.items():
             print(f"{key}: {value}\n")
-        detection_pipeline._run()
+        detection_pipeline.run()
         get_execution_time(args.outdir)
 
     elif args.subparser_name == 'version':
