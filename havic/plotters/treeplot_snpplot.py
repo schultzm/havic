@@ -41,13 +41,17 @@ if(fntsz < 0.5) {
 print(paste('FontSize for plot', fntsz))
 
 wdth <- 1
-library('qualpalr')
-#see https://cran.r-project.org/web/packages/qualpalr/README.html
-ncolours <- length(names(list_of_clusters))
-if(length(names(list_of_clusters)) < 2){
-    ncolours <- 2
-    }
-pal <- qualpal(n = ncolours, list(h = c(0, 360), s = c(0.5, 1), l = c(0.4, 0.4)))
+# library('qualpalr')
+# #see https://cran.r-project.org/web/packages/qualpalr/README.html
+# ncolours <- length(names(list_of_clusters))
+# if(length(names(list_of_clusters)) < 2){
+#     ncolours <- 2
+#     }
+# if(length(names(list_of_clusters)) >= 99){
+#     ncolours <- 99
+#     }
+# 
+# pal <- qualpal(n = ncolours, list(h = c(0, 360), s = c(0.5, 1), l = c(0.4, 0.4)))
 #plot(pal)
 #rownames(pal$HSL)
 q <- plt + geom_tiplab(aes(label=label, color=Cluster), size=fntsz, linesize=0.1) +
@@ -56,8 +60,8 @@ q <- plt + geom_tiplab(aes(label=label, color=Cluster), size=fntsz, linesize=0.1
     geom_text2(aes(x=branch, label=as.integer(label), vjust=-0.3, hjust=1, subset=(isTip!=TRUE & as.integer(label)>=70), na.rm=TRUE), size=fntsz, na.rm=TRUE) +
     geom_treescale(x=0.01, y =-2, offset=1, fontsize = fntsz, linesize=0.1) +
     annotate("text", x = 0.015, y=-4, label = "Substitutions per site", size=fntsz) +
-    ggtitle(label = "ML IQtree with bootstrap %, tips cluster-picked (left); fasta alignment (right)", subtitle = paste0('Clusters (coloured tips) have been picked as clades with >=95% support and divergence <= ', nsnps/seqlen*100, '%', '(i.e., <= ', nsnps, ' SNPs in ', seqlen, ' bp)')) +
-    scale_colour_manual(values=rownames(pal$HSL), na.value = "black")
+    ggtitle(label = "ML IQtree with bootstrap %, tips cluster-picked (left); fasta alignment (right)", subtitle = paste0('Clusters (coloured tips) have been picked as clades with >=95% support and divergence <= ', nsnps/seqlen*100, '%', '(i.e., <= ', nsnps, ' SNPs in ', seqlen, ' bp)')) #+
+#    scale_colour_manual(values=rownames(pal$HSL), na.value = "black")
 #q
 pdf(file=paste0(basename, '.mp.treefile.', 'div_', nsnps, 'SNPsIn', seqlen, 'bp_msa.pdf'), paper = 'a4r', width=11.69, height=8.27)
 

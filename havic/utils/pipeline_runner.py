@@ -10,6 +10,7 @@ from .. import __ref_seq__, __parent_dir__
 from ..utils.input_file import Input_file
 import pkg_resources
 import io
+import re
 import sys
 import os
 from Bio import SeqIO
@@ -64,7 +65,8 @@ class Pipeline:
         """
         self.query_files = [Input_file(file, "Query").filename for file in
                             query_files]
-        self.trim_seqs = [i.replace('#', '_').rstrip() for i in trim_seqs]
+        self.trim_seqs = [re.sub('[^A-Za-z0-9]+', '_', i.replace("_(reversed)", "") \
+                    .replace("(", "").replace(")", "").rstrip()) for i in trim_seqs]
         self.subject = subject_file
         if subject_file:
             self.subject = Input_file(self.subject, "Subject").filename
@@ -144,8 +146,8 @@ class Pipeline:
         for query_file in self.query_files:
             print(query_file)
             for record in SeqIO.parse(query_file, "fasta"):
-                record.id = record.id.replace("_(reversed)", "") \
-                    .replace("(", "").replace(")", "").replace('#', '_')
+                record.id = re.sub('[^A-Za-z0-9]+', '_', record.id.replace("_(reversed)", "") \
+                    .replace("(", "").replace(")", "").rstrip())
                 # 1.02 Remove duplicates.
                 if record.id not in [
                     record.id for record in quality_controlled_seqs
