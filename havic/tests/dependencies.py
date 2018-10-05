@@ -12,7 +12,8 @@ R_LIBS = ['GenomicAlignments',
     # 'devtools',
     # 'plotly',
     'pheatmap',
-    'qualpalr'
+    'qualpalr',
+    'Biostrings'
 ]
 
 CLUSTER_PICKER = '/Applications/ClusterPicker_1.2.5.jar'

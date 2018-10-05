@@ -1,10 +1,10 @@
 # todo Need to allow for labelling 'new' tips in tree figure
-
 plot_functions = '''
 library(phytools)
 library(plotly)
 library(tidyverse)
 library(ggtree)
+library(Biostrings)
 
 basename <- z
 print(paste0('basename: ', basename))
@@ -65,27 +65,27 @@ q <- plt + geom_tiplab(aes(label=label, color=Cluster), size=fntsz, linesize=0.1
 #q
 pdf(file=paste0(basename, '.mp.treefile.', 'div_', nsnps, 'SNPsIn', seqlen, 'bp_msa.pdf'), paper = 'a4r', width=11.69, height=8.27)
 
-h <- msaplot(p=q, fasta=basename, offset = offst, width = wdth, bg_line = FALSE, color=c('#f7fcfd', #white
-                                                                                    '#ef3b2c', #red
-                                                                                    '#41ab5d', #green
-                                                                                    '#ffffbf', #yellow
-                                                                                    '#4292c6', #blue
-                                                                                    '#dface5',
-                                                                                    '#c699cc',
-                                                                                    '#ad86b2',
-                                                                                    '#947399',
-                                                                                    '#7c607f',
-                                                                                    '#634c66',
-                                                                                    '#4a394c',
-                                                                                    '#312633',
-                                                                                    '#181319',
-                                                                                    '#000000',
-                                                                                    '#f8c0ff'))
-h
+# h <- msaplot(p=q, fasta=basename, offset = offst, width = wdth, bg_line = FALSE, color=c('#f7fcfd', #white
+#                                                                                     '#ef3b2c', #red
+#                                                                                     '#41ab5d', #green
+#                                                                                     '#ffffbf', #yellow
+#                                                                                     '#4292c6', #blue
+#                                                                                     '#dface5',
+#                                                                                     '#c699cc',
+#                                                                                     '#ad86b2',
+#                                                                                     '#947399',
+#                                                                                     '#7c607f',
+#                                                                                     '#634c66',
+#                                                                                     '#4a394c',
+#                                                                                     '#312633',
+#                                                                                     '#181319',
+#                                                                                     '#000000',
+#                                                                                     '#f8c0ff'))
+# h
 dev.off()
 
 
-library(pheatmap)
+# library(pheatmap)
 
 aln <- read.dna(basename, format = 'fasta', as.character = TRUE)
 snp_dists <- function(alignment, exclude_char){
@@ -118,17 +118,17 @@ exclusions <- tolower(c(names(IUPAC_CODE_MAP)[!(names(IUPAC_CODE_MAP) %in% c('A'
 snps <- snp_dists(aln, exclusions)
 heatmap_data <- snps[[2]]
 
-pdf(file = paste0(basename,
-                      '_SNPdists.pdf'),
-    width=11.69,
-    height=8.27)
-pheatmap(heatmap_data,
-         show_rownames = T,
-         show_colnames = T,
-         display_numbers = TRUE,
-         number_format = '%.0f',
-         fontsize = fntsz*2)
-dev.off()
+# pdf(file = paste0(basename,
+#                       '_SNPdists.pdf'),
+#     width=11.69,
+#     height=8.27)
+# pheatmap(heatmap_data,
+#          show_rownames = T,
+#          show_colnames = T,
+#          display_numbers = TRUE,
+#          number_format = '%.0f',
+#          fontsize = fntsz*2)
+# dev.off()
 write.csv(x=heatmap_data, file=paste0(basename,
                                       '_SNPdists.csv'),
           quote=FALSE)
