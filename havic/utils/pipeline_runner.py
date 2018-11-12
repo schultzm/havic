@@ -223,7 +223,7 @@ class Pipeline:
         else:
             redo = " TEST"
         cmd = f"iqtree -s {self.outfiles['fasta_from_bam_trimmed']} " \
-              f"-nt {self.iqtree_threads} -bb 1000 -bnni -m{redo}"
+              f"-nt {self.iqtree_threads} -bb 1000 -m{redo}"
         print(cmd)
         os.system(cmd)
 
