@@ -56,7 +56,7 @@ def main():
         "-n",
         "--n_snps",
         help="""Number of SNPS in distance
-                                       fraction (numerator).""",
+                fraction (numerator) for ClusterPicker assingments.""",
         default=3,
         type=int,
         required=False)
@@ -64,9 +64,17 @@ def main():
         "-l",
         "--seqlen",
         help="""Sequence length in distance
-                                       fraction (denominator).""",
+                fraction (denominator) for ClusterPicker assignments.""",
         default=300,
         type=int,
+        required=False)
+    subparser_args1.add_argument(
+        "-m",
+        "--msatreeplot",
+        help="""Switch on PDF plotting of Multiple Sequence Alignment (MSA)
+                next to IQ-Tree Maximum Likelihood tree).""",
+        default=False,
+        action="store_true",
         required=False)
     subparser_args1.add_argument(
         "-p",
@@ -160,6 +168,7 @@ def main():
                                       args.redo,
                                       args.n_snps,
                                       args.seqlen,
+                                      args.msatreeplot,
                                       args.prefix,
                                       args.outdir,
                                       args.minimap2_kmer,
@@ -178,6 +187,7 @@ def main():
                                       args.redo,
                                       args.n_snps,
                                       args.seqlen,
+                                      args.msatreeplot,
                                       args.prefix,
                                       args.outdir,
                                       args.minimap2_kmer,
