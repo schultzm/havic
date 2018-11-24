@@ -45,7 +45,7 @@ class Pipeline:
                  redo,
                  n_snps,
                  seqlen,
-                 msatreeplot,
+                 matrixplots,
                  prefix,
                  outdir,
                  minimap2_kmer,
@@ -60,7 +60,7 @@ class Pipeline:
         :param redo:
         :param n_snps:
         :param seqlen:
-        :param msatreeplot:
+        :param matrixplots:
         :param prefix:
         :param outdir:
         :param minimap2_kmer:
@@ -82,10 +82,10 @@ class Pipeline:
         self.redo = redo
         self.n_snps = n_snps
         self.seqlen = seqlen
-        if msatreeplot:
-            self.msatreeplot = "as.logical(TRUE)"
+        if matrixplots:
+            self.matrixplots = "as.logical(TRUE)"
         else:
-            self.msatreeplot = "as.logical(FALSE)"
+            self.matrixplots = "as.logical(FALSE)"
         self.prefix = prefix
         self.outdir = outdir
         self.outfiles = {
@@ -302,7 +302,7 @@ class Pipeline:
                 .replace("<- a", "<- " + str(self.n_snps)) \
                 .replace("<- b", "<- " + str(self.seqlen)) \
                 .replace("<- k", "<- " + str(self.minimap2_kmer)) \
-                .replace("<- e", "<- " + str(self.msatreeplot))
+                .replace("<- e", "<- " + str(self.matrixplots))
             # print(cmd)
             out_r.write(cmd)
         os.system(f"R CMD BATCH {self.outfiles['treeplotr']} {self.outfiles['treeplotr_out']}")

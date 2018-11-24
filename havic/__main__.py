@@ -70,9 +70,10 @@ def main():
         required=False)
     subparser_args1.add_argument(
         "-m",
-        "--msatreeplot",
-        help="""Switch on PDF plotting of Multiple Sequence Alignment (MSA)
-                next to IQ-Tree Maximum Likelihood tree).""",
+        "--matrixplots",
+        help="""Switch on PDF plotting of: Multiple Sequence Alignment (MSA)
+                next to IQ-Tree Maximum Likelihood tree), and; heatmap of SNP
+                distances.""",
         default=False,
         action="store_true",
         required=False)
@@ -168,7 +169,7 @@ def main():
                                       args.redo,
                                       args.n_snps,
                                       args.seqlen,
-                                      args.msatreeplot,
+                                      args.matrixplots,
                                       args.prefix,
                                       args.outdir,
                                       args.minimap2_kmer,
@@ -187,7 +188,7 @@ def main():
                                       args.redo,
                                       args.n_snps,
                                       args.seqlen,
-                                      args.msatreeplot,
+                                      args.matrixplots,
                                       args.prefix,
                                       args.outdir,
                                       args.minimap2_kmer,

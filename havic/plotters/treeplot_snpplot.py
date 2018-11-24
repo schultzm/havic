@@ -11,7 +11,7 @@ print(paste0('basename: ', basename))
 nsnps <- a
 seqlen <- b
 kmer <- k
-msatree <- e
+matrixplots <- e
 tree <- read.newick(file=paste0(basename, '.mp.treefile'))
 tree_clust <- read.newick(file=paste0(basename, '.mp_clusterPicks.nwk'))
 cluster_picks <- matrix(nrow = 0, ncol = 2)
@@ -30,7 +30,7 @@ cluster_picks
 
 list_of_clusters <- split(cluster_picks$Isolate, cluster_picks$Cluster)
 
-if(msatree){
+if(matrixplots){
     plt <- ggtree(tree, size=0.1) %<+% cluster_picks
     offst <- 0.4401 *max(dist.nodes(tree))+-0.4526
     if(offst <= 0){
@@ -83,11 +83,10 @@ if(msatree){
                                                                                         '#181319',
                                                                                         '#000000',
                                                                                         '#f8c0ff'))
-    h
+    print(h)
     dev.off()
 }
 
-# library(pheatmap)
 
 aln <- read.dna(basename, format = 'fasta', as.character = TRUE)
 snp_dists <- function(alignment, exclude_char){
@@ -120,17 +119,22 @@ exclusions <- tolower(c(names(IUPAC_CODE_MAP)[!(names(IUPAC_CODE_MAP) %in% c('A'
 snps <- snp_dists(aln, exclusions)
 heatmap_data <- snps[[2]]
 
-# pdf(file = paste0(basename,
-#                       '_SNPdists.pdf'),
-#     width=11.69,
-#     height=8.27)
-# pheatmap(heatmap_data,
-#          show_rownames = T,
-#          show_colnames = T,
-#          display_numbers = TRUE,
-#          number_format = '%.0f',
-#          fontsize = fntsz*2)
-# dev.off()
+if(matrixplots){
+    library(pheatmap)
+    pdf(file = paste0(basename,
+                      '_SNPdists.pdf'),
+        width=11.69,
+        height=8.27)
+    print(pheatmap(heatmap_data,
+             show_rownames = T,
+             show_colnames = T,
+             display_numbers = TRUE,
+             number_format = '%.0f',
+             fontsize = fntsz*2))
+
+    dev.off()
+}
+
 write.csv(x=heatmap_data, file=paste0(basename,
                                       '_SNPdists.csv'),
           quote=FALSE)
