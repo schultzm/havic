@@ -1,7 +1,6 @@
 # todo Need to allow for labelling 'new' tips in tree figure
 plot_functions = '''
 library(phytools)
-library(plotly)
 library(tidyverse)
 library(ggtree)
 library(Biostrings)
