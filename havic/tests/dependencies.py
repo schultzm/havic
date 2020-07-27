@@ -16,4 +16,4 @@ R_LIBS = ['GenomicAlignments',
     'Biostrings'
 ]
 
-CLUSTER_PICKER = '/Applications/ClusterPicker_1.2.5.jar'
+CLUSTER_PICKER = 'clusterpicker'

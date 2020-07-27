@@ -22,7 +22,7 @@ __test_seqs__ = 'tests/example.fa'
 __test_seqs_totrim__ = ['AY644337_55443_seq_1',
                         'RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty',
                         'nDNLdjtgha#HashInSeqName']
-__version__ = '0.0.5'
+__version__ = '0.0.7'
 __version_date__ = 'Tue 27th July, 2020'
 __description__ = 'Detect Hepatitis A infection clusters'
 __author__ = 'Mark B Schultz'

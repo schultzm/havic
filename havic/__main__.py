@@ -103,7 +103,7 @@ def main():
         "--path_to_clusterpicker",
         help="""Path to ClusterPicker.jar file.  Follow instructions at
                 http://hiv.bio.ed.ac.uk/software.html""",
-        default=os.path.expanduser("~/ClusterPicker_1.2.5.jar"),
+        default="clusterpicker",
         required=False)
     from multiprocessing import cpu_count
     subparser_args1.add_argument(

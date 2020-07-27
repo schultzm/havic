@@ -138,7 +138,7 @@ class Pipeline:
         }
         self.minimap2_kmer = minimap2_kmer
         self.iqtree_threads = iqtree_threads
-        self.path_to_clusterpicker = os.path.abspath(path_to_clusterpicker)
+        self.path_to_clusterpicker = path_to_clusterpicker
         from ..data.havnet_amplicon import havnet_ampliconseq
         self.havnet_ampliconseq = havnet_ampliconseq
 
@@ -254,7 +254,7 @@ class Pipeline:
         Run CLUSTER_PICKER on the tree and alignment
         :return: None
         """
-        cmd = f"/usr/bin/java -jar {self.path_to_clusterpicker} " \
+        cmd = f"{self.path_to_clusterpicker} " \
               f"{self.outfiles['fasta_from_bam_trimmed']} " \
               f"{self.outfiles['mp_treefile']} 70 95 " \
               f"{self.n_snps/self.seqlen} 15 valid"
@@ -326,10 +326,10 @@ class Pipeline:
         # self._clusterpick()
         # self._plot_results()
 
-        if not os.path.exists(self.path_to_clusterpicker) or 'cluster' not in \
-                self.path_to_clusterpicker.lower():
-            sys.exit(f"ClusterPicker error: "
-                     f"Check {self.path_to_clusterpicker} exists and re-try.")
+        # if not os.path.exists(self.path_to_clusterpicker) or 'cluster' not in \
+        #         self.path_to_clusterpicker.lower():
+        #     sys.exit(f"ClusterPicker error: "
+        #              f"Check {self.path_to_clusterpicker} exists and re-try.")
 
         # Pipeline starts here with Ruffus
         @mkdir(self.outdir)
