@@ -40,7 +40,7 @@ setup(
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: OSI Approved :: GNU Affero General ' +
                  'Public License v3 or later (AGPLv3+)',
-                 'Programming Language :: Python :: 3.5',
+                 'Programming Language :: Python :: 3.8',
                  'Topic :: Scientific/Engineering :: Bio-Informatics',
                  'Topic :: Scientific/Engineering :: Medical Science Apps.',
                  'Intended Audience :: Science/Research'],

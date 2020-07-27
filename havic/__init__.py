@@ -22,8 +22,8 @@ __test_seqs__ = 'tests/example.fa'
 __test_seqs_totrim__ = ['AY644337_55443_seq_1',
                         'RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty',
                         'nDNLdjtgha#HashInSeqName']
-__version__ = '0.0.04b'
-__version_date__ = 'Tue 8th May, 2018'
+__version__ = '0.0.5'
+__version_date__ = 'Tue 27th July, 2020'
 __description__ = 'Detect Hepatitis A infection clusters'
 __author__ = 'Mark B Schultz'
 __author_email__ = 'dr.mark.schultz@gmail.com'
@@ -31,4 +31,3 @@ __github_username__ = 'schultzm'
 __install__ = 'pip3 install git+https://github.com/schultzm/HAVIC.git'
 __license__ = 'AGPL-3.0'
 __download_url__ = 'https://github.com/schultzm/HAVIC/zipball/master'
-__all__ = ['havic']
