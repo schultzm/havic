@@ -68,7 +68,7 @@ class Pipeline:
         self.query_files = [Input_file(file, "Query").filename for file in
                             query_files]
         self.trim_seqs = [re.sub('[^A-Za-z0-9]+', '_', i.replace("_(reversed)", "") \
-                    .replace("(", "").replace(")", "").rstrip()) for i in trim_seqs]
+                          .replace("(", "").replace(")", "").rstrip()) for i in trim_seqs]
         self.subject = subject_file
         if subject_file:
             self.subject = Input_file(self.subject, "Subject").filename
@@ -229,8 +229,8 @@ class Pipeline:
         else:
             redo = " TEST"
         cmd = f"iqtree -s {self.outfiles['fasta_from_bam_trimmed']} " \
-              f"-nt {self.iqtree_threads} -bb 1000 -m{redo}"
-        print(cmd)
+              f"-T {self.iqtree_threads} -bb 1000 -m{redo}"
+        # print(cmd)
         os.system(cmd)
 
     def _midpoint_root_iqtree(self):

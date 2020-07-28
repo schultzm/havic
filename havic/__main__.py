@@ -35,7 +35,7 @@ def main():
         help="""Fasta headers of sequences to be trimmed to match length of
                 reference amplicon in the alignment.""",
         nargs="+",
-        default=None,
+        default='',
         required=False)
     subparser_args1.add_argument(
         "-s",

@@ -16,9 +16,9 @@ install.packages('diversitree',repos='https://cloud.r-project.org',quiet=TRUE)
 install.packages('geiger',repos='https://cloud.r-project.org',quiet=TRUE)
 install.packages('nlme',repos='https://cloud.r-project.org',quiet=TRUE)
 install.packages('OUwie',repos='https://cloud.r-project.org',quiet=TRUE)
-install.packages('phangorn',repos='https://cloud.r-project.org',quiet=TRUE)
+install.packages('phangorn',repos='https://cloud.r-project.org',quiet=TRUE)#?this is in phytools
 install.packages('phytools',repos='https://cloud.r-project.org',quiet=TRUE)
-install.packages('igraph',repos='https://cloud.r-project.org',quiet=TRUE)
+install.packages('igraph',repos='https://cloud.r-project.org',quiet=TRUE)#? this is in phytools
 BiocManager::install('Rsamtools')
 BiocManager::install('RCurl')
 BiocManager::install('GenomicAlignments')
