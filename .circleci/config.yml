@@ -1,10 +1,10 @@
-version: 2.1
+version: 2
 
 jobs:
   build:
     docker:
       - image: continuumio/miniconda3
-      - image: circleci/python:3.8
+      - image: rackspacedot/python38
 
     working_directory: ~/HAVIC
     steps: # steps that comprise the `build` job
