@@ -11,7 +11,6 @@ conda create --yes --name havic_env python=3.8 R minimap2 iqtree clusterpicker g
 conda activate havic_env
 conda update --yes --all #maybe not necessary
 conda install --yes -c bioconda samtools # This is installed separately to avoid the problems described at https://github.com/conda/conda/issues/8103
-#samtools                  1.4.1                         0    bioconda
 echo "install.packages('BiocManager', repos='https://cran.ms.unimelb.edu.au/')
 BiocManager::install('GenomicAlignments')
 BiocManager::install('Biostrings')
@@ -23,31 +22,3 @@ install.packages('phytools',repos='https://cloud.r-project.org', type='source') 
 pip install git+https://github.com/schultzm/HAVIC.git
 havic depcheck
 havic test
-
-
-
-#install.packages('pheatmap',repos='https://cloud.r-project.org',quiet=TRUE)
-# install.packages('qualpalr',repos='https://cloud.r-project.org',quiet=TRUE)
-# install.packages('ape',repos='https://cloud.r-project.org',quiet=TRUE)
-# install.packages('caper',repos='https://cloud.r-project.org',quiet=TRUE)
-# install.packages('diversitree',repos='https://cloud.r-project.org',quiet=TRUE)
-# install.packages('geiger',repos='https://cloud.r-project.org',quiet=TRUE)
-# install.packages('nlme',repos='https://cloud.r-project.org',quiet=TRUE)
-# install.packages('OUwie',repos='https://cloud.r-project.org',quiet=TRUE)
-# install.packages('phangorn',repos='https://cloud.r-project.org',quiet=TRUE)#?this is in phytools
-# install.packages('igraph',repos='https://cloud.r-project.org',quiet=TRUE)#? this is in phytools
-# BiocManager::install('RCurl')
-
-# BiocManager::install('Biobase')"
-# #BiocManager::install('matrixStats')
-# > rinstall.R
-# R --file=rinstall.R
-# conda update --all
-# havic depcheck
-# # iqtree                      : ok (/usr/local/Caskroom/miniconda/base/envs/havic_env/bin/iqtree)
-# # minimap2                    : ok (/usr/local/Caskroom/miniconda/base/envs/havic_env/bin/minimap2)
-# # R                           : ok (/usr/local/Caskroom/miniconda/base/envs/havic_env/bin/R)
-# # samtools                    : ok (/usr/local/Caskroom/miniconda/base/envs/havic_env/bin/samtools)
-# havic test
-
-
