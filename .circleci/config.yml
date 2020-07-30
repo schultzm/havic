@@ -9,9 +9,8 @@ jobs:
     working_directory: ~/HAVIC
     steps:
       - checkout
-      - run:
-        - name: install dependencies
-          command: conda env create -f environment.yml
+      - run: |
+          conda env create -f environment.yml
 
     #   - run: 
     #       - name: install havic
