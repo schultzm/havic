@@ -2,6 +2,8 @@
 
 from havic.tests import check_r_dependencies
 
+#TODO: this check tool does not work properly. FIX!
+
 
 class Dependency:
     """

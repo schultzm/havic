@@ -55,5 +55,6 @@ setup(
     install_requires=['ete3>=3.1.1',
                       'ruffus>=2.6.2',
                       'biopython>=1.77',
-                      'pandas>=1.0.5'],
+                      'pandas>=1.0.5'
+                      'rpy2>=3.3.5'],
 )
