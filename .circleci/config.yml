@@ -32,4 +32,7 @@ jobs: # A basic unit of work in a run
               BiocManager::install('tidyverse')
               install.packages('Rcpp', repos='https://cloud.r-project.org')
               install.packages('phytools',repos='https://cloud.r-project.org', type='source') " | R --no-save
+              conda init
+              source ~/.bashrc
+              conda activate havic_env
               havic test
