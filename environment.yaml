@@ -1,0 +1,18 @@
+name: havic_env
+channels:
+  - conda-forge
+  - bioconda
+  - r
+  - defaults
+channel_priority:
+  - strict
+dependencies:
+  - python=3.8
+  - R
+  - minimap2
+  - iqtree
+  - clusterpicker
+  - graphviz
+  - samtools
+  - pip:
+    - git+https://github.com/schultzm/HAVIC.git

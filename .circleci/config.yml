@@ -1,0 +1,37 @@
+version: 2.1
+
+jobs: # A basic unit of work in a run
+  build: # runs not using Workflows must have a `build` job as entry point
+    # directory where steps are run
+
+    docker:
+      - image: continuumio/miniconda3
+
+    working_directory: ~/HAVIC
+    docker: # run the steps with Docker
+      # CircleCI Python images available at: https://hub  .docker.com/r/circleci/python/
+      - image: circleci/python:3.8
+    steps: # steps that comprise the `build` job
+      - checkout # check out source code to working directory
+      - run:
+        - name: install dependencies
+          command: |
+            conda env create -f environment.yml
+
+      - run: 
+          - name: install havic
+            command: |
+              pip install git+https://github.com/schultzm/HAVIC.git --user
+              export PATH=$PATH:/home/circleci/.local/bin
+      - run:
+          - name: install R dependencies
+            command: |
+              echo "install.packages('BiocManager', repos='https://cran.ms.unimelb.edu.au/')
+              BiocManager::install('GenomicAlignments')
+              BiocManager::install('Biostrings')
+              BiocManager::install('Rsamtools')
+              BiocManager::install('ggtree')
+              BiocManager::install('tidyverse')
+              install.packages('Rcpp', repos='https://cloud.r-project.org')
+              install.packages('phytools',repos='https://cloud.r-project.org', type='source') " | R --no-save
+              havic test
