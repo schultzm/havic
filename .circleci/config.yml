@@ -12,23 +12,18 @@ jobs:
       - run: |
           conda env create -f environment.yml
 
-    #   - run: 
-    #       - name: install havic
-    #         command: |
-    #           pip install git+https://github.com/schultzm/HAVIC.git --user
-    #           export PATH=$PATH:/home/circleci/.local/bin
-    #   - run:
-    #       - name: install R dependencies
-    #         command: |
-    #           echo "install.packages('BiocManager', repos='https://cran.ms.unimelb.edu.au/')
-    #           BiocManager::install('GenomicAlignments')
-    #           BiocManager::install('Biostrings')
-    #           BiocManager::install('Rsamtools')
-    #           BiocManager::install('ggtree')
-    #           BiocManager::install('tidyverse')
-    #           install.packages('Rcpp', repos='https://cloud.r-project.org')
-    #           install.packages('phytools',repos='https://cloud.r-project.org', type='source') " | R --no-save
-    #           conda init
-    #           source ~/.bashrc
-    #           conda activate havic_env
-    #           havic test
+      - run: |
+          pip install git+https://github.com/schultzm/HAVIC.git --user
+          export PATH=$PATH:/home/circleci/.local/bin
+          echo "install.packages('BiocManager', repos='https://cran.ms.unimelb.edu.au/')
+          BiocManager::install('GenomicAlignments')
+          BiocManager::install('Biostrings')
+          BiocManager::install('Rsamtools')
+          BiocManager::install('ggtree')
+          BiocManager::install('tidyverse')
+          install.packages('Rcpp', repos='https://cloud.r-project.org')
+          install.packages('phytools',repos='https://cloud.r-project.org', type='source') " | R --no-save
+          conda init
+          source ~/.bashrc
+          conda activate havic_env
+          havic test
