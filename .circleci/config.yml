@@ -4,7 +4,7 @@ jobs:
   build:
     docker:
       - image: continuumio/miniconda3
-      - image: rackspacedot/python38
+      # - image: rackspacedot/python38
 
     working_directory: ~/HAVIC
     steps:
