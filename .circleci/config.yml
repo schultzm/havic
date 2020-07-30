@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 jobs:
   build:
@@ -7,12 +7,11 @@ jobs:
       - image: rackspacedot/python38
 
     working_directory: ~/HAVIC
-    steps: # steps that comprise the `build` job
-      - checkout # check out source code to working directory
+    steps:
+      - checkout
       - run:
         - name: install dependencies
-          command: |
-            conda env create -f environment.yml
+          command: conda env create -f environment.yml
 
     #   - run: 
     #       - name: install havic
