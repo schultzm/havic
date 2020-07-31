@@ -17,6 +17,7 @@ jobs:
           source ~/.bashrc
           conda activate havic_env
           find /opt/conda/envs/havic_env -name 'clusterpicker'
+          ls -lh /opt/conda/envs/havic_env/bin
           export PATH=$PATH:$CONDA_PREFIX
           echo "conda list" && conda list
           echo "PATH" && echo $PATH
