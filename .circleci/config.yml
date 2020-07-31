@@ -11,12 +11,12 @@ jobs:
       - checkout
       - run: |
           conda env create -f environment.yml
+
+      - run: |
           conda init
           source ~/.bashrc
           conda activate havic_env
           which clusterpicker
-
-      - run: |
           #export PATH=/bin:/usr/bin
           #. $HOME/miniconda3/etc/profile.d/conda.sh
           # conda init
