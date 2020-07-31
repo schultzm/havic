@@ -1,4 +1,7 @@
 # HAVIC
+
+[![CircleCI](https://circleci.com/github/schultzm/HAVIC.svg?style=svg)](https://circleci.com/github/schultzm/HAVIC)
+
 Detect **H**epatitis **A** **V**irus **I**nfection **C**lusters from HAVNET amplicon sequences.  
 
 ## Usage
