@@ -20,7 +20,8 @@ jobs:
           echo "conda list" && conda list
           echo "PATH" && echo $PATH
           echo "env" && env
-          which clusterpicker
+          echo "CONDA_PREFIX" && echo $CONDA_PREFIX
+          clusterpicker
           #          export PATH=$PATH:$CONDA_PREFIX #:/home/circleci/.local/bin
 
           #export PATH=/bin:/usr/bin
