@@ -4,7 +4,6 @@ jobs:
   build:
     docker:
       - image: continuumio/miniconda3
-      # - image: rackspacedot/python38
 
     working_directory: ~/HAVIC
     steps:
@@ -16,23 +15,7 @@ jobs:
           conda init
           source ~/.bashrc
           conda activate havic_env
-          # find /opt/conda/envs/havic_env -name 'clusterpicker'
-          # ls -lh /opt/conda/envs/havic_env/bin
-          # export PATH=$PATH:$CONDA_PREFIX
-          echo "conda list" && conda list
-          # echo "PATH" && echo $PATH
-          # echo "env" && env
-          # echo "CONDA_PREFIX" && echo $CONDA_PREFIX
-          # which ClusterPicker
-          #          export PATH=$PATH:$CONDA_PREFIX #:/home/circleci/.local/bin
-
-          #export PATH=/bin:/usr/bin
-          #. $HOME/miniconda3/etc/profile.d/conda.sh
-          # conda init
-          # source ~/.bashrc
-          # conda activate havic_env
-          #pip install git+https://github.com/schultzm/HAVIC.git --user
-          echo "install.packages('BiocManager', repos='https://cran.ms.unimelb.edu.au/')
+          echo install.packages('BiocManager', repos='https://cran.ms.unimelb.edu.au/')
           BiocManager::install('GenomicAlignments')
           BiocManager::install('Biostrings')
           BiocManager::install('Rsamtools')
