@@ -15,18 +15,18 @@ jobs:
       - run: |
           conda init
           source ~/.bashrc
+          export PATH=$PATH:$CONDA_PREFIX#:/home/circleci/.local/bin
           conda activate havic_env
           echo "conda list" && conda list
           echo "PATH" && echo $PATH
           echo "env" && env
-          # which clusterpicker
+          which clusterpicker
           #export PATH=/bin:/usr/bin
           #. $HOME/miniconda3/etc/profile.d/conda.sh
           # conda init
           # source ~/.bashrc
           # conda activate havic_env
           #pip install git+https://github.com/schultzm/HAVIC.git --user
-          # export PATH=$PATH:/home/circleci/.local/bin
           # echo "install.packages('BiocManager', repos='https://cran.ms.unimelb.edu.au/')
           # BiocManager::install('GenomicAlignments')
           # BiocManager::install('Biostrings')
