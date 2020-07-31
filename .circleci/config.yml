@@ -16,7 +16,8 @@ jobs:
           conda init
           source ~/.bashrc
           conda activate havic_env
-          conda list
+          echo "conda list" && conda list
+          echo "PATH" && echo $PATH
           # which clusterpicker
           #export PATH=/bin:/usr/bin
           #. $HOME/miniconda3/etc/profile.d/conda.sh
