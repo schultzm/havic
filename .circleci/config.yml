@@ -15,7 +15,7 @@ jobs:
           conda init
           source ~/.bashrc
           conda activate havic_env
-          echo install.packages('BiocManager', repos='https://cran.ms.unimelb.edu.au/')
+          echo "install.packages('BiocManager', repos='https://cran.ms.unimelb.edu.au/')
           BiocManager::install('GenomicAlignments')
           BiocManager::install('Biostrings')
           BiocManager::install('Rsamtools')
