@@ -13,7 +13,7 @@ jobs:
           conda env create -f environment.yml
 
       - run: |
-          export PATH=/bin:/usr/bin
+          #export PATH=/bin:/usr/bin
           #. $HOME/miniconda3/etc/profile.d/conda.sh
           conda init
           source ~/.bashrc
