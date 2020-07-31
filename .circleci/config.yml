@@ -21,7 +21,7 @@ jobs:
           echo "PATH" && echo $PATH
           echo "env" && env
           echo "CONDA_PREFIX" && echo $CONDA_PREFIX
-          clusterpicker
+          which clusterpicker
           #          export PATH=$PATH:$CONDA_PREFIX #:/home/circleci/.local/bin
 
           #export PATH=/bin:/usr/bin
