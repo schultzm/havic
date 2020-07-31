@@ -12,8 +12,8 @@ dependencies:
   - iqtree
   - clusterpicker
   - which
-  # - graphviz
-  # - samtools
-  # - pip
-  # - pip:
-  #   - git+https://github.com/schultzm/HAVIC.git
+  - graphviz
+  - samtools
+  - pip
+  - pip:
+    - git+https://github.com/schultzm/HAVIC.git

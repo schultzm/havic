@@ -101,9 +101,9 @@ def main():
     subparser_args1.add_argument(
         "-c",
         "--path_to_clusterpicker",
-        help="""Path to ClusterPicker.jar file.  Follow instructions at
+        help="""Path to ClusterPicker file.  Follow instructions at
                 http://hiv.bio.ed.ac.uk/software.html""",
-        default="clusterpicker",
+        default="ClusterPicker",
         required=False)
     from multiprocessing import cpu_count
     subparser_args1.add_argument(

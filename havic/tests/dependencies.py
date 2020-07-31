@@ -16,4 +16,4 @@ R_LIBS = ['GenomicAlignments',
     'Biostrings'
 ]
 
-CLUSTER_PICKER = 'clusterpicker'
+CLUSTER_PICKER = 'ClusterPicker'
