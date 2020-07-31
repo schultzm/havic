@@ -18,12 +18,12 @@ jobs:
           conda activate havic_env
           find /opt/conda/envs/havic_env -name 'clusterpicker'
           ls -lh /opt/conda/envs/havic_env/bin
-          export PATH=$PATH:$CONDA_PREFIX
+          # export PATH=$PATH:$CONDA_PREFIX
           echo "conda list" && conda list
-          echo "PATH" && echo $PATH
-          echo "env" && env
-          echo "CONDA_PREFIX" && echo $CONDA_PREFIX
-          which clusterpicker
+          # echo "PATH" && echo $PATH
+          # echo "env" && env
+          # echo "CONDA_PREFIX" && echo $CONDA_PREFIX
+          which ClusterPicker
           #          export PATH=$PATH:$CONDA_PREFIX #:/home/circleci/.local/bin
 
           #export PATH=/bin:/usr/bin
