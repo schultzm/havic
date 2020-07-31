@@ -1,4 +1,4 @@
-name: havic_env2
+name: havic_env
 channels:
   - conda-forge
   - bioconda
