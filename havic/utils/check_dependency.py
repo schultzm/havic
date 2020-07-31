@@ -48,7 +48,7 @@ class Dependency:
                     file=sys.stderr)
         if self.category == 'rmodule':
             try:
-                result = check_r_dependencies.importr_tryhard(self.software)
+                #result = check_r_dependencies.importr_tryhard(self.software)
                 # print(result)
                 print(f"R library {self.software}".ljust(28) + ": ok",
                       file=sys.stderr)
