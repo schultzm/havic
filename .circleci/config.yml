@@ -16,6 +16,7 @@ jobs:
           conda init
           source ~/.bashrc
           conda activate havic_env
+          ls /opt/conda/envs/havic_env
           export PATH=$PATH:$CONDA_PREFIX
           echo "conda list" && conda list
           echo "PATH" && echo $PATH
