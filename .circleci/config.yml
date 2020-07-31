@@ -18,6 +18,7 @@ jobs:
           conda activate havic_env
           echo "conda list" && conda list
           echo "PATH" && echo $PATH
+          echo "env" && env
           # which clusterpicker
           #export PATH=/bin:/usr/bin
           #. $HOME/miniconda3/etc/profile.d/conda.sh
