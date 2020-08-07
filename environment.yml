@@ -17,3 +17,4 @@ dependencies:
   - pip
   - pip:
     - git+https://github.com/schultzm/HAVIC.git
+    - pylint
