@@ -23,6 +23,6 @@ class MergeTestCasePass(unittest.TestCase):
         self.version   = __version__
 
     def versioner(self):
-        from .. import __version__
-        self.assertFalse(__version__ == None)
+        # from .. import __version__
+        self.assertFalse(self.version == None)
 

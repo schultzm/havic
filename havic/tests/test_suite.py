@@ -15,4 +15,4 @@ def suite():
     """
     suite = unittest.TestSuite()
     suite.addTest(MergeTestCasePass("versioner"))
-    return 
+    return suite
