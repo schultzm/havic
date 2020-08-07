@@ -22,7 +22,15 @@ class MergeTestCasePass(unittest.TestCase):
                                                          __ref_seq__)
         self.version   = __version__
 
+    def refseq(self):
+        from Bio import SeqIO
+        seqobj = SeqIO.read(open(self.refseq, 'r'), 'fasta')
+        self.assertEqual(seqobj.id, 'x')
+
     def versioner(self):
+        """
+        Test HAVIC version is not None
+        """
         # from .. import __version__
         self.assertFalse(self.version == None)
 
