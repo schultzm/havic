@@ -22,10 +22,13 @@ class MergeTestCasePass(unittest.TestCase):
                                                          __ref_seq__)
         self.version   = __version__
 
-    def refseq(self):
+    def refseqer(self):
+        """
+        Check refseq id from seq header.
+        """
         from Bio import SeqIO
         seqobj = SeqIO.read(open(self.refseq, 'r'), 'fasta')
-        self.assertEqual(seqobj.id, 'x')
+        self.assertEqual(seqobj.id, 'NC_001489.1')
 
     def versioner(self):
         """
