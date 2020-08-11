@@ -18,8 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 __name__ = 'havic'
 __parent_dir__ = 'havic'
 __ref_seq__ = 'data/NC_001489.fa'
-__test_seqs__ = 'data/example.fa'
 __ref_amplicon__ = 'data/havnet_amplicon.fa'
+__test_seqs__ = 'data/example.fa'
 __test_seqs_totrim__ = ['AY644337_55443_seq_1',
                         'RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty',
                         'nDNLdjtgha#HashInSeqName']

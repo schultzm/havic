@@ -8,20 +8,31 @@ Unit Tests.
 import unittest
 from .. import (__parent_dir__,
                 __ref_seq__,
+                __ref_amplicon__,
                 __test_seqs__,
                 __test_seqs_totrim__,
                 __version__
                 )
 import pkg_resources
 from ..utils import *
+from Bio import SeqIO
 
 
 class MergeTestCasePass(unittest.TestCase):
     def setUp(self):
-        self.refseq    = pkg_resources.resource_filename(__parent_dir__,
-                                                         __ref_seq__)
-        self.testseqs  = pkg_resources.resource_filename(__parent_dir__,
-                                                         __test_seqs__)
+        self.refseq    = SeqIO.read(open(pkg_resources. \
+                                    resource_filename(__parent_dir__,
+                                                      __ref_seq__), "r"),
+                                    "fasta")
+        self.testseqs  = list(SeqIO. \
+                              parse(open(pkg_resources. \
+                                         resource_filename(__parent_dir__,
+                                                           __test_seqs__),
+                                         "r"), "fasta"))
+        self.refamplicon = SeqIO.read(open(pkg_resources. \
+                                           resource_filename(__parent_dir__,
+                                                             __ref_amplicon__),
+                                           "r"), "fasta")
         self.version   = __version__
 
 
@@ -60,17 +71,13 @@ class MergeTestCasePass(unittest.TestCase):
         """
         Check refseq id from seq header.
         """
-        from Bio import SeqIO
-        seqobj = SeqIO.read(open(self.refseq, 'r'), 'fasta')
-        self.assertEqual(seqobj.id, 'NC_001489.1')
+        self.assertEqual(self.refseq.id, 'NC_001489.1')
 
     def exampler(self):
         """
         Take a peek in the example.fa and see if it is parsing correctly.
         """
-        from Bio import SeqIO
-        seqobjs = list(SeqIO.parse(open(self.testseqs, 'r'), 'fasta'))
-        self.assertEqual(seqobjs[1].id, 'AY644337_55443_seq_1')
+        self.assertEqual(self.testseqs[1].id, 'AY644337_55443_seq_1')
 
     def havnetampliconer(self):
         """
@@ -78,4 +85,5 @@ class MergeTestCasePass(unittest.TestCase):
         as opposed to fasta so end user can read the comment that primers are
         excluded from the amplicon.
         """
-        
+        self.assertEqual(self.refamplicon.id, "NC_001489_1_ampliconseq_IB")
+

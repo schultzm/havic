@@ -139,16 +139,14 @@ class Pipeline:
         self.minimap2_kmer = minimap2_kmer
         self.iqtree_threads = iqtree_threads
         self.path_to_clusterpicker = path_to_clusterpicker
-        from ..data.havnet_amplicon import havnet_ampliconseq
-        self.havnet_ampliconseq = havnet_ampliconseq
+        from .. import __ref_amplicon__
+        self.havnet_ampliconseq = SeqIO.read(open(__ref_amplicon__, "r"), "fasta")
 
     def _compile_input_fasta(self):
         # 1 Compile the fasta files to single file
-        from Bio import SeqIO
         quality_controlled_seqs = []
         # 1.01 Append the reference amplicon
-        quality_controlled_seqs.append(
-            SeqIO.read(io.StringIO(self.havnet_ampliconseq), "fasta"))
+        quality_controlled_seqs.append(self.havnet_ampliconseq)
         for query_file in self.query_files:
             print(query_file)
             for record in SeqIO.parse(query_file, "fasta"):
