@@ -14,6 +14,7 @@ def suite():
     This is the test suite.
     """
     suite = unittest.TestSuite()
-    suite.addTest(MergeTestCasePass("refseqer"))
     suite.addTest(MergeTestCasePass("versioner"))
+    suite.addTest(MergeTestCasePass("refseqer"))
+    suite.addTest(MergeTestCasePass("exampler"))
     return suite
