@@ -10,6 +10,7 @@ import unittest
 import pkg_resources
 from random import choice as rndm
 from string import ascii_letters
+from pathlib import Path, PurePath
 from Bio import SeqIO
 from .. import (__parent_dir__,
                 __ref_seq__,
@@ -67,13 +68,14 @@ class MergeTestCasePass(unittest.TestCase):
 
     def suite_runner(self):
         """
-        Run the pipeline using the full pipeline demo suite
+        Run the pipeline using the full pipeline demo suite. Check for the
+        output pdf files at the end.
         """
         detection_pipeline = Pipeline([pkg_resources. \
                                       resource_filename(__parent_dir__,
                                                         __test_seqs__)], #inseqs
                                       __test_seqs_totrim__, #trim to amplicon
-                                      None, # the reference genome
+                                      None, # if None, use inbuilt refgenome
                                       False, # redo IQTree? No.
                                       3, # How many SNPs?
                                       300, # SNPs in what seq len?
@@ -86,3 +88,16 @@ class MergeTestCasePass(unittest.TestCase):
         for key, value in detection_pipeline.__dict__.items():
             print(f"{key}: {value}\n")
         detection_pipeline._run()
+
+
+    def pdfs_checker(self):
+        """
+        Check for two PDF files in OUTDIR
+        """
+        self.assertTrue(len(list(Path(OUTDIR).glob("*.pdf"))) == 2)
+
+    def csvs_checker(self):
+        """
+        Check for two CSV files in OUTDIR
+        """
+        self.assertTrue(len(list(Path(OUTDIR).glob("*.csv"))) == 2)
