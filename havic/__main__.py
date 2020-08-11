@@ -11,15 +11,15 @@ todo: doctest in classes
 from datetime import datetime
 import random
 import string
+from pathlib import PurePath
 
 STARTTIME = datetime.now()
 
 def get_execution_time(outdir):
-    import os
     "Calculate length of run."
     print(
         f"\nTotal runtime (HRS:MIN:SECS): {str(datetime.now() - STARTTIME)}")
-    print(f"Results in {os.path.abspath(outdir)} 😷")
+    print(f"Results in {PurePath(outdir)} 😷")
 
 
 def main():

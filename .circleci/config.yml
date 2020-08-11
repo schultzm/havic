@@ -21,6 +21,7 @@ jobs:
           BiocManager::install('Rsamtools')
           BiocManager::install('ggtree')
           BiocManager::install('tidyverse')
+          install.packages('pheatmap', repos='https://cloud.r-project.org')
           install.packages('Rcpp', repos='https://cloud.r-project.org')
           install.packages('phytools',repos='https://cloud.r-project.org', type='source') " | R --no-save
           havic test

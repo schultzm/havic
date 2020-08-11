@@ -5,7 +5,12 @@ Unit Tests.
     <https://www.gnu.org/licenses/>.
 """
 
+
 import unittest
+import pkg_resources
+from random import choice as rndm
+from string import ascii_letters
+from Bio import SeqIO
 from .. import (__parent_dir__,
                 __ref_seq__,
                 __ref_amplicon__,
@@ -13,10 +18,10 @@ from .. import (__parent_dir__,
                 __test_seqs_totrim__,
                 __version__
                 )
-import pkg_resources
-from ..utils import *
-from Bio import SeqIO
+from ..utils.pipeline_runner import Pipeline
 
+PREFIX = f"_{''.join([rndm(ascii_letters) for i in range(4)])}_"
+OUTDIR = f"tmpHAVIC_{''.join([rndm(ascii_letters) for i in range(10)])}"
 
 class MergeTestCasePass(unittest.TestCase):
     def setUp(self):
@@ -35,31 +40,6 @@ class MergeTestCasePass(unittest.TestCase):
                                            "r"), "fasta")
         self.version   = __version__
 
-
-        # print(f"Running test suite...")
-        # from . import __parent_dir__, __test_seqs__, __test_seqs_totrim__
-        # import pkg_resources
-        # from .utils.pipeline_runner import Pipeline
-        # test_query = [pkg_resources.resource_filename(__parent_dir__,
-        #                                               __test_seqs__)]
-        # test_seqs_totrim = [test_seq_totrim for test_seq_totrim in
-        #                     __test_seqs_totrim__]
-        # detection_pipeline = Pipeline(test_query,
-        #                               test_seqs_totrim,
-        #                               args.subject_file,
-        #                               args.redo,
-        #                               args.n_snps,
-        #                               args.seqlen,
-        #                               args.matrixplots,
-        #                               args.prefix,
-        #                               args.outdir,
-        #                               args.minimap2_kmer,
-        #                               args.path_to_clusterpicker,
-        #                               args.iqtree_threads)
-        # for key, value in detection_pipeline.__dict__.items():
-        #     print(f"{key}: {value}\n")
-        # detection_pipeline._run()
-        # get_execution_time(args.outdir)
     def versioner(self):
         """
         Test HAVIC version is not None
@@ -81,9 +61,28 @@ class MergeTestCasePass(unittest.TestCase):
 
     def havnetampliconer(self):
         """
-        Parse the string object as a Seq object.  Use the string 
-        as opposed to fasta so end user can read the comment that primers are
-        excluded from the amplicon.
+        Parse the reference amplicon, which excludes the primer sites.
         """
         self.assertEqual(self.refamplicon.id, "NC_001489_1_ampliconseq_IB")
 
+    def suite_runner(self):
+        """
+        Run the pipeline using the full pipeline demo suite
+        """
+        detection_pipeline = Pipeline([pkg_resources. \
+                                      resource_filename(__parent_dir__,
+                                                        __test_seqs__)], #inseqs
+                                      __test_seqs_totrim__, #trim to amplicon
+                                      None, # the reference genome
+                                      False, # redo IQTree? No.
+                                      3, # How many SNPs?
+                                      300, # SNPs in what seq len?
+                                      True, #draw the plots
+                                      PREFIX, # prepend this to outfiles
+                                      OUTDIR, # send files here
+                                      5, # k-mer size for minimap2
+                                      "ClusterPicker", # tell me where CP is
+                                      4) # how many threads to use for IQTree
+        for key, value in detection_pipeline.__dict__.items():
+            print(f"{key}: {value}\n")
+        detection_pipeline._run()

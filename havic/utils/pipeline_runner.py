@@ -140,7 +140,10 @@ class Pipeline:
         self.iqtree_threads = iqtree_threads
         self.path_to_clusterpicker = path_to_clusterpicker
         from .. import __ref_amplicon__
-        self.havnet_ampliconseq = SeqIO.read(open(__ref_amplicon__, "r"), "fasta")
+        self.havnet_ampliconseq = SeqIO.read(open(pkg_resources. \
+                                           resource_filename(__parent_dir__,
+                                                             __ref_amplicon__),
+                                                  "r"), "fasta")
 
     def _compile_input_fasta(self):
         # 1 Compile the fasta files to single file
@@ -206,9 +209,9 @@ class Pipeline:
         if not self.trim_seqs:
             self.trim_seqs = ''
         aln_trim = Trimmed_alignment(alignment,
-                                     SeqIO.read(
-                                         io.StringIO(self.havnet_ampliconseq),
-                                         "fasta").id, '-', self.trim_seqs)
+                                     self.havnet_ampliconseq.id,
+                                     '-',
+                                     self.trim_seqs)
         if len(aln_trim.alignment) > 2:
             aln_trim._get_refseq_boundary()
             aln_trim.trim_seqs_to_ref()
