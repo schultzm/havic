@@ -49,6 +49,12 @@ class MergeTestCasePass(unittest.TestCase):
         #     print(f"{key}: {value}\n")
         # detection_pipeline._run()
         # get_execution_time(args.outdir)
+    def versioner(self):
+        """
+        Test HAVIC version is not None
+        """
+        # from .. import __version__
+        self.assertFalse(self.version == None)
 
     def refseqer(self):
         """
@@ -58,19 +64,18 @@ class MergeTestCasePass(unittest.TestCase):
         seqobj = SeqIO.read(open(self.refseq, 'r'), 'fasta')
         self.assertEqual(seqobj.id, 'NC_001489.1')
 
-    def versioner(self):
-        """
-        Test HAVIC version is not None
-        """
-        # from .. import __version__
-        self.assertFalse(self.version == None)
-
     def exampler(self):
         """
         Take a peek in the example.fa and see if it is parsing correctly.
         """
         from Bio import SeqIO
-
         seqobjs = list(SeqIO.parse(open(self.testseqs, 'r'), 'fasta'))
         self.assertEqual(seqobjs[1].id, 'AY644337_55443_seq_1')
 
+    def havnetampliconer(self):
+        """
+        Parse the string object as a Seq object.  Use the string 
+        as opposed to fasta so end user can read the comment that primers are
+        excluded from the amplicon.
+        """
+        

@@ -17,4 +17,5 @@ def suite():
     suite.addTest(MergeTestCasePass("versioner"))
     suite.addTest(MergeTestCasePass("refseqer"))
     suite.addTest(MergeTestCasePass("exampler"))
+    suite.addTest(MergeTestCasePass("havnetampliconer"))
     return suite
