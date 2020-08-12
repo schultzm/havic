@@ -68,8 +68,7 @@ class MergeTestCasePass(unittest.TestCase):
 
     def suite_runner(self):
         """
-        Run the pipeline using the full pipeline demo suite. Check for the
-        output pdf files at the end.
+        Run the pipeline using the full pipeline demo suite.
         """
         detection_pipeline = Pipeline([pkg_resources. \
                                       resource_filename(__parent_dir__,
