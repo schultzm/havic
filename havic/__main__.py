@@ -97,7 +97,6 @@ def main():
         type=int,
         choices=[3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27],
         required=False)
-    import os
     subparser_args1.add_argument(
         "-c",
         "--path_to_clusterpicker",
@@ -155,32 +154,8 @@ def main():
         from .tests.dependencies import SOFTWAREZ, R_LIBS
         for software in SOFTWAREZ:
             Dependency(software, 'software').check()
-    elif args.subparser_name == 'test':
-        # print(f"Running test suite...")
-        # from . import __parent_dir__, __test_seqs__, __test_seqs_totrim__
-        # import pkg_resources
-        # from .utils.pipeline_runner import Pipeline
-        # test_query = [pkg_resources.resource_filename(__parent_dir__,
-        #                                               __test_seqs__)]
-        # test_seqs_totrim = [test_seq_totrim for test_seq_totrim in
-        #                     __test_seqs_totrim__]
-        # detection_pipeline = Pipeline(test_query,
-        #                               test_seqs_totrim,
-        #                               args.subject_file,
-        #                               args.redo,
-        #                               args.n_snps,
-        #                               args.seqlen,
-        #                               args.matrixplots,
-        #                               args.prefix,
-        #                               args.outdir,
-        #                               args.minimap2_kmer,
-        #                               args.path_to_clusterpicker,
-        #                               args.iqtree_threads)
-        # for key, value in detection_pipeline.__dict__.items():
-        #     print(f"{key}: {value}\n")
-        # detection_pipeline._run()
-        # get_execution_time(args.outdir)
 
+    elif args.subparser_name == 'test':
         import unittest
         from .tests.test_suite import suite
         runner = unittest.TextTestRunner(verbosity=2)

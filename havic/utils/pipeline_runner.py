@@ -7,12 +7,12 @@ Go
 """
 
 from .. import __ref_seq__, __parent_dir__
-from pathlib import Path
 import pkg_resources
 import io
 import re
 import sys
 import os
+from pathlib import Path, PurePath
 from Bio import SeqIO
 from ruffus import (mkdir,
                     follows,
@@ -33,9 +33,7 @@ def make_path(outdir, prefix, filename):
     :param filename:
     :return: filepath
     """
-    import os
-    return os.path.join(os.path.abspath(outdir), prefix + filename)
-
+    return Path(outdir).joinpath(f"{prefix}{filename}").as_posix()
 
 class Pipeline:
     def __init__(self,
@@ -237,9 +235,7 @@ class Pipeline:
     def _midpoint_root_iqtree(self):
         # 5.1 Midpoint root the phylogeny using ete3
         from ete3 import Tree
-        print(f"Reading {self.outfiles['treefile']}")
         tree = Tree(self.outfiles['treefile'], format=0)
-        print(tree.write())
         root = tree.get_midpoint_outgroup()
         tree.set_outgroup(root)
         tree.ladderize(direction=1)
@@ -417,13 +413,10 @@ class Pipeline:
                       file=sys.stderr)
 
         with tempfile.TemporaryDirectory() as tmpfile:
-            # final_outfolder = self.outdir
-            # self.outdir = tmpfile
             db_name = '.ruffus_history.sqlite'
-            temp_sqlite_db = os.path.join(tmpfile, db_name)
-            perm_sqlite_db = os.path.join(os.path.abspath(self.outdir),
-                                          db_name)
-            if os.path.exists(perm_sqlite_db):
+            temp_sqlite_db = Path(tmpfile).joinpath(db_name)
+            perm_sqlite_db = Path(self.outdir).joinpath(db_name)
+            if perm_sqlite_db.exists():
                 os.popen(f'cp {perm_sqlite_db} {temp_sqlite_db}')
                 print(f'Copied {perm_sqlite_db} to {temp_sqlite_db}.')
             else:
