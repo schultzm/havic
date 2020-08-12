@@ -1,4 +1,4 @@
-'''
+"""
 Uses python3.
 Email: dr.mark.schultz@gmail.com
 Github: schultzm
@@ -13,16 +13,12 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-'''
+"""
 
 from setuptools import setup, find_packages
 import havic
-import os
 
-LONG_DESCRIPTION = 'HAV Transmission Cluster Detection'
-
-if os.path.exists('README'):
-    LONG_DESCRIPTION = open('README').read()
+LONG_DESCRIPTION = open("README.md").read()
 
 setup(
 
@@ -30,31 +26,31 @@ setup(
     version=havic.__version__,
     packages=find_packages(),
     entry_points={
-        'console_scripts': [
-            'havic = havic.__main__:main'
+        "console_scripts": [
+            "havic = havic.__main__:main"
         ]
     },
 
     description=havic.__description__,
     long_description=LONG_DESCRIPTION,
-    classifiers=['Development Status :: 3 - Alpha',
-                 'License :: OSI Approved :: GNU Affero General ' +
-                 'Public License v3 or later (AGPLv3+)',
-                 'Programming Language :: Python :: 3.8',
-                 'Topic :: Scientific/Engineering :: Bio-Informatics',
-                 'Topic :: Scientific/Engineering :: Medical Science Apps.',
-                 'Intended Audience :: Science/Research'],
-    keywords=['Hepatitis',
-              'transmission',
-              'cluster'],
+    classifiers=["Development Status :: 3 - Alpha",
+                 "License :: OSI Approved :: GNU Affero General " +
+                 "Public License v3 or later (AGPLv3+)",
+                 "Programming Language :: Python :: 3.8",
+                 "Topic :: Scientific/Engineering :: Bio-Informatics",
+                 "Topic :: Scientific/Engineering :: Medical Science Apps.",
+                 "Intended Audience :: Science/Research"],
+    keywords=["Hepatitis",
+              "transmission",
+              "cluster"],
     download_url=havic.__install__,
     author=havic.__author__,
     author_email=havic.__author_email__,
     license=havic.__license__,
-    package_data={'': ['*.fa']},
-    install_requires=['ete3>=3.1.1',
-                      'ruffus>=2.6.2',
-                      'biopython>=1.77',
-                      'pandas>=1.0.5',
-                      'rpy2>=3.3.5'],
+    package_data={"": ["*.fa"]},
+    install_requires=["ete3>=3.1.1",
+                      "ruffus>=2.6.2",
+                      "biopython>=1.77",
+                      "pandas>=1.0.5",
+                      "rpy2>=3.3.5"],
 )

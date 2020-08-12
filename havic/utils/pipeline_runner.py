@@ -7,7 +7,7 @@ Go
 """
 
 from .. import __ref_seq__, __parent_dir__
-from ..utils.input_file import Input_file
+from pathlib import Path
 import pkg_resources
 import io
 import re
@@ -65,13 +65,13 @@ class Pipeline:
         :param outdir:
         :param minimap2_kmer:
         """
-        self.query_files = [Input_file(file, "Query").filename for file in
+        self.query_files = [Path(filename).resolve(strict=True) for filename in
                             query_files]
         self.trim_seqs = [re.sub('[^A-Za-z0-9]+', '_', i.replace("_(reversed)", "") \
                           .replace("(", "").replace(")", "").rstrip()) for i in trim_seqs]
         self.subject = subject_file
         if subject_file:
-            self.subject = Input_file(self.subject, "Subject").filename
+            self.subject = Path(self.subject).resolve(strict=True)
         else:
             self.subject = pkg_resources.resource_filename(__parent_dir__,
                                                            __ref_seq__)
