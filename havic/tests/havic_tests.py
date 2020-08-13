@@ -15,7 +15,7 @@ from Bio import SeqIO
 from .. import (__parent_dir__,
                 __ref_seq__,
                 __ref_amplicon__,
-                __test_seqs__,
+                __test_fofn__,
                 __test_seqs_totrim__,
                 __version__
                 )
@@ -30,11 +30,8 @@ class MergeTestCasePass(unittest.TestCase):
                                     resource_filename(__parent_dir__,
                                                       __ref_seq__), "r"),
                                     "fasta")
-        self.testseqs  = list(SeqIO. \
-                              parse(open(pkg_resources. \
-                                         resource_filename(__parent_dir__,
-                                                           __test_seqs__),
-                                         "r"), "fasta"))
+        self.testseqs  = pkg_resources.resource_filename(__parent_dir__,
+                                                         __test_fofn__)
         self.refamplicon = SeqIO.read(open(pkg_resources. \
                                            resource_filename(__parent_dir__,
                                                              __ref_amplicon__),
@@ -58,6 +55,7 @@ class MergeTestCasePass(unittest.TestCase):
         """
         Take a peek in the example.fa and see if it is parsing correctly.
         """
+        print('self.testseqs', self.testseqs)
         self.assertEqual(self.testseqs[1].id, 'AY644337_55443_seq_1')
 
     def havnetampliconer(self):
@@ -72,7 +70,7 @@ class MergeTestCasePass(unittest.TestCase):
         """
         detection_pipeline = Pipeline([pkg_resources. \
                                       resource_filename(__parent_dir__,
-                                                        __test_seqs__)], #inseqs
+                                                        __test_fofn__)], #inseqs
                                       __test_seqs_totrim__, #trim to amplicon
                                       None, # if None, use inbuilt refgenome
                                       False, # redo IQTree? No.

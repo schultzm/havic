@@ -39,7 +39,7 @@ def make_path(outdir, prefix, filename):
 
 class Pipeline:
     def __init__(self,
-                 query_files,
+                 query_fofn,
                  trim_seqs,
                  subject_file,
                  redo,
@@ -54,7 +54,7 @@ class Pipeline:
         """
         Receive the arguments from argparse:
 
-        :param query_files:
+        :param query_fofn:
         :param trim_seqs:
         :param subject_file:
         :param redo:
@@ -65,8 +65,9 @@ class Pipeline:
         :param outdir:
         :param minimap2_kmer:
         """
-        self.query_files = [Path(filename.rstrip()).resolve(strict=True)
-                            for filename in open(query_files, 'r').readlines()]
+        self.query_fofn = [Path(filename.rstrip()).resolve(strict=True)
+                            for filename in open(query_fofn, 'r').readlines()]
+        print(self.query_fofn)
         self.trim_seqs = [re.sub('[^A-Za-z0-9]+', '_', i.replace("_(reversed)", "") \
                           .replace("(", "").replace(")", "").rstrip()) for i in trim_seqs]
         self.subject = subject_file
@@ -156,7 +157,7 @@ class Pipeline:
         quality_controlled_seqs.append(self.havnet_ampliconseq)
         keyval_ids = {}
         dups = []
-        for query_file in self.query_files:
+        for query_file in self.query_fofn:
             for record in SeqIO.parse(query_file, "fasta"):
                 input_id = record.id
                 record.id = re.sub('[^A-Za-z0-9]+', '_', record.id.replace("_(reversed)", "") \
@@ -364,7 +365,7 @@ class Pipeline:
             # print(f"Creating output directory {self.outdir}")
 
         @follows(create_outdir)
-        @files(self.query_files,
+        @files(self.query_fofn,
                self.outfiles['tmp_fasta'], self.havnet_ampliconseq)
         def compile_input_fasta(infile, outfile, refamplicon):
             self._compile_input_fasta()

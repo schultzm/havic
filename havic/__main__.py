@@ -115,8 +115,10 @@ def main():
         required=False)
     subparser_args2 = argparse.ArgumentParser(add_help=False)
     subparser_args2.add_argument(
-        "-q", "--query_files", help="""Query file of file names,
-                                    one path per line""", required=True)
+        "-q", "--query_fofn", help="""
+                                   Query file of file names (fofn),
+                                   one file path per line""",
+                                   required=True)
     subparser_modules = parser.add_subparsers(
         title="Sub-commands help", help="", metavar="", dest="subparser_name")
     subparser_modules.add_parser(
@@ -162,7 +164,7 @@ def main():
 
     elif args.subparser_name == 'detect':
         from .utils.pipeline_runner import Pipeline
-        detection_pipeline = Pipeline(args.query_files,
+        detection_pipeline = Pipeline(args.query_fofn,
                                       args.trim_seqs,
                                       args.subject_file,
                                       args.redo,

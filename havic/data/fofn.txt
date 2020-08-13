@@ -1,0 +1,2 @@
+data/example1.fa
+data/example2.fa

@@ -19,7 +19,7 @@ __name__ = 'havic'
 __parent_dir__ = 'havic'
 __ref_seq__ = 'data/NC_001489.fa'
 __ref_amplicon__ = 'data/havnet_amplicon.fa'
-__test_seqs__ = 'data/example.fa'
+__test_fofn__ = 'data/fofn.txt'
 __test_seqs_totrim__ = ['AY644337_55443_seq_1',
                         'RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty',
                         'nDNLdjtgha#HashInSeqName']
