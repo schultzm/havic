@@ -13,6 +13,8 @@ import re
 import sys
 import os
 from pathlib import Path, PurePath
+from subprocess import Popen, PIPE
+import shlex
 from Bio import SeqIO
 from ruffus import (mkdir,
                     follows,
@@ -86,54 +88,59 @@ class Pipeline:
             self.matrixplots = "as.logical(FALSE)"
         self.prefix = prefix
         self.outdir = outdir
+        repstr = "HAV_all_"
         self.outfiles = {
             'tmp_fasta': make_path(self.outdir, self.prefix,
-                                   "HAV_all_tmpfasta.fa"),
+                                   f"{repstr}tmpfasta.fa"),
+            'seq_header_replacements': make_path(self.outdir, self.prefix,
+                                                 f"{repstr}seq_id_replace.tsv"),
+            'duplicates': make_path(self.outdir, self.prefix,
+                                    f"{repstr}duplicate_seqs.txt"),
             'tmp_bam': make_path(self.outdir,
-                                 self.prefix, "HAV_all_minimap2.bam"),
+                                 self.prefix, f"{repstr}minimap2.bam"),
             'tmp_bam_idx': make_path(self.outdir, self.prefix,
-                                     "HAV_all_minimap2.bam.bai"),
+                                     f"{repstr}minimap2.bam.bai"),
             'bam2fasta': make_path(self.outdir, self.prefix,
-                                   f"HAV_all_minimap2.bam2fasta.R"),
+                                   f"{repstr}minimap2.bam2fasta.R"),
             'bam2fasta_Rout': make_path(self.outdir, self.prefix,
-                                   f"HAV_all_minimap2.bam2fasta.Rout"),
+                                   f"{repstr}minimap2.bam2fasta.Rout"),
             'fasta_from_bam': make_path(self.outdir, self.prefix,
-                                        "HAV_all_minimap2.stack.fa"),
+                                        f"{repstr}minimap2.stack.fa"),
             'fasta_from_bam_trimmed': make_path(self.outdir, self.prefix,
-                                                "HAV_all_minimap2.stack"
+                                                f"{repstr}minimap2.stack"
                                                 f".trimmed.fa"),
             'treefile': make_path(self.outdir, self.prefix,
-                                  f"HAV_all_minimap2.stack.trimmed.fa"
+                                  f"{repstr}minimap2.stack.trimmed.fa"
                                   f".treefile"),
             'mp_treefile': make_path(self.outdir, self.prefix,
-                                     f"HAV_all_minimap2.stack.trimmed"
+                                     f"{repstr}minimap2.stack.trimmed"
                                      f".fa.mp.treefile"),
             'clusterpicked_tree': make_path(self.outdir, self.prefix,
-                                            f"HAV_all_minimap2.stack.trimmed"
+                                            f"{repstr}minimap2.stack.trimmed"
                                             f".fa.mp_clusterPicks.nwk"
                                             f".figTree"),
             'clusterpicked_tree_bkp': make_path(self.outdir, self.prefix,
-                                                f"HAV_all_minimap2.stack"
+                                                f"{repstr}minimap2.stack"
                                                 f".trimmed.fa.div_"
                                                 f"{self.n_snps}SNPsIn"
                                                 f"{self.seqlen}"
                                                 f"bp.mp_clusterPicks"
                                                 f".nwk.figTree"),
             'cluster_assignments': make_path(self.outdir, self.prefix,
-                                             f"HAV_all_minimap2.stack.trimmed"
+                                             f"{repstr}minimap2.stack.trimmed"
                                              f".fa.mp_clusterPicks_log.txt"),
             'clusters_assigned': make_path(self.outdir, self.prefix,
-                                           f"HAV_all_minimap2.stack.trimmed"
+                                           f"{repstr}minimap2.stack.trimmed"
                                            f".fa.mp_clusterPicks_summarised"
                                            f".txt"),
             'treeplotr': make_path(self.outdir, self.prefix,
-                                   f"HAV_all_minimap2.stack.trimmed.fa"
+                                   f"{repstr}minimap2.stack.trimmed.fa"
                                    f".Rplot.R"),
             'treeplotr_out': make_path(self.outdir, self.prefix,
-                                   f"HAV_all_minimap2.stack.trimmed.fa"
+                                   f"{repstr}minimap2.stack.trimmed.fa"
                                    f".Rplot.Rout")
-
         }
+
         self.minimap2_kmer = minimap2_kmer
         self.iqtree_threads = iqtree_threads
         self.path_to_clusterpicker = path_to_clusterpicker
@@ -148,19 +155,34 @@ class Pipeline:
         quality_controlled_seqs = []
         # 1.01 Append the reference amplicon
         quality_controlled_seqs.append(self.havnet_ampliconseq)
+        keyval_ids = {}
+        dups = []
         for query_file in self.query_files:
-            print(query_file)
             for record in SeqIO.parse(query_file, "fasta"):
+                input_id = record.id
                 record.id = re.sub('[^A-Za-z0-9]+', '_', record.id.replace("_(reversed)", "") \
                     .replace("(", "").replace(")", "").rstrip())
+                if str(record.id) != str(input_id):
+                    keyval_ids[str(input_id)] = str(record.id)
                 # 1.02 Remove duplicates.
                 if record.id not in [
                     record.id for record in quality_controlled_seqs
                 ]:
                     quality_controlled_seqs.append(record)
                 else:
-                    print(f"Duplicate record found (only one copy of this "
-                          f"added to quality_controlled_seqs): {record.id}")
+                    dups.append(str(record.id))
+        if keyval_ids:
+            with open(self.outfiles['seq_header_replacements'], 'w') as out_h:
+                out_h.write("Input_seq_header\tOutput_seq_header\n")
+                for key, val in keyval_ids.items():
+                    out_h.write(key+"\t"+val+"\n")
+        else:
+            print("Zero seq headers were modified.")
+        if dups:
+            with open(self.outfiles['duplicates'], 'w') as out_h:
+                out_h.write("\n".join(dups))
+        else:
+            print("Zero duplicate sequences were found.")
         SeqIO.write(quality_controlled_seqs, self.outfiles['tmp_fasta'],
                     "fasta")
 
@@ -168,14 +190,24 @@ class Pipeline:
         cmd = f"minimap2 -k {self.minimap2_kmer} -a {self.subject} " \
               f"{self.outfiles['tmp_fasta']} " \
               f"| samtools sort > {self.outfiles['tmp_bam']}"
-        print(cmd)
+        # print(cmd)
         os.system(cmd)
         cmd = f"samtools index {self.outfiles['tmp_bam']}"
         os.system(cmd)
         # 3.1 find the unmapped sequences.
-        cmd = f"samtools view -f 4 {self.outfiles['tmp_bam']} | cut -f 1"
-        print(f"Unmapped reads at k-mer {self.minimap2_kmer}:")
-        os.system(cmd)
+        cmd = f"samtools view -f 4 {self.outfiles['tmp_bam']}"
+        cmd2 = "cut -f 1"
+        proc = Popen(shlex.split(cmd), stdout=PIPE, stderr=PIPE)
+        proc2 = Popen(shlex.split(cmd2),
+                      stdin=proc.stdout,
+                      stdout=PIPE,
+                      stderr=PIPE)
+        result = proc2.communicate()[0].decode('UTF-8').split('\n')
+        if result:
+            print(f"\nUnmapped reads at k-mer {self.minimap2_kmer}:")
+            print("\n".join(result))
+        else:
+            pass
 
     def _bam2fasta(self):
         """
@@ -265,8 +297,6 @@ class Pipeline:
         os.system(cmd)
 
     def _summarise_cluster_assignments(self):
-        from subprocess import Popen, PIPE
-        import shlex
         cmd = f"grep ClusterNumber {self.outfiles['cluster_assignments']} -n"
         proc = Popen(shlex.split(cmd), stdout=PIPE)
         line_number = int(proc.communicate()[0].decode('UTF-8').split(":")[0])

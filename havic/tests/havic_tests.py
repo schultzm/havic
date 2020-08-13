@@ -83,7 +83,7 @@ class MergeTestCasePass(unittest.TestCase):
                                       OUTDIR, # send files here
                                       5, # k-mer size for minimap2
                                       "ClusterPicker", # tell me where CP is
-                                      4) # how many threads to use for IQTree
+                                      4) # how many threads to use for IQTree2
         for key, value in detection_pipeline.__dict__.items():
             print(f"{key}: {value}\n")
         detection_pipeline._run()
