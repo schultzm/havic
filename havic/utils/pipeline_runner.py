@@ -6,7 +6,7 @@ Run the pipeline.
 Go
 """
 
-from .. import __ref_seq__, __parent_dir__
+from .. import __ref_seq__, __parent_dir__, __ref_amplicon__
 import pkg_resources
 import io
 import re
@@ -65,8 +65,8 @@ class Pipeline:
         :param outdir:
         :param minimap2_kmer:
         """
-        self.query_files = [Path(filename).resolve(strict=True) for filename in
-                            query_files]
+        self.query_files = [Path(filename.rstrip()).resolve(strict=True)
+                            for filename in open(query_files, 'r').readlines()]
         self.trim_seqs = [re.sub('[^A-Za-z0-9]+', '_', i.replace("_(reversed)", "") \
                           .replace("(", "").replace(")", "").rstrip()) for i in trim_seqs]
         self.subject = subject_file
@@ -144,7 +144,6 @@ class Pipeline:
         self.minimap2_kmer = minimap2_kmer
         self.iqtree_threads = iqtree_threads
         self.path_to_clusterpicker = path_to_clusterpicker
-        from .. import __ref_amplicon__
         self.havnet_ampliconseq = SeqIO.read(open(pkg_resources. \
                                            resource_filename(__parent_dir__,
                                                              __ref_amplicon__),

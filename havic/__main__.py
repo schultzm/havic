@@ -115,8 +115,8 @@ def main():
         required=False)
     subparser_args2 = argparse.ArgumentParser(add_help=False)
     subparser_args2.add_argument(
-        "-q", "--query_files", help="Query file", nargs="+", required=True)
-
+        "-q", "--query_files", help="""Query file of file names,
+                                    one path per line""", required=True)
     subparser_modules = parser.add_subparsers(
         title="Sub-commands help", help="", metavar="", dest="subparser_name")
     subparser_modules.add_parser(
@@ -137,7 +137,6 @@ def main():
         description="Run HAVIC test using pre-packaged example data.",
         parents=[subparser_args1],
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-
     args = parser.parse_args()
 
     if not args.subparser_name:
