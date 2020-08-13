@@ -164,7 +164,7 @@ def main():
 
     elif args.subparser_name == 'detect':
         from .utils.pipeline_runner import Pipeline
-        detection_pipeline = Pipeline(args.query_fofn,
+        detection_pipeline = Pipeline((args.query_fofn, False), # test is False
                                       args.trim_seqs,
                                       args.subject_file,
                                       args.redo,

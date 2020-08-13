@@ -16,7 +16,6 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(MergeTestCasePass("versioner"))
     suite.addTest(MergeTestCasePass("refseqer"))
-    suite.addTest(MergeTestCasePass("exampler"))
     suite.addTest(MergeTestCasePass("havnetampliconer"))
     suite.addTest(MergeTestCasePass("suite_runner"))
     suite.addTest(MergeTestCasePass("pdfs_checker"))

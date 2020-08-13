@@ -37,6 +37,31 @@ def make_path(outdir, prefix, filename):
     """
     return Path(outdir).joinpath(f"{prefix}{filename}").as_posix()
 
+def absolute_paths(fofn, test_status):
+    """Get absolute paths for filenames in file of filenames (fofn).  Deal with
+    empty rows and invalid file paths.
+
+    Args:
+        fofn (string): path to fofn
+        test_status(boolean): This file is for dev purposes
+
+    Returns:
+        list: valid absolute file paths
+    """
+    fnames_out = []
+    with open(fofn, 'r') as input_handle:
+        fnames = list(filter(None, [fname.rstrip().lstrip() for fname in input_handle.readlines()]))
+        if test_status:
+            fnames = [pkg_resources.resource_filename(__parent_dir__,
+                                                      fname) for fname in
+                      fnames]
+        for fname in fnames:
+            if Path(fname).exists():
+                fnames_out.append(Path(fname).resolve(strict=True))
+            else:
+                print('Warning, filename does not exist:', fname)
+    return fnames_out
+
 class Pipeline:
     def __init__(self,
                  query_fofn,
@@ -65,9 +90,8 @@ class Pipeline:
         :param outdir:
         :param minimap2_kmer:
         """
-        self.query_fofn = [Path(filename.rstrip()).resolve(strict=True)
-                            for filename in open(query_fofn, 'r').readlines()]
-        print(self.query_fofn)
+        query_fofn, test_status = query_fofn # unpack the tuple
+        self.query_fofn = absolute_paths(query_fofn, test_status)
         self.trim_seqs = [re.sub('[^A-Za-z0-9]+', '_', i.replace("_(reversed)", "") \
                           .replace("(", "").replace(")", "").rstrip()) for i in trim_seqs]
         self.subject = subject_file

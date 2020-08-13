@@ -51,13 +51,6 @@ class MergeTestCasePass(unittest.TestCase):
         """
         self.assertEqual(self.refseq.id, 'NC_001489.1')
 
-    def exampler(self):
-        """
-        Take a peek in the example.fa and see if it is parsing correctly.
-        """
-        print('self.testseqs', self.testseqs)
-        self.assertEqual(self.testseqs[1].id, 'AY644337_55443_seq_1')
-
     def havnetampliconer(self):
         """
         Parse the reference amplicon, which excludes the primer sites.
@@ -68,9 +61,9 @@ class MergeTestCasePass(unittest.TestCase):
         """
         Run the pipeline using the full pipeline demo suite.
         """
-        detection_pipeline = Pipeline([pkg_resources. \
+        detection_pipeline = Pipeline((pkg_resources. \
                                       resource_filename(__parent_dir__,
-                                                        __test_fofn__)], #inseqs
+                                                        __test_fofn__), True), #inseqs
                                       __test_seqs_totrim__, #trim to amplicon
                                       None, # if None, use inbuilt refgenome
                                       False, # redo IQTree? No.
