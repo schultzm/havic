@@ -13,6 +13,7 @@ import re
 import sys
 import os
 from pathlib import Path, PurePath
+import pandas as pd
 from subprocess import Popen, PIPE
 import shlex
 from Bio import SeqIO
@@ -186,8 +187,8 @@ class Pipeline:
                 input_id = record.id
                 record.id = re.sub('[^A-Za-z0-9]+', '_', record.id.replace("_(reversed)", "") \
                     .replace("(", "").replace(")", "").rstrip())
-                if str(record.id) != str(input_id):
-                    keyval_ids[str(input_id)] = str(record.id)
+                # if str(record.id) != str(input_id):
+                keyval_ids[str(input_id)] = str(record.id)
                 # 1.02 Remove duplicates.
                 if record.id not in [
                     record.id for record in quality_controlled_seqs
@@ -197,7 +198,7 @@ class Pipeline:
                     dups.append(str(record.id))
         if keyval_ids:
             with open(self.outfiles['seq_header_replacements'], 'w') as out_h:
-                out_h.write("Input_seq_header\tOutput_seq_header\n")
+                out_h.write("INPUT_SEQ_HEADER\tOUTPUT_SEQ_HEADER\n")
                 for key, val in keyval_ids.items():
                     out_h.write(key+"\t"+val+"\n")
         else:

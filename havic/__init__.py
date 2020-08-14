@@ -23,8 +23,8 @@ __test_fofn__ = 'data/fofn.txt'
 __test_seqs_totrim__ = ['AY644337_55443_seq_1',
                         'RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty',
                         'nDNLdjtgha#HashInSeqName']
-__version__ = '0.1.3'
-__version_date__ = 'Thu 13th Aug, 2020'
+__version__ = '0.1.4'
+__version_date__ = 'Fri 14th Aug, 2020'
 __description__ = 'Detect Hepatitis A Infection Clusters (HAVIC)'
 __author__ = 'Mark B Schultz'
 __author_email__ = 'dr.mark.schultz@gmail.com'
