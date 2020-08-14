@@ -48,7 +48,7 @@ IQTREE2_SETTINGS:
 
 MINIMAP2_SETTINGS:
   k_mer: # select an odd number, between 3 and 27 inclusive
-    5
+    5 # 5 has been good for the HAV amplicon seqs
 
 TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
   AY644337_55443_seq_1 # these are sequences in the QUERY_FILES
