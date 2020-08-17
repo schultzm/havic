@@ -52,5 +52,6 @@ setup(
                       "ruffus>=2.6.2",
                       "biopython>=1.77",
                       "pandas>=1.0.5",
+                      "PyYAML>=5.3.1",
                       "rpy2>=3.3.5"],
 )

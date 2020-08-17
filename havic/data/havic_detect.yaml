@@ -1,3 +1,4 @@
+---
 TEST_RUN:
   Yes # Yes if using havic packaged test data, No otherwise
 
@@ -51,42 +52,12 @@ MINIMAP2_SETTINGS:
     5 # 5 has been good for the HAV amplicon seqs
 
 TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
-  AY644337_55443_seq_1 # these are sequences in the QUERY_FILES
-  RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty
-  nDNLdjtgha#HashInSeqName
+  - AY644337_55443_seq_1 # these are sequences in the QUERY_FILES
+  - RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty
+  - nDNLdjtgha#HashInSeqName
 
 QUERY_FILES: # also known as query sequences in BLAST terminology
-  data/example1.fa # relative or absolute paths to fasta files
-  data/example2.fa
+  - data/example1.fa # relative or absolute paths to fasta files
+  - data/example2.fa
 
-
-
-
-
-
-havic detect [-h] [-t TRIM_SEQS [TRIM_SEQS ...]] [-s SUBJECT_FILE] [-r] [-n N_SNPS] [-l SEQLEN] [-m] [-p PREFIX] [-o OUTDIR] [-k {3,5,7,9,11,13,15,17,19,21,23,25,27}]
-                    [-c PATH_TO_CLUSTERPICKER] [-z {2,4}] -q QUERY_FOFN
-
-Start the infection cluster detection pipeline.
-
-  -s SUBJECT_FILE, --subject_file SUBJECT_FILE
-                        Subject file. If not provided, uses the pre-packaged complete HAVNET reference genome: NC_001489.1 Hepatitis A virus. (default: None)
-  -r, --redo            Redo all (not yet implemented). (default: False)
-  -n N_SNPS, --n_snps N_SNPS
-                        Number of SNPS in distance fraction (numerator) for ClusterPicker assingments. (default: 3)
-  -l SEQLEN, --seqlen SEQLEN
-                        Sequence length in distance fraction (denominator) for ClusterPicker assignments. (default: 300)
-  -m, --matrixplots     Switch on PDF plotting of: Multiple Sequence Alignment (MSA) next to IQ-Tree Maximum Likelihood tree), and; heatmap of SNP distances. (default: False)
-  -p PREFIX, --prefix PREFIX
-                        Filename prefix. (default: _Igbq_)
-  -o OUTDIR, --outdir OUTDIR
-                        Output directory. (default: tmpHAVIC_KyeiIdKjTn)
-  -k {3,5,7,9,11,13,15,17,19,21,23,25,27}, --minimap2_kmer {3,5,7,9,11,13,15,17,19,21,23,25,27}
-                        k-mer size for minimap2 step. (default: 5)
-  -c PATH_TO_CLUSTERPICKER, --path_to_clusterpicker PATH_TO_CLUSTERPICKER
-                        Path to ClusterPicker file. Follow instructions at http://hiv.bio.ed.ac.uk/software.html (default: ClusterPicker)
-  -z {2,4}, --iqtree_threads {2,4}
-                        Number of threads for IQtree (default: 4)
-  -q QUERY_FOFN, --query_fofn QUERY_FOFN
-                        Query file of file names (fofn), one file path per line (default: None)
-
+...

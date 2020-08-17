@@ -17,13 +17,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 __name__ = 'havic'
 __parent_dir__ = 'havic'
-# __ref_seq__ = 'data/NC_001489.fa'
-# __ref_amplicon__ = 'data/havnet_amplicon.fa'
-# __test_fofn__ = 'data/fofn.txt'
-# __test_seqs_totrim__ = ['AY644337_55443_seq_1',
-#                         'RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty',
-#                         'nDNLdjtgha#HashInSeqName']
-__data_dir__
+__ref_seq__ = 'data/NC_001489.fa'
+__ref_amplicon__ = 'data/havnet_amplicon.fa'
+__test_fofn__ = 'data/fofn.txt'
+__test_seqs_totrim__ = ['AY644337_55443_seq_1',
+                        'RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty',
+                        'nDNLdjtgha#HashInSeqName']
+# __data_dir__ = 'data'
+__havic_yaml__ = 'data/havic_detect.yaml'
 __version__ = '0.2.0'
 __version_date__ = 'Fri 14th Aug, 2020'
 __description__ = 'Detect Hepatitis A Infection Clusters (HAVIC)'

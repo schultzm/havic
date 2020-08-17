@@ -15,9 +15,11 @@ def suite():
     """
     suite = unittest.TestSuite()
     suite.addTest(MergeTestCasePass("versioner"))
-    suite.addTest(MergeTestCasePass("refseqer"))
-    suite.addTest(MergeTestCasePass("havnetampliconer"))
+    # suite.addTest(MergeTestCasePass("yamler"))
+    suite.addTest(MergeTestCasePass("parser"))
+    # suite.addTest(MergeTestCasePass("refseqer"))
+    # suite.addTest(MergeTestCasePass("havnetampliconer"))
     suite.addTest(MergeTestCasePass("suite_runner"))
-    suite.addTest(MergeTestCasePass("pdfs_checker"))
-    suite.addTest(MergeTestCasePass("csvs_checker"))
+    # suite.addTest(MergeTestCasePass("pdfs_checker"))
+    # suite.addTest(MergeTestCasePass("csvs_checker"))
     return suite

@@ -11,12 +11,14 @@ import pkg_resources
 from random import choice as rndm
 from string import ascii_letters
 from pathlib import Path, PurePath
+import yaml
 from Bio import SeqIO
 from .. import (__parent_dir__,
-                __ref_seq__,
-                __ref_amplicon__,
-                __test_fofn__,
-                __test_seqs_totrim__,
+                __havic_yaml__,
+                # __ref_seq__,
+                # __ref_amplicon__,
+                # __test_fofn__,
+                # __test_seqs_totrim__,
                 __version__
                 )
 from ..utils.pipeline_runner import Pipeline
@@ -26,17 +28,34 @@ OUTDIR = f"tmpHAVIC_{''.join([rndm(ascii_letters) for i in range(10)])}"
 
 class MergeTestCasePass(unittest.TestCase):
     def setUp(self):
-        self.refseq    = SeqIO.read(open(pkg_resources. \
-                                    resource_filename(__parent_dir__,
-                                                      __ref_seq__), "r"),
-                                    "fasta")
-        self.testseqs  = pkg_resources.resource_filename(__parent_dir__,
-                                                         __test_fofn__)
-        self.refamplicon = SeqIO.read(open(pkg_resources. \
-                                           resource_filename(__parent_dir__,
-                                                             __ref_amplicon__),
-                                           "r"), "fasta")
+        # self.refseq    = SeqIO.read(open(pkg_resources. \
+        #                             resource_filename(__parent_dir__,
+        #                                               __ref_seq__), "r"),
+        #                             "fasta")
+        # self.testseqs  = pkg_resources.resource_filename(__parent_dir__,
+        #                                                  __test_fofn__)
+        # self.refamplicon = SeqIO.read(open(pkg_resources. \
+        #                                    resource_filename(__parent_dir__,
+        #                                                      __ref_amplicon__),
+        #                                    "r"), "fasta")
         self.version   = __version__
+        self.yaml = yaml.load(open(pkg_resources. \
+                                   resource_filename(__parent_dir__,
+                                   __havic_yaml__)
+                                  ),
+                             Loader=yaml.FullLoader)
+        # self.
+
+    # def yamler(self):
+    #     import yaml
+    #     data = yaml.load(open(pkg_resources.resource_filename(__parent_dir__,
+    #                                                           __havic_yaml__),
+    #                          'r'), Loader=yaml.FullLoader
+    #                     )
+    #     self.data = data
+
+    def parser(self):
+        print(self.yaml['TEST_RUN'])
 
     def versioner(self):
         """
@@ -45,25 +64,24 @@ class MergeTestCasePass(unittest.TestCase):
         # from .. import __version__
         self.assertFalse(self.version == None)
 
-    def refseqer(self):
-        """
-        Check refseq id from seq header.
-        """
-        self.assertEqual(self.refseq.id, 'NC_001489.1')
+    # def refseqer(self):
+    #     """
+    #     Check refseq id from seq header.
+    #     """
+    #     self.assertEqual(self.refseq.id, 'NC_001489.1')
 
-    def havnetampliconer(self):
-        """
-        Parse the reference amplicon, which excludes the primer sites.
-        """
-        self.assertEqual(self.refamplicon.id, "NC_001489_1_ampliconseq_IB")
+    # def havnetampliconer(self):
+    #     """
+    #     Parse the reference amplicon, which excludes the primer sites.
+    #     """
+    #     self.assertEqual(self.refamplicon.id, "NC_001489_1_ampliconseq_IB")
 
     def suite_runner(self):
         """
         Run the pipeline using the full pipeline demo suite.
         """
-        detection_pipeline = Pipeline((pkg_resources. \
-                                      resource_filename(__parent_dir__,
-                                                        __test_fofn__), True), #inseqs
+        # pass
+        detection_pipeline = Pipeline((), #inseqs
                                       __test_seqs_totrim__, #trim to amplicon
                                       None, # if None, use inbuilt refgenome
                                       False, # redo IQTree? No.
@@ -80,14 +98,14 @@ class MergeTestCasePass(unittest.TestCase):
         detection_pipeline._run()
 
 
-    def pdfs_checker(self):
-        """
-        Check for two PDF files in OUTDIR
-        """
-        self.assertTrue(len(list(Path(OUTDIR).glob("*.pdf"))) == 2)
+    # def pdfs_checker(self):
+    #     """
+    #     Check for two PDF files in OUTDIR
+    #     """
+    #     self.assertTrue(len(list(Path(OUTDIR).glob("*.pdf"))) == 2)
 
-    def csvs_checker(self):
-        """
-        Check for two CSV files in OUTDIR
-        """
-        self.assertTrue(len(list(Path(OUTDIR).glob("*.csv"))) == 2)
+    # def csvs_checker(self):
+    #     """
+    #     Check for two CSV files in OUTDIR
+    #     """
+    #     self.assertTrue(len(list(Path(OUTDIR).glob("*.csv"))) == 2)
