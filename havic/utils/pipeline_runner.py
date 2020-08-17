@@ -38,25 +38,27 @@ def make_path(outdir, prefix, filename):
     """
     return Path(outdir).joinpath(f"{prefix}{filename}").as_posix()
 
-def absolute_paths(fofn, test_status):
-    """Get absolute paths for filenames in file of filenames (fofn).  Deal with
-    empty rows and invalid file paths.
+def absolute_paths(fname, test_status):
+    """Get absolute paths for filename. Deal with
+    invalid file paths.
 
     Args:
-        fofn (string): path to fofn
+        fname (string): filename
         test_status(boolean): This file is for dev purposes
 
     Returns:
-        list: valid absolute file paths
+        valid absolute file path
     """
-    fnames_out = []
-    with open(fofn, 'r') as input_handle:
-        fnames = list(filter(None, [fname.rstrip().lstrip() for fname in input_handle.readlines()]))
-        if test_status:
-            fnames = [pkg_resources.resource_filename(__parent_dir__,
-                                                      fname) for fname in
-                      fnames]
-        for fname in fnames:
+    # fnames_out = []
+    # with open(fofn, 'r') as input_handle:
+    #     fnames = list(filter(None, [fname.rstrip().lstrip() for fname in input_handle.readlines()]))
+        # for fname in fnames:
+    # fnames = []
+    if test_status:
+        fname = pkg_resources.resource_filename(__parent_dir__,
+                                                 fname)
+    else:
+        pass
             if Path(fname).exists():
                 fnames_out.append(Path(fname).resolve(strict=True))
             else:
@@ -64,19 +66,39 @@ def absolute_paths(fofn, test_status):
     return fnames_out
 
 class Pipeline:
-    def __init__(self,
-                 query_fofn,
-                 trim_seqs,
-                 subject_file,
-                 redo,
-                 n_snps,
-                 seqlen,
-                 matrixplots,
-                 prefix,
-                 outdir,
-                 minimap2_kmer,
-                 path_to_clusterpicker,
-                 iqtree_threads):
+    def __init__(self, yaml_in):
+        self.test_run = yaml_in['TEST_RUN']
+        self.query_fofn = absolute_paths(yaml_in['QUERY_FILES'],
+                                         self.test_run)
+        self.trim_seqs = yaml_in['TRIM_SEQS']
+        self.subject = yaml_in['SUBJECT_FILE']
+        self.refseq = None
+        if self.test_run:
+            self.refseq = SeqIO.read(open(pkg_resources. \
+                                          resource_filename(__parent_dir__,
+                                                            yaml_in['SUBJECT_FILE']),
+                                                            'r'),
+                                    'fasta')
+        else:
+            self.refseq = SeqIO.read(open(yaml_in['SUBJECT_FILE'], 'r'),
+                                     'fasta')
+                #  query_fofn,
+                #  trim_seqs,
+                #  subject_file,
+                #  redo,
+                #  n_snps,
+                #  seqlen,
+                #  matrixplots,
+                #  prefix,
+                #  outdir,
+                #  minimap2_kmer,
+                #  path_to_clusterpicker,
+                #  iqtree_threads):
+        for key, value in yaml_in.items():
+            print(key, value)
+        sys.exit()
+        # query_fofn = yaml_in['QUERY_FILES', ]
+        # break
         """
         Receive the arguments from argparse:
 
@@ -95,14 +117,14 @@ class Pipeline:
         self.query_fofn = absolute_paths(query_fofn, test_status)
         self.trim_seqs = [re.sub('[^A-Za-z0-9]+', '_', i.replace("_(reversed)", "") \
                           .replace("(", "").replace(")", "").rstrip()) for i in trim_seqs]
-        self.subject = subject_file
-        if subject_file:
-            self.subject = Path(self.subject).resolve(strict=True)
-        else:
-            self.subject = pkg_resources.resource_filename(__parent_dir__,
-                                                           __ref_seq__)
-        print(f"Will map amplicons to {self.subject}")
-        self.refseq = SeqIO.read(self.subject, "fasta")
+        # self.subject = subject_file
+        # if subject_file:
+        #     self.subject = Path(self.subject).resolve(strict=True)
+        # else:
+        #     self.subject = pkg_resources.resource_filename(__parent_dir__,
+        #                                                    __ref_seq__)
+        print(f"Will map amplicons to {self.refseq}")
+        # self.refseq = SeqIO.read(self.subject, "fasta")
         self.reflen = len(self.refseq.seq)
         self.header = self.refseq.id
         self.redo = redo
@@ -212,7 +234,7 @@ class Pipeline:
                     "fasta")
 
     def _minimap2_input_fasta_to_ref(self):
-        cmd = f"minimap2 -k {self.minimap2_kmer} -a {self.subject} " \
+        cmd = f"minimap2 -k {self.minimap2_kmer} -a {self.refseq} " \
               f"{self.outfiles['tmp_fasta']} " \
               f"| samtools sort > {self.outfiles['tmp_bam']}"
         # print(cmd)

@@ -81,18 +81,24 @@ class MergeTestCasePass(unittest.TestCase):
         Run the pipeline using the full pipeline demo suite.
         """
         # pass
-        detection_pipeline = Pipeline((), #inseqs
-                                      __test_seqs_totrim__, #trim to amplicon
-                                      None, # if None, use inbuilt refgenome
-                                      False, # redo IQTree? No.
-                                      3, # How many SNPs?
-                                      300, # SNPs in what seq len?
-                                      True, #draw the plots
-                                      PREFIX, # prepend this to outfiles
-                                      OUTDIR, # send files here
-                                      5, # k-mer size for minimap2
-                                      "ClusterPicker", # tell me where CP is
-                                      4) # how many threads to use for IQTree2
+        detection_pipeline = Pipeline(self.yaml)
+            # self.yaml['QUERY_FILES'],
+            #                           self.yaml['TEST_RUN']), #inseqs
+            #                           self.yaml['SUBJECT_AMPLICON'], #trim to amplicon
+            #                           self.yaml['SUBJECT_FILE'], # if None, use inbuilt refgenome
+            #                           self.yaml['redo'], # redo IQTree? No.
+            #                           self.yaml['CLUSTER_PICKER_SETTINGS'],
+            #                           self.yaml['MINIMAP2_SETTINGS']
+            #                           self.yaml['PLOTS'],
+            #                           self.yaml['OUTDIR']
+            #                         #   3, # How many SNPs?
+            #                         #   300, # SNPs in what seq len?
+            #                           True, #draw the plots
+            #                           PREFIX, # prepend this to outfiles
+            #                           OUTDIR, # send files here
+            #                           5, # k-mer size for minimap2
+            #                         #   "ClusterPicker", # tell me where CP is
+            #                           4) # how many threads to use for IQTree2
         for key, value in detection_pipeline.__dict__.items():
             print(f"{key}: {value}\n")
         detection_pipeline._run()
