@@ -59,5 +59,6 @@ TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
 QUERY_FILES: # also known as query sequences in BLAST terminology
   - data/example1.fa # relative or absolute paths to fasta files
   - data/example2.fa
-
+  - xyz
+  - ''
 ...

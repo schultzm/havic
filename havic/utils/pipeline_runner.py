@@ -28,61 +28,74 @@ from ruffus import (mkdir,
                     originate)
 
 
-def make_path(outdir, prefix, filename):
+def make_path(outdir, filename):
     """
     Make a filepath
     :param outdir:
-    :param prefix:
     :param filename:
     :return: filepath
     """
-    return Path(outdir).joinpath(f"{prefix}{filename}").as_posix()
+    return Path(outdir).joinpath(filename).as_posix()
 
-def absolute_paths(fname, test_status):
-    """Get absolute paths for filename. Deal with
-    invalid file paths.
+def absolute_path(fname_in, test_status):
+    """Get absolute paths for filename.
 
     Args:
         fname (string): filename
         test_status(boolean): This file is for dev purposes
 
     Returns:
-        valid absolute file path
+        valid absolute file path if it is a file, else None
     """
     # fnames_out = []
     # with open(fofn, 'r') as input_handle:
     #     fnames = list(filter(None, [fname.rstrip().lstrip() for fname in input_handle.readlines()]))
         # for fname in fnames:
     # fnames = []
+    fname_out = None
     if test_status:
-        fname = pkg_resources.resource_filename(__parent_dir__,
-                                                 fname)
+        fname_in = pkg_resources.resource_filename(__parent_dir__,
+                                                   fname_in)
+        # print(fname_in)
     else:
         pass
-            if Path(fname).exists():
-                fnames_out.append(Path(fname).resolve(strict=True))
-            else:
-                print('Warning, filename does not exist:', fname)
-    return fnames_out
+    if Path(fname_in).is_file():
+        fname_out = Path(fname_in).resolve(strict=True)
+    else:
+        print(f"\nWarning, '{fname_in}' is not a valid file path.")
+    return fname_out
 
 class Pipeline:
     def __init__(self, yaml_in):
-        self.test_run = yaml_in['TEST_RUN']
-        self.query_fofn = absolute_paths(yaml_in['QUERY_FILES'],
-                                         self.test_run)
-        self.trim_seqs = yaml_in['TRIM_SEQS']
-        self.subject = yaml_in['SUBJECT_FILE']
-        self.refseq = None
-        if self.test_run:
-            self.refseq = SeqIO.read(open(pkg_resources. \
-                                          resource_filename(__parent_dir__,
-                                                            yaml_in['SUBJECT_FILE']),
-                                                            'r'),
-                                    'fasta')
-        else:
-            self.refseq = SeqIO.read(open(yaml_in['SUBJECT_FILE'], 'r'),
-                                     'fasta')
-                #  query_fofn,
+        # self.test_run = yaml_in['TEST_RUN']
+        # print(yaml_in['QUERY_FILES'])
+        # for f in yaml_in['QUERY_FILES']:
+        #     print(f)
+        self.query_files = list(filter(None,
+                                       [absolute_path(fname,
+                                                      yaml_in['TEST_RUN'])
+                                        for fname in yaml_in['QUERY_FILES']]
+                                       )
+                               )
+        if not self.query_files:
+            sys.exit('Unable to continue without input query_files.')
+            # sys.exit()
+        # print(self.query_files)
+        # sys.exit()
+        self.trim_seqs = [re.sub('[^A-Za-z0-9]+', '_', i.replace("_(reversed)", "") \
+                          .replace("(", "").replace(")", "").rstrip()) for i in yaml_in['TRIM_SEQS']]
+        self.subject = absolute_path(yaml_in['SUBJECT_FILE'], yaml_in['TEST_RUN'])
+        # self.refseq = None
+        # if self.test_run:
+        #     self.refseq = SeqIO.read(open(pkg_resources. \
+        #                                   resource_filename(__parent_dir__,
+        #                                                     yaml_in['SUBJECT_FILE']),
+        #                                                     'r'),
+        #                             'fasta')
+        # else:
+        #     self.refseq = SeqIO.read(open(yaml_in['SUBJECT_FILE'], 'r'),
+        #                              'fasta')
+                #  query_files,
                 #  trim_seqs,
                 #  subject_file,
                 #  redo,
@@ -96,13 +109,13 @@ class Pipeline:
                 #  iqtree_threads):
         for key, value in yaml_in.items():
             print(key, value)
-        sys.exit()
-        # query_fofn = yaml_in['QUERY_FILES', ]
+        # sys.exit()
+        # query_files = yaml_in['QUERY_FILES', ]
         # break
         """
         Receive the arguments from argparse:
 
-        :param query_fofn:
+        :param query_files:
         :param trim_seqs:
         :param subject_file:
         :param redo:
@@ -113,85 +126,88 @@ class Pipeline:
         :param outdir:
         :param minimap2_kmer:
         """
-        query_fofn, test_status = query_fofn # unpack the tuple
-        self.query_fofn = absolute_paths(query_fofn, test_status)
-        self.trim_seqs = [re.sub('[^A-Za-z0-9]+', '_', i.replace("_(reversed)", "") \
-                          .replace("(", "").replace(")", "").rstrip()) for i in trim_seqs]
+        # query_files, test_status = query_files # unpack the tuple
+        # self.query_files = absolute_paths(query_files, test_status)
+        # self.trim_seqs = [re.sub('[^A-Za-z0-9]+', '_', i.replace("_(reversed)", "") \
+                        #   .replace("(", "").replace(")", "").rstrip()) for i in trim_seqs]
         # self.subject = subject_file
         # if subject_file:
         #     self.subject = Path(self.subject).resolve(strict=True)
         # else:
         #     self.subject = pkg_resources.resource_filename(__parent_dir__,
         #                                                    __ref_seq__)
+        self.refseq = SeqIO.read(self.subject, "fasta")
         print(f"Will map amplicons to {self.refseq}")
-        # self.refseq = SeqIO.read(self.subject, "fasta")
         self.reflen = len(self.refseq.seq)
         self.header = self.refseq.id
-        self.redo = redo
-        self.n_snps = n_snps
-        self.seqlen = seqlen
-        if matrixplots:
-            self.matrixplots = "as.logical(TRUE)"
-        else:
-            self.matrixplots = "as.logical(FALSE)"
-        self.prefix = prefix
-        self.outdir = outdir
+        # self.redo = yaml_in['REDO']
+        self.matrixplots = yaml_in['PLOTS']
+        self.outdir = yaml_in['OUTDIR']
+        self.distance_fraction = yaml_in['CLUSTER_PICKER_SETTINGS']['distance_fraction']
+        self.support_values = yaml_in['CLUSTER_PICKER_SETTINGS']['fine_cluster_support']
+        self.method = yaml_in['CLUSTER_PICKER_SETTINGS']['distance_method']
+        # if matrixplots:
+        #     self.matrixplots = "as.logical(TRUE)"
+        # else:
+        #     self.matrixplots = "as.logical(FALSE)"
+        # self.prefix = prefix
+        # self.outdir = yaml_in['CLUSTER_PICKER_SETTINGS'][]
+        # sys.exit()
         repstr = "HAV_all_"
         self.outfiles = {
-            'tmp_fasta': make_path(self.outdir, self.prefix,
+            'tmp_fasta': make_path(self.outdir,
                                    f"{repstr}tmpfasta.fa"),
-            'seq_header_replacements': make_path(self.outdir, self.prefix,
+            'seq_header_replacements': make_path(self.outdir,
                                                  f"{repstr}seq_id_replace.tsv"),
-            'duplicates': make_path(self.outdir, self.prefix,
+            'duplicates': make_path(self.outdir,
                                     f"{repstr}duplicate_seqs.txt"),
             'tmp_bam': make_path(self.outdir,
-                                 self.prefix, f"{repstr}minimap2.bam"),
-            'tmp_bam_idx': make_path(self.outdir, self.prefix,
+                                 f"{repstr}minimap2.bam"),
+            'tmp_bam_idx': make_path(self.outdir,
                                      f"{repstr}minimap2.bam.bai"),
-            'bam2fasta': make_path(self.outdir, self.prefix,
+            'bam2fasta': make_path(self.outdir,
                                    f"{repstr}minimap2.bam2fasta.R"),
-            'bam2fasta_Rout': make_path(self.outdir, self.prefix,
+            'bam2fasta_Rout': make_path(self.outdir,
                                    f"{repstr}minimap2.bam2fasta.Rout"),
-            'fasta_from_bam': make_path(self.outdir, self.prefix,
+            'fasta_from_bam': make_path(self.outdir,
                                         f"{repstr}minimap2.stack.fa"),
-            'fasta_from_bam_trimmed': make_path(self.outdir, self.prefix,
+            'fasta_from_bam_trimmed': make_path(self.outdir,
                                                 f"{repstr}minimap2.stack"
                                                 f".trimmed.fa"),
-            'treefile': make_path(self.outdir, self.prefix,
+            'treefile': make_path(self.outdir,
                                   f"{repstr}minimap2.stack.trimmed.fa"
                                   f".treefile"),
-            'mp_treefile': make_path(self.outdir, self.prefix,
+            'mp_treefile': make_path(self.outdir,
                                      f"{repstr}minimap2.stack.trimmed"
                                      f".fa.mp.treefile"),
-            'clusterpicked_tree': make_path(self.outdir, self.prefix,
+            'clusterpicked_tree': make_path(self.outdir,
                                             f"{repstr}minimap2.stack.trimmed"
                                             f".fa.mp_clusterPicks.nwk"
                                             f".figTree"),
-            'clusterpicked_tree_bkp': make_path(self.outdir, self.prefix,
+            'clusterpicked_tree_bkp': make_path(self.outdir,
                                                 f"{repstr}minimap2.stack"
                                                 f".trimmed.fa.div_"
-                                                f"{self.n_snps}SNPsIn"
-                                                f"{self.seqlen}"
-                                                f"bp.mp_clusterPicks"
+                                                f"{self.distance_fraction}distancefraction"
+                                                f".mp_clusterPicks"
                                                 f".nwk.figTree"),
-            'cluster_assignments': make_path(self.outdir, self.prefix,
+            'cluster_assignments': make_path(self.outdir,
                                              f"{repstr}minimap2.stack.trimmed"
                                              f".fa.mp_clusterPicks_log.txt"),
-            'clusters_assigned': make_path(self.outdir, self.prefix,
+            'clusters_assigned': make_path(self.outdir,
                                            f"{repstr}minimap2.stack.trimmed"
                                            f".fa.mp_clusterPicks_summarised"
                                            f".txt"),
-            'treeplotr': make_path(self.outdir, self.prefix,
+            'treeplotr': make_path(self.outdir,
                                    f"{repstr}minimap2.stack.trimmed.fa"
                                    f".Rplot.R"),
-            'treeplotr_out': make_path(self.outdir, self.prefix,
+            'treeplotr_out': make_path(self.outdir,
                                    f"{repstr}minimap2.stack.trimmed.fa"
                                    f".Rplot.Rout")
         }
 
-        self.minimap2_kmer = minimap2_kmer
-        self.iqtree_threads = iqtree_threads
-        self.path_to_clusterpicker = path_to_clusterpicker
+        self.minimap2_kmer = yaml_in['MINIMAP2_SETTINGS']['k_mer']
+        self.iqtree_threads = yaml_in['IQTREE2_SETTINGS']['threads']
+        self.path_to_clusterpicker = yaml_in['CLUSTER_PICKER_SETTINGS']['executable']
         self.havnet_ampliconseq = SeqIO.read(open(pkg_resources. \
                                            resource_filename(__parent_dir__,
                                                              __ref_amplicon__),
@@ -204,7 +220,7 @@ class Pipeline:
         quality_controlled_seqs.append(self.havnet_ampliconseq)
         keyval_ids = {}
         dups = []
-        for query_file in self.query_fofn:
+        for query_file in self.query_files:
             for record in SeqIO.parse(query_file, "fasta"):
                 input_id = record.id
                 record.id = re.sub('[^A-Za-z0-9]+', '_', record.id.replace("_(reversed)", "") \
@@ -333,7 +349,7 @@ class Pipeline:
         cmd = f"{self.path_to_clusterpicker} " \
               f"{self.outfiles['fasta_from_bam_trimmed']} " \
               f"{self.outfiles['mp_treefile']} 70 95 " \
-              f"{self.n_snps/self.seqlen} 15 valid"
+              f"{self.distance_fraction} 15 valid"
         print(cmd)
         os.system(cmd)
 
@@ -373,8 +389,9 @@ class Pipeline:
                                          self.outfiles[
                                              'fasta_from_bam_trimmed'] +
                                          "\"") \
-                .replace("<- a", "<- " + str(self.n_snps)) \
-                .replace("<- b", "<- " + str(self.seqlen)) \
+                .replace("<- a", "<- " + str(self.distance_fraction)) \
+                .replace("<- b", "<- " + str(self.support_values)) \
+                .replace("<- c", "<- " + str(self.method)) \
                 .replace("<- k", "<- " + str(self.minimap2_kmer)) \
                 .replace("<- e", "<- " + str(self.matrixplots))
             # print(cmd)
@@ -412,7 +429,7 @@ class Pipeline:
             # print(f"Creating output directory {self.outdir}")
 
         @follows(create_outdir)
-        @files(self.query_fofn,
+        @files(self.query_files,
                self.outfiles['tmp_fasta'], self.havnet_ampliconseq)
         def compile_input_fasta(infile, outfile, refamplicon):
             self._compile_input_fasta()
@@ -508,7 +525,7 @@ class Pipeline:
 
             # Print out the pipeline graph
             pipeline_printout_graph(
-                make_path(self.outdir, self.prefix, "_pipeline_graph.svg"),
+                make_path(self.outdir, "_pipeline_graph.svg"),
                 "svg")
         # todo - 1.1 trim the sequences to remove primers
     #
