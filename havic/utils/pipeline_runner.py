@@ -14,6 +14,7 @@ import sys
 import os
 from pathlib import Path, PurePath
 import pandas as pd
+import shutil
 from subprocess import Popen, PIPE
 import shlex
 from Bio import SeqIO
@@ -26,7 +27,6 @@ from ruffus import (mkdir,
                     pipeline_run,
                     pipeline_printout_graph,
                     originate)
-
 
 def make_path(outdir, filename):
     """
@@ -65,6 +65,19 @@ def absolute_path(fname_in, test_status):
         print(f"\nWarning, '{fname_in}' is not a valid file path.")
     return fname_out
 
+def correct_characters(input_string):
+    """Remove non alphanumeric characters from string.
+
+    Args:
+        input_string (string)
+
+    Returns:
+        string: output string with non alpha-numeric characters removed.
+    """
+    output_string = re.sub('[^A-Za-z0-9]+', '_', input_string.replace("_(reversed)", "") \
+                          .replace("(", "").replace(")", "").rstrip())
+    return output_string
+
 class Pipeline:
     def __init__(self, yaml_in):
         # self.test_run = yaml_in['TEST_RUN']
@@ -82,8 +95,7 @@ class Pipeline:
             # sys.exit()
         # print(self.query_files)
         # sys.exit()
-        self.trim_seqs = [re.sub('[^A-Za-z0-9]+', '_', i.replace("_(reversed)", "") \
-                          .replace("(", "").replace(")", "").rstrip()) for i in yaml_in['TRIM_SEQS']]
+        self.trim_seqs = [correct_characters(i) for i in yaml_in['TRIM_SEQS']]
         self.subject = absolute_path(yaml_in['SUBJECT_FILE'], yaml_in['TEST_RUN'])
         # self.refseq = None
         # if self.test_run:
@@ -137,7 +149,6 @@ class Pipeline:
         #     self.subject = pkg_resources.resource_filename(__parent_dir__,
         #                                                    __ref_seq__)
         self.refseq = SeqIO.read(self.subject, "fasta")
-        print(f"Will map amplicons to {self.refseq}")
         self.reflen = len(self.refseq.seq)
         self.header = self.refseq.id
         # self.redo = yaml_in['REDO']
@@ -146,6 +157,24 @@ class Pipeline:
         self.distance_fraction = yaml_in['CLUSTER_PICKER_SETTINGS']['distance_fraction']
         self.support_values = yaml_in['CLUSTER_PICKER_SETTINGS']['fine_cluster_support']
         self.method = yaml_in['CLUSTER_PICKER_SETTINGS']['distance_method']
+        self.redo = not yaml_in['CONTINUED_RUN']
+        if self.redo and Path(self.outdir).exists():
+            line_break = "\n"
+            confirm = input(f'{line_break}Are you sure you want to delete {self.outdir} (type "yes" or "no" to exit)?:\n', )
+            increment = 1
+            while 'yes' != confirm.lower() and 'no' != confirm.lower() and increment < 3:
+                confirm = input(f'Please enter "yes" or "no" ({3 - increment} attempts remaining):{line_break}')
+                increment += 1
+            if confirm == 'yes':
+                shutil.rmtree(self.outdir)
+                print(f"Removed {self.outdir}...\r")
+            elif confirm == 'no':
+                sys.exit('Please correct the output directory or write "yes" for CONTINUED_RUN in config.yaml')
+            else:
+                sys.exit()
+        else:
+            pass
+
         # if matrixplots:
         #     self.matrixplots = "as.logical(TRUE)"
         # else:
@@ -223,8 +252,7 @@ class Pipeline:
         for query_file in self.query_files:
             for record in SeqIO.parse(query_file, "fasta"):
                 input_id = record.id
-                record.id = re.sub('[^A-Za-z0-9]+', '_', record.id.replace("_(reversed)", "") \
-                    .replace("(", "").replace(")", "").rstrip())
+                record.id = correct_characters(record.id)
                 # if str(record.id) != str(input_id):
                 keyval_ids[str(input_id)] = str(record.id)
                 # 1.02 Remove duplicates.
@@ -318,8 +346,9 @@ class Pipeline:
 
 
     def _run_iqtree(self):
+        
         if self.redo:
-            redo = "redo -redo"
+            self.cpcmd = "redo -redo"
         else:
             redo = " TEST"
         cmd = f"iqtree -s {self.outfiles['fasta_from_bam_trimmed']} " \
@@ -511,7 +540,7 @@ class Pipeline:
             temp_sqlite_db = Path(tmpfile).joinpath(db_name)
             perm_sqlite_db = Path(self.outdir).joinpath(db_name)
             if perm_sqlite_db.exists():
-                os.popen(f'cp {perm_sqlite_db} {temp_sqlite_db}')
+                shutil.copyfile(perm_sqlite_db, temp_sqlite_db)
                 print(f'Copied {perm_sqlite_db} to {temp_sqlite_db}.')
             else:
                 print(f'Making new SQLite db at {temp_sqlite_db}')
