@@ -158,23 +158,6 @@ class Pipeline:
         self.support_values = yaml_in['CLUSTER_PICKER_SETTINGS']['fine_cluster_support']
         self.method = yaml_in['CLUSTER_PICKER_SETTINGS']['distance_method']
         self.redo = not yaml_in['CONTINUED_RUN']
-        if self.redo and Path(self.outdir).exists():
-            line_break = "\n"
-            confirm = input(f'{line_break}Are you sure you want to delete {self.outdir} (type "yes" or "no" to exit)?:\n', )
-            increment = 1
-            while 'yes' != confirm.lower() and 'no' != confirm.lower() and increment < 3:
-                confirm = input(f'Please enter "yes" or "no" ({3 - increment} attempts remaining):{line_break}')
-                increment += 1
-            if confirm == 'yes':
-                shutil.rmtree(self.outdir)
-                print(f"Removed {self.outdir}...\r")
-            elif confirm == 'no':
-                sys.exit('Please correct the output directory or write "yes" for CONTINUED_RUN in config.yaml')
-            else:
-                sys.exit()
-        else:
-            pass
-
         # if matrixplots:
         #     self.matrixplots = "as.logical(TRUE)"
         # else:
@@ -527,30 +510,37 @@ class Pipeline:
         # Run the pipeline
         import tempfile
 
-        def mv_tmp_sqlite(temp_sqlite_db, perm_sqlite_db):
-            try:
-                os.popen(f'mv {temp_sqlite_db} {perm_sqlite_db}')
-                print(f"Moved {temp_sqlite_db} to {perm_sqlite_db}.")
-            except IOError:
-                print(f'Unable to move {temp_sqlite_db} to {self.outdir}',
-                      file=sys.stderr)
 
         with tempfile.TemporaryDirectory() as tmpfile:
             db_name = '.ruffus_history.sqlite'
             temp_sqlite_db = Path(tmpfile).joinpath(db_name)
             perm_sqlite_db = Path(self.outdir).joinpath(db_name)
-            if perm_sqlite_db.exists():
-                shutil.copyfile(perm_sqlite_db, temp_sqlite_db)
-                print(f'Copied {perm_sqlite_db} to {temp_sqlite_db}.')
+            if self.redo and Path(self.outdir).exists():
+                line_break = "\n"
+                confirm = input(f'{line_break}Are you sure you want to delete {self.outdir} (type "yes" to delete or "no" to abort)?:\n', )
+                increment = 1
+                while 'yes' != confirm.lower() and 'no' != confirm.lower() and increment < 3:
+                    confirm = input(f'Please enter "yes" or "no" ({3 - increment} attempts remaining):{line_break}')
+                    increment += 1
+                if confirm == 'yes':
+                    shutil.rmtree(self.outdir)
+                    print(f"Removed {self.outdir}...\r")
+                    pipeline_run(forcedtorun_tasks=create_outdir,
+                                history_file=temp_sqlite_db)
+                    shutil.copyfile(temp_sqlite_db, perm_sqlite_db)
+                elif confirm == 'no':
+                    sys.exit('Please correct the output directory or write "yes" for CONTINUED_RUN in config.yaml')
+                else:
+                    sys.exit()
             else:
-                print(f'Making new SQLite db at {temp_sqlite_db}')
-            if self.redo:
-                pipeline_run(forcedtorun_tasks=compile_input_fasta,
-                             history_file=temp_sqlite_db)
-                mv_tmp_sqlite(temp_sqlite_db, perm_sqlite_db)
             else:
+                if perm_sqlite_db.exists():
+                    shutil.copyfile(perm_sqlite_db, temp_sqlite_db)
+                    print(f'Copied {perm_sqlite_db} to {temp_sqlite_db}.')
+                else:
+                    print(f'Making new SQLite db at {temp_sqlite_db}')
                 pipeline_run(history_file=temp_sqlite_db)
-                mv_tmp_sqlite(temp_sqlite_db, perm_sqlite_db)
+                shutil.copyfile(temp_sqlite_db, perm_sqlite_db)
 
             # Print out the pipeline graph
             pipeline_printout_graph(
