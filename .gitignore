@@ -1,5 +1,7 @@
 # Pipe dregs
-havic_test_result
+havic_test_results
+havic_test_results/*
+
 .RData
 **/.RData
 .ruffus_history.sqlite
