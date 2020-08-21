@@ -1,0 +1,133 @@
+
+R version 4.0.2 (2020-06-22) -- "Taking Off Again"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+Registered S3 method overwritten by 'treeio':
+  method     from
+  root.phylo ape 
+[Previously saved workspace restored]
+
+> 
+> library(GenomicAlignments)
+Loading required package: BiocGenerics
+Loading required package: parallel
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:parallel’:
+
+    clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
+    clusterExport, clusterMap, parApply, parCapply, parLapply,
+    parLapplyLB, parRapply, parSapply, parSapplyLB
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which, which.max, which.min
+
+Loading required package: S4Vectors
+Loading required package: stats4
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:base’:
+
+    expand.grid
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: GenomicRanges
+Loading required package: SummarizedExperiment
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+Loading required package: DelayedArray
+Loading required package: matrixStats
+
+Attaching package: ‘matrixStats’
+
+The following objects are masked from ‘package:Biobase’:
+
+    anyMissing, rowMedians
+
+
+Attaching package: ‘DelayedArray’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colMaxs, colMins, colRanges, rowMaxs, rowMins, rowRanges
+
+The following objects are masked from ‘package:base’:
+
+    aperm, apply, rowsum
+
+Loading required package: Biostrings
+Loading required package: XVector
+
+Attaching package: ‘Biostrings’
+
+The following object is masked from ‘package:base’:
+
+    strsplit
+
+Loading required package: Rsamtools
+> library(Rsamtools)
+> bamFile <- BamFile('havic_test_results/HAV_all_minimap2.bam', index = 'havic_test_results/HAV_all_minimap2.bam.bai')
+> bamFile
+class: BamFile 
+path: havic_test_results/HAV_all_minimap2.bam
+index: havic_test_results/HAV_all_minimap2.bam.bai
+isOpen: FALSE 
+yieldSize: NA 
+obeyQname: FALSE 
+asMates: FALSE 
+qnamePrefixEnd: NA 
+qnameSuffixStart: NA 
+> seqinfo(bamFile)
+Seqinfo object with 1 sequence from an unspecified genome:
+  seqnames    seqlengths isCircular genome
+  NC_001489.1       7478         NA   <NA>
+> outp <- stackStringsFromBam(bamFile,
++                             param=GRanges('NC_001489.1', IRanges(1, 7478)),
++                             Lpadding.letter='-',
++                             Rpadding.letter='-',
++                             use.names = T)
+> sink('havic_test_results/HAV_all_minimap2.stack.fa')
+> for(i in 1:length(outp)){
++     cat('>',names(outp[i]), '
++ ', sep='')
++     cat(toString(outp[[i]]), '
++ ', sep='')
++ }
+> sink()
+> 
+> proc.time()
+   user  system elapsed 
+ 12.239   1.174  23.992 

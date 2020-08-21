@@ -80,10 +80,7 @@ def correct_characters(input_string):
 
 class Pipeline:
     def __init__(self, yaml_in):
-        # self.test_run = yaml_in['TEST_RUN']
-        # print(yaml_in['QUERY_FILES'])
-        # for f in yaml_in['QUERY_FILES']:
-        #     print(f)
+        self.yaml_in = yaml_in # might need this later, else deleted
         self.query_files = list(filter(None,
                                        [absolute_path(fname,
                                                       yaml_in['TEST_RUN'])
@@ -149,6 +146,8 @@ class Pipeline:
         #     self.subject = pkg_resources.resource_filename(__parent_dir__,
         #                                                    __ref_seq__)
         self.refseq = SeqIO.read(self.subject, "fasta")
+        # print(self.refseq.id)
+        # sys.exit()
         self.reflen = len(self.refseq.seq)
         self.header = self.refseq.id
         # self.redo = yaml_in['REDO']
@@ -157,7 +156,7 @@ class Pipeline:
         self.distance_fraction = yaml_in['CLUSTER_PICKER_SETTINGS']['distance_fraction']
         self.support_values = yaml_in['CLUSTER_PICKER_SETTINGS']['fine_cluster_support']
         self.method = yaml_in['CLUSTER_PICKER_SETTINGS']['distance_method']
-        self.redo = not yaml_in['CONTINUED_RUN']
+        self.redo = yaml_in['FORCE_OVERWRITE_AND_RE_RUN']
         # if matrixplots:
         #     self.matrixplots = "as.logical(TRUE)"
         # else:
@@ -218,11 +217,20 @@ class Pipeline:
         }
 
         self.minimap2_kmer = yaml_in['MINIMAP2_SETTINGS']['k_mer']
-        self.iqtree_threads = yaml_in['IQTREE2_SETTINGS']['threads']
+        self.iqtree_cmd = str(f"{yaml_in['IQTREE2_SETTINGS']['executable']} "
+                          f"-s {self.outfiles['fasta_from_bam_trimmed']} "
+                          f"{yaml_in['IQTREE2_SETTINGS']['threads']} "
+                          f"{yaml_in['IQTREE2_SETTINGS']['model_finder']} "
+                          f"{yaml_in['IQTREE2_SETTINGS']['state_frequency']} "
+                          f"{yaml_in['IQTREE2_SETTINGS']['ultrafast_bootstrap']} "
+                          f"{yaml_in['IQTREE2_SETTINGS']['protect_violations']} "
+                          f"{yaml_in['IQTREE2_SETTINGS']['redo']}")
+        print(self.iqtree_cmd)
+        sys.exit()
         self.path_to_clusterpicker = yaml_in['CLUSTER_PICKER_SETTINGS']['executable']
         self.havnet_ampliconseq = SeqIO.read(open(pkg_resources. \
                                            resource_filename(__parent_dir__,
-                                                             __ref_amplicon__),
+                                                             yaml_in['SUBJECT_AMPLICON']),
                                                   "r"), "fasta")
 
     def _compile_input_fasta(self):
@@ -261,10 +269,10 @@ class Pipeline:
                     "fasta")
 
     def _minimap2_input_fasta_to_ref(self):
-        cmd = f"minimap2 -k {self.minimap2_kmer} -a {self.refseq} " \
+        cmd = f"minimap2 -k {self.minimap2_kmer} -a {self.subject} " \
               f"{self.outfiles['tmp_fasta']} " \
               f"| samtools sort > {self.outfiles['tmp_bam']}"
-        # print(cmd)
+        print(cmd)
         os.system(cmd)
         cmd = f"samtools index {self.outfiles['tmp_bam']}"
         os.system(cmd)
@@ -329,7 +337,7 @@ class Pipeline:
 
 
     def _run_iqtree(self):
-        
+        # cmd = 
         if self.redo:
             self.cpcmd = "redo -redo"
         else:
@@ -515,30 +523,32 @@ class Pipeline:
             db_name = '.ruffus_history.sqlite'
             temp_sqlite_db = Path(tmpfile).joinpath(db_name)
             perm_sqlite_db = Path(self.outdir).joinpath(db_name)
-            if self.redo and Path(self.outdir).exists():
-                line_break = "\n"
-                confirm = input(f'{line_break}Are you sure you want to delete {self.outdir} (type "yes" to delete or "no" to abort)?:\n', )
-                increment = 1
-                while 'yes' != confirm.lower() and 'no' != confirm.lower() and increment < 3:
-                    confirm = input(f'Please enter "yes" or "no" ({3 - increment} attempts remaining):{line_break}')
-                    increment += 1
-                if confirm == 'yes':
-                    shutil.rmtree(self.outdir)
-                    print(f"Removed {self.outdir}...\r")
-                    pipeline_run(forcedtorun_tasks=create_outdir,
-                                history_file=temp_sqlite_db)
-                    shutil.copyfile(temp_sqlite_db, perm_sqlite_db)
-                elif confirm == 'no':
-                    sys.exit('Please correct the output directory or write "yes" for CONTINUED_RUN in config.yaml')
-                else:
-                    sys.exit()
+            if self.redo:
+                # if Path(self.outdir).exists(): # delete the outdir
+                #     line_break = "\n"
+                #     confirm = input(f'{line_break}Are you sure you want to delete {self.outdir} (type "yes" to delete or "no" to abort)?:\n', )
+                #     increment = 1
+                #     while 'yes' != confirm.lower() and 'no' != confirm.lower() and increment < 3:
+                #         confirm = input(f'Please enter "yes" or "no" ({3 - increment} attempts remaining):{line_break}')
+                #         increment += 1
+                #     if confirm == 'yes':
+                #         shutil.rmtree(self.outdir)
+                #         print(f"Removed {self.outdir}...\r")
+                #     elif confirm == 'no':
+                #         sys.exit('Please correct the output directory or write "yes" for CONTINUED_RUN in config.yaml')
+                #     else:
+                #         sys.exit()
+            # else:
+            # else:
+            #     if perm_sqlite_db.exists():
+            #         shutil.copyfile(perm_sqlite_db, temp_sqlite_db)
+            #         print(f'Copied {perm_sqlite_db} to {temp_sqlite_db}.')
+            #     else:
+            #         print(f'Making new SQLite db at {temp_sqlite_db}')
+                pipeline_run(forcedtorun_tasks=create_outdir,
+                             history_file=temp_sqlite_db)
+                shutil.copyfile(temp_sqlite_db, perm_sqlite_db)
             else:
-            else:
-                if perm_sqlite_db.exists():
-                    shutil.copyfile(perm_sqlite_db, temp_sqlite_db)
-                    print(f'Copied {perm_sqlite_db} to {temp_sqlite_db}.')
-                else:
-                    print(f'Making new SQLite db at {temp_sqlite_db}')
                 pipeline_run(history_file=temp_sqlite_db)
                 shutil.copyfile(temp_sqlite_db, perm_sqlite_db)
 
@@ -546,7 +556,7 @@ class Pipeline:
             pipeline_printout_graph(
                 make_path(self.outdir, "_pipeline_graph.svg"),
                 "svg")
-        # todo - 1.1 trim the sequences to remove primers
+            # todo - 1.1 trim the sequences to remove primers
     #
     # def pipeline_of_pipelines(self):
     #     """

@@ -2,8 +2,8 @@
 TEST_RUN:
   Yes # Yes if using havic packaged test data, No otherwise
 
-CONTINUED_RUN:
-  No # Yes if you want to start off from an interrupted run, No for fresh run
+FORCE_OVERWRITE_AND_RE_RUN:
+  Yes # No if you want to start off from an interrupted run
 
 SUBJECT_FILE: # the "subject" sequence in BLAST terms, i.e., reference genome
   data/NC_001489.fa # relative or absolute paths to fasta file
@@ -40,12 +40,12 @@ IQTREE2_SETTINGS:
     '-m MFP' # extended model find with FreeRate heterogeneity + tree inference
   state_frequency:
     '+FO' # Optimized sgate frequencies by maximum-likelihood
-  redo: # recompute everything
-    '--redo' # leave empty string ('') if not wanting to redo
   ultrafast_bootstrap:
     '--ufboot 1000' # use of aLRT will cause ClusterPicker to fall over
   protect_violations: #to protect against severe model violations
     '--bnni'
+  redo: # recompute everything
+    '--redo' # leave empty string ('') if not wanting to redo
 
 MINIMAP2_SETTINGS:
   k_mer: # select an odd number, between 3 and 27 inclusive
