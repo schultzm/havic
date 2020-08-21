@@ -25,11 +25,11 @@ CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
   fine_cluster_support: # branch support minimum value for clusters of tips
     95
   distance_fraction: # float please, genetic distance
-    0.1 # (e.g., 1 SNP in 100 bp = 0.1)
+    0.01 # (e.g., 1 SNP in 100 bp = 0.01)
   large_cluster_threshold:
     15
   distance_method:
-    ambiguity # could also be valid, gap, or abs
+    ambiguity # options are ambiguity, valid, gap, or abs
 
 IQTREE2_SETTINGS:
   executable: 
@@ -45,7 +45,7 @@ IQTREE2_SETTINGS:
   protect_violations: #to protect against severe model violations
     '--bnni'
   redo: # recompute everything
-    '--redo' # leave empty string ('') if not wanting to redo
+    '--redo' # leave empty string ('') if not wanting to redo, else '--redo'
 
 MINIMAP2_SETTINGS:
   k_mer: # select an odd number, between 3 and 27 inclusive

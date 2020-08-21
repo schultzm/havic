@@ -220,13 +220,13 @@ class Pipeline:
         self.iqtree_cmd = str(f"{yaml_in['IQTREE2_SETTINGS']['executable']} "
                           f"-s {self.outfiles['fasta_from_bam_trimmed']} "
                           f"{yaml_in['IQTREE2_SETTINGS']['threads']} "
-                          f"{yaml_in['IQTREE2_SETTINGS']['model_finder']} "
+                          f"{yaml_in['IQTREE2_SETTINGS']['model_finder']}"
                           f"{yaml_in['IQTREE2_SETTINGS']['state_frequency']} "
                           f"{yaml_in['IQTREE2_SETTINGS']['ultrafast_bootstrap']} "
                           f"{yaml_in['IQTREE2_SETTINGS']['protect_violations']} "
                           f"{yaml_in['IQTREE2_SETTINGS']['redo']}")
         print(self.iqtree_cmd)
-        sys.exit()
+        # sys.exit()
         self.path_to_clusterpicker = yaml_in['CLUSTER_PICKER_SETTINGS']['executable']
         self.havnet_ampliconseq = SeqIO.read(open(pkg_resources. \
                                            resource_filename(__parent_dir__,
@@ -305,7 +305,7 @@ class Pipeline:
                     self.reflen,
                     self.outfiles['fasta_from_bam'])
                 out_r.write(cmd)
-            print(cmd)
+            # print(cmd)
             os.system(f"R CMD BATCH {self.outfiles['bam2fasta']} {self.outfiles['bam2fasta_Rout']}")
         except OSError:
             sys.exit("bam2fasta error.  Run 'havic check'.")
@@ -337,15 +337,7 @@ class Pipeline:
 
 
     def _run_iqtree(self):
-        # cmd = 
-        if self.redo:
-            self.cpcmd = "redo -redo"
-        else:
-            redo = " TEST"
-        cmd = f"iqtree -s {self.outfiles['fasta_from_bam_trimmed']} " \
-              f"-T {self.iqtree_threads} -bb 1000 -m{redo}"
-        # print(cmd)
-        os.system(cmd)
+        os.system(self.iqtree_cmd)
 
     def _midpoint_root_iqtree(self):
         # 5.1 Midpoint root the phylogeny using ete3
@@ -411,9 +403,9 @@ class Pipeline:
                                          "\"") \
                 .replace("<- a", "<- " + str(self.distance_fraction)) \
                 .replace("<- b", "<- " + str(self.support_values)) \
-                .replace("<- c", "<- " + str(self.method)) \
+                .replace("<- hh", "<- \"" + str(self.method) + "\"") \
                 .replace("<- k", "<- " + str(self.minimap2_kmer)) \
-                .replace("<- e", "<- " + str(self.matrixplots))
+                .replace("<- e", "<- " + str(self.matrixplots).upper())
             # print(cmd)
             out_r.write(cmd)
         os.system(f"R CMD BATCH {self.outfiles['treeplotr']} {self.outfiles['treeplotr_out']}")
@@ -549,12 +541,13 @@ class Pipeline:
                              history_file=temp_sqlite_db)
                 shutil.copyfile(temp_sqlite_db, perm_sqlite_db)
             else:
+                shutil.copyfile(perm_sqlite_db, temp_sqlite_db)
                 pipeline_run(history_file=temp_sqlite_db)
                 shutil.copyfile(temp_sqlite_db, perm_sqlite_db)
 
             # Print out the pipeline graph
             pipeline_printout_graph(
-                make_path(self.outdir, "_pipeline_graph.svg"),
+                make_path(self.outdir, "pipeline_graph.svg"),
                 "svg")
             # todo - 1.1 trim the sequences to remove primers
     #

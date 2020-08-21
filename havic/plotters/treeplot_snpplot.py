@@ -9,7 +9,7 @@ basename <- z
 print(paste0('basename: ', basename))
 distfract <- a
 supportvals <- b
-method <- c
+method <- hh
 kmer <- k
 matrixplots <- e
 tree <- read.newick(file=paste0(basename, '.mp.treefile'))
@@ -62,10 +62,10 @@ if(matrixplots){
         geom_text2(aes(x=branch, label=as.integer(label), vjust=-0.3, hjust=1, subset=(isTip!=TRUE & as.integer(label)>=70), na.rm=TRUE), size=fntsz, na.rm=TRUE) +
         geom_treescale(x=0.01, y =-2, offset=1, fontsize = fntsz, linesize=0.1) +
         annotate("text", x = 0.015, y=-4, label = "Substitutions per site", size=fntsz) +
-        ggtitle(label = "ML IQtree with bootstrap %, tips cluster-picked (left); fasta alignment (right)", subtitle = paste0('Clusters (coloured tips) have been picked as clades with >=95% support and divergence <= ', distfract*100, '%')) #+
+        ggtitle(label = "ML IQtree with bootstrap %, tips cluster-picked (left); fasta alignment (right)", subtitle = paste0('Clusters (coloured tips) have been picked as clades with >= ', supportvals, '% support and divergence <= ', distfract*100, '%, genetic distances as \\'', method, '\\'')) #+
     #    scale_colour_manual(values=rownames(pal$HSL), na.value = "black")
     q
-    pdf(file=paste0(basename, '.mp.treefile.', distfract*100, '%divergence_', method, '_msa.pdf'), paper = 'a4r', width=11.69, height=8.27)
+    pdf(file=paste0(basename, '.mp.treefile_', distfract*100, 'percent_divergence_', method, '_msa.pdf'), paper = 'a4r', width=11.69, height=8.27)
 
     h <- msaplot(p=q, fasta=basename, offset = offst, width = wdth, bg_line = FALSE, color=c('#f7fcfd', #white
                                                                                         '#ef3b2c', #red
