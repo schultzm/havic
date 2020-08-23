@@ -1,17 +1,24 @@
 # Pipe dregs
 havic_test_results
 havic_test_results/*
+.ruffus_history.sqlite
 
+
+# R dregs
 .RData
 **/.RData
-.ruffus_history.sqlite
+.Rhistory
+**/.Rhistory
+
+# Apple files
 .vscode/
+.idea
 .DS_Store
 **/.DS_Store
-tmpHAVIC*/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*/__pycache__/
+**/__pycache__/
 *.py[cod]
 *$py.class
 
@@ -113,5 +120,3 @@ ENV/
 
 # mypy
 .mypy_cache/
-.Rhistory
-**/.Rhistory
