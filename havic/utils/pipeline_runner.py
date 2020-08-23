@@ -6,8 +6,8 @@ Run the pipeline.
 Go
 """
 
-from .. import __ref_seq__, __parent_dir__, __ref_amplicon__
-import pkg_resources
+from .. import __parent_dir__
+from pkg_resources import resource_filename as rf
 import io
 import re
 import sys
@@ -47,22 +47,15 @@ def absolute_path(fname_in, test_status):
     Returns:
         valid absolute file path if it is a file, else None
     """
-    # fnames_out = []
-    # with open(fofn, 'r') as input_handle:
-    #     fnames = list(filter(None, [fname.rstrip().lstrip() for fname in input_handle.readlines()]))
-        # for fname in fnames:
-    # fnames = []
     fname_out = None
     if test_status:
-        fname_in = pkg_resources.resource_filename(__parent_dir__,
-                                                   fname_in)
-        # print(fname_in)
+        fname_in = rf(__parent_dir__, fname_in)
     else:
         pass
     if Path(fname_in).is_file():
         fname_out = Path(fname_in).resolve(strict=True)
     else:
-        print(f"\nWarning, '{fname_in}' is not a valid file path.")
+        print(f"\nWarning, '{fname_in}' is not a valid file path.\n")
     return fname_out
 
 def correct_characters(input_string):
@@ -80,7 +73,14 @@ def correct_characters(input_string):
 
 class Pipeline:
     def __init__(self, yaml_in):
-        self.yaml_in = yaml_in # might need this later, else deleted
+        """Read the dictionary, and make it available to Pipeline() methods.
+        The dictionary contains all the run parameters, such as minimap2
+        or iqtree2 settings.
+
+        Args:
+            yaml_in (dict): A dictionary object parsed from a yaml input file.
+        """
+        self.yaml_in = yaml_in # a dict object
         self.query_files = list(filter(None,
                                        [absolute_path(fname,
                                                       yaml_in['TEST_RUN'])
@@ -89,81 +89,14 @@ class Pipeline:
                                )
         if not self.query_files:
             sys.exit('Unable to continue without input query_files.')
-            # sys.exit()
-        # print(self.query_files)
-        # sys.exit()
         self.trim_seqs = [correct_characters(i) for i in yaml_in['TRIM_SEQS']]
         self.subject = absolute_path(yaml_in['SUBJECT_FILE'], yaml_in['TEST_RUN'])
-        # self.refseq = None
-        # if self.test_run:
-        #     self.refseq = SeqIO.read(open(pkg_resources. \
-        #                                   resource_filename(__parent_dir__,
-        #                                                     yaml_in['SUBJECT_FILE']),
-        #                                                     'r'),
-        #                             'fasta')
-        # else:
-        #     self.refseq = SeqIO.read(open(yaml_in['SUBJECT_FILE'], 'r'),
-        #                              'fasta')
-                #  query_files,
-                #  trim_seqs,
-                #  subject_file,
-                #  redo,
-                #  n_snps,
-                #  seqlen,
-                #  matrixplots,
-                #  prefix,
-                #  outdir,
-                #  minimap2_kmer,
-                #  path_to_clusterpicker,
-                #  iqtree_threads):
         for key, value in yaml_in.items():
             print(key, value)
-        # sys.exit()
-        # query_files = yaml_in['QUERY_FILES', ]
-        # break
-        """
-        Receive the arguments from argparse:
-
-        :param query_files:
-        :param trim_seqs:
-        :param subject_file:
-        :param redo:
-        :param n_snps:
-        :param seqlen:
-        :param matrixplots:
-        :param prefix:
-        :param outdir:
-        :param minimap2_kmer:
-        """
-        # query_files, test_status = query_files # unpack the tuple
-        # self.query_files = absolute_paths(query_files, test_status)
-        # self.trim_seqs = [re.sub('[^A-Za-z0-9]+', '_', i.replace("_(reversed)", "") \
-                        #   .replace("(", "").replace(")", "").rstrip()) for i in trim_seqs]
-        # self.subject = subject_file
-        # if subject_file:
-        #     self.subject = Path(self.subject).resolve(strict=True)
-        # else:
-        #     self.subject = pkg_resources.resource_filename(__parent_dir__,
-        #                                                    __ref_seq__)
         self.refseq = SeqIO.read(self.subject, "fasta")
-        # print(self.refseq.id)
-        # sys.exit()
         self.reflen = len(self.refseq.seq)
         self.header = self.refseq.id
-        # self.redo = yaml_in['REDO']
-        self.matrixplots = yaml_in['PLOTS']
         self.outdir = yaml_in['OUTDIR']
-        self.distance_fraction = yaml_in['CLUSTER_PICKER_SETTINGS']['distance_fraction']
-        self.support_values = yaml_in['CLUSTER_PICKER_SETTINGS']['fine_cluster_support']
-        self.method = yaml_in['CLUSTER_PICKER_SETTINGS']['distance_method']
-        self.redo = yaml_in['FORCE_OVERWRITE_AND_RE_RUN']
-        # if matrixplots:
-        #     self.matrixplots = "as.logical(TRUE)"
-        # else:
-        #     self.matrixplots = "as.logical(FALSE)"
-        # self.prefix = prefix
-        # self.outdir = yaml_in['CLUSTER_PICKER_SETTINGS'][]
-        # sys.exit()
         repstr = "HAV_all_"
         self.outfiles = {
             'tmp_fasta': make_path(self.outdir,
@@ -198,7 +131,7 @@ class Pipeline:
             'clusterpicked_tree_bkp': make_path(self.outdir,
                                                 f"{repstr}minimap2.stack"
                                                 f".trimmed.fa.div_"
-                                                f"{self.distance_fraction}distancefraction"
+                                                f"{yaml_in['CLUSTER_PICKER_SETTINGS']['distance_fraction']}distancefraction"
                                                 f".mp_clusterPicks"
                                                 f".nwk.figTree"),
             'cluster_assignments': make_path(self.outdir,
@@ -216,21 +149,27 @@ class Pipeline:
                                    f".Rplot.Rout")
         }
 
-        self.minimap2_kmer = yaml_in['MINIMAP2_SETTINGS']['k_mer']
+        self.minimap2_cmd = f"minimap2 -k {yaml_in['MINIMAP2_SETTINGS']['k_mer']} -a {self.subject} " \
+              f"{self.outfiles['tmp_fasta']} " \
+              f"| samtools sort > {self.outfiles['tmp_bam']}"
+        self.clusterpick_cmd = f"{yaml_in['CLUSTER_PICKER_SETTINGS']['executable']} " \
+            f"{self.outfiles['fasta_from_bam_trimmed']} " \
+            f"{self.outfiles['mp_treefile']} " \
+            f"{yaml_in['CLUSTER_PICKER_SETTINGS']['coarse_subtree_support']} " \
+            f"{yaml_in['CLUSTER_PICKER_SETTINGS']['fine_cluster_support']} " \
+            f"{yaml_in['CLUSTER_PICKER_SETTINGS']['distance_fraction']} " \
+            f"{yaml_in['CLUSTER_PICKER_SETTINGS']['large_cluster_threshold']} " \
+            f"{yaml_in['CLUSTER_PICKER_SETTINGS']['distance_method']}"
         self.iqtree_cmd = str(f"{yaml_in['IQTREE2_SETTINGS']['executable']} "
-                          f"-s {self.outfiles['fasta_from_bam_trimmed']} "
-                          f"{yaml_in['IQTREE2_SETTINGS']['threads']} "
-                          f"{yaml_in['IQTREE2_SETTINGS']['model_finder']}"
-                          f"{yaml_in['IQTREE2_SETTINGS']['state_frequency']} "
-                          f"{yaml_in['IQTREE2_SETTINGS']['ultrafast_bootstrap']} "
-                          f"{yaml_in['IQTREE2_SETTINGS']['protect_violations']} "
-                          f"{yaml_in['IQTREE2_SETTINGS']['redo']}")
-        print(self.iqtree_cmd)
-        # sys.exit()
-        self.path_to_clusterpicker = yaml_in['CLUSTER_PICKER_SETTINGS']['executable']
-        self.havnet_ampliconseq = SeqIO.read(open(pkg_resources. \
-                                           resource_filename(__parent_dir__,
-                                                             yaml_in['SUBJECT_AMPLICON']),
+            f"-s {self.outfiles['fasta_from_bam_trimmed']} "
+            f"{yaml_in['IQTREE2_SETTINGS']['threads']} "
+            f"{yaml_in['IQTREE2_SETTINGS']['model_finder']}"
+            f"{yaml_in['IQTREE2_SETTINGS']['state_frequency']} "
+            f"{yaml_in['IQTREE2_SETTINGS']['ultrafast_bootstrap']} "
+            f"{yaml_in['IQTREE2_SETTINGS']['protect_violations']} "
+            f"{yaml_in['IQTREE2_SETTINGS']['redo']}")
+        self.havnet_ampliconseq = SeqIO.read(open(rf(__parent_dir__,
+                                                  yaml_in['SUBJECT_AMPLICON']),
                                                   "r"), "fasta")
 
     def _compile_input_fasta(self):
@@ -269,9 +208,7 @@ class Pipeline:
                     "fasta")
 
     def _minimap2_input_fasta_to_ref(self):
-        cmd = f"minimap2 -k {self.minimap2_kmer} -a {self.subject} " \
-              f"{self.outfiles['tmp_fasta']} " \
-              f"| samtools sort > {self.outfiles['tmp_bam']}"
+        cmd = self.minimap2_cmd
         print(cmd)
         os.system(cmd)
         cmd = f"samtools index {self.outfiles['tmp_bam']}"
@@ -286,15 +223,15 @@ class Pipeline:
                       stderr=PIPE)
         result = proc2.communicate()[0].decode('UTF-8').split('\n')
         if result:
-            print(f"\nUnmapped reads at k-mer {self.minimap2_kmer}:")
+            print(f"\nUnmapped reads at k-mer {self.yaml_in['MINIMAP2_SETTINGS']['k_mer']}:")
             print("\n".join(result))
         else:
             pass
 
     def _bam2fasta(self):
         """
-
-        :return: fasta from input bam file
+        Convert the bam file to fasta by stacking strings on ref to get MSA.
+        :return: MSA fasta from input bam file
         """
         try:
             with open(self.outfiles['bam2fasta'], 'w') as out_r:
@@ -358,18 +295,11 @@ class Pipeline:
         Run CLUSTER_PICKER on the tree and alignment
         :return: None
         """
-        cmd = f"{self.path_to_clusterpicker} " \
-              f"{self.outfiles['fasta_from_bam_trimmed']} " \
-              f"{self.outfiles['mp_treefile']} 70 95 " \
-              f"{self.distance_fraction} 15 valid"
-        print(cmd)
-        os.system(cmd)
+        os.system(self.clusterpick_cmd)
 
     def _bkp_clusterpickedtree(self):
-        cmd = f"cp {self.outfiles['clusterpicked_tree']} " \
-              f"{self.outfiles['clusterpicked_tree_bkp']}"
-        print(cmd)
-        os.system(cmd)
+        shutil.copyfile(self.outfiles['clusterpicked_tree'],
+                        self.outfiles['clusterpicked_tree_bkp'])
 
     def _summarise_cluster_assignments(self):
         cmd = f"grep ClusterNumber {self.outfiles['cluster_assignments']} -n"
@@ -401,11 +331,11 @@ class Pipeline:
                                          self.outfiles[
                                              'fasta_from_bam_trimmed'] +
                                          "\"") \
-                .replace("<- a", "<- " + str(self.distance_fraction)) \
-                .replace("<- b", "<- " + str(self.support_values)) \
-                .replace("<- hh", "<- \"" + str(self.method) + "\"") \
-                .replace("<- k", "<- " + str(self.minimap2_kmer)) \
-                .replace("<- e", "<- " + str(self.matrixplots).upper())
+                .replace("<- a", "<- " + str(self.yaml_in['CLUSTER_PICKER_SETTINGS']['distance_fraction'])) \
+                .replace("<- b", "<- " + str(self.yaml_in['CLUSTER_PICKER_SETTINGS']['fine_cluster_support'])) \
+                .replace("<- hh", "<- \"" + str(self.yaml_in['CLUSTER_PICKER_SETTINGS']['distance_method']) + "\"") \
+                .replace("<- k", "<- " + str(self.yaml_in['MINIMAP2_SETTINGS']['k_mer'])) \
+                .replace("<- e", "<- " + str(self.yaml_in['PLOTS']).upper())
             # print(cmd)
             out_r.write(cmd)
         os.system(f"R CMD BATCH {self.outfiles['treeplotr']} {self.outfiles['treeplotr_out']}")
@@ -429,16 +359,10 @@ class Pipeline:
         # self._clusterpick()
         # self._plot_results()
 
-        # if not os.path.exists(self.path_to_clusterpicker) or 'cluster' not in \
-        #         self.path_to_clusterpicker.lower():
-        #     sys.exit(f"ClusterPicker error: "
-        #              f"Check {self.path_to_clusterpicker} exists and re-try.")
-
         # Pipeline starts here with Ruffus
         @mkdir(self.outdir)
         def create_outdir():
             pass
-            # print(f"Creating output directory {self.outdir}")
 
         @follows(create_outdir)
         @files(self.query_files,
@@ -509,34 +433,11 @@ class Pipeline:
 
         # Run the pipeline
         import tempfile
-
-
         with tempfile.TemporaryDirectory() as tmpfile:
             db_name = '.ruffus_history.sqlite'
             temp_sqlite_db = Path(tmpfile).joinpath(db_name)
             perm_sqlite_db = Path(self.outdir).joinpath(db_name)
-            if self.redo:
-                # if Path(self.outdir).exists(): # delete the outdir
-                #     line_break = "\n"
-                #     confirm = input(f'{line_break}Are you sure you want to delete {self.outdir} (type "yes" to delete or "no" to abort)?:\n', )
-                #     increment = 1
-                #     while 'yes' != confirm.lower() and 'no' != confirm.lower() and increment < 3:
-                #         confirm = input(f'Please enter "yes" or "no" ({3 - increment} attempts remaining):{line_break}')
-                #         increment += 1
-                #     if confirm == 'yes':
-                #         shutil.rmtree(self.outdir)
-                #         print(f"Removed {self.outdir}...\r")
-                #     elif confirm == 'no':
-                #         sys.exit('Please correct the output directory or write "yes" for CONTINUED_RUN in config.yaml')
-                #     else:
-                #         sys.exit()
-            # else:
-            # else:
-            #     if perm_sqlite_db.exists():
-            #         shutil.copyfile(perm_sqlite_db, temp_sqlite_db)
-            #         print(f'Copied {perm_sqlite_db} to {temp_sqlite_db}.')
-            #     else:
-            #         print(f'Making new SQLite db at {temp_sqlite_db}')
+            if self.yaml_in['FORCE_OVERWRITE_AND_RE_RUN']:
                 pipeline_run(forcedtorun_tasks=create_outdir,
                              history_file=temp_sqlite_db)
                 shutil.copyfile(temp_sqlite_db, perm_sqlite_db)

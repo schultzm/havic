@@ -12,106 +12,49 @@ from random import choice as rndm
 from string import ascii_letters
 from pathlib import Path, PurePath
 import yaml
+import sys
 from Bio import SeqIO
 from .. import (__parent_dir__,
                 __havic_yaml__,
-                # __ref_seq__,
-                # __ref_amplicon__,
-                # __test_fofn__,
-                # __test_seqs_totrim__,
                 __version__
                 )
 from ..utils.pipeline_runner import Pipeline
 
-PREFIX = f"_{''.join([rndm(ascii_letters) for i in range(4)])}_"
-OUTDIR = f"tmpHAVIC_{''.join([rndm(ascii_letters) for i in range(10)])}"
-
 class MergeTestCasePass(unittest.TestCase):
     def setUp(self):
-        # self.refseq    = SeqIO.read(open(pkg_resources. \
-        #                             resource_filename(__parent_dir__,
-        #                                               __ref_seq__), "r"),
-        #                             "fasta")
-        # self.testseqs  = pkg_resources.resource_filename(__parent_dir__,
-        #                                                  __test_fofn__)
-        # self.refamplicon = SeqIO.read(open(pkg_resources. \
-        #                                    resource_filename(__parent_dir__,
-        #                                                      __ref_amplicon__),
-        #                                    "r"), "fasta")
         self.version   = __version__
         self.yaml = yaml.load(open(pkg_resources. \
                                    resource_filename(__parent_dir__,
                                    __havic_yaml__)
                                   ),
                              Loader=yaml.FullLoader)
-        # self.
-
-    # def yamler(self):
-    #     import yaml
-    #     data = yaml.load(open(pkg_resources.resource_filename(__parent_dir__,
-    #                                                           __havic_yaml__),
-    #                          'r'), Loader=yaml.FullLoader
-    #                     )
-    #     self.data = data
-
-    def parser(self):
-        print(self.yaml['TEST_RUN'])
 
     def versioner(self):
         """
         Test HAVIC version is not None
         """
-        # from .. import __version__
         self.assertFalse(self.version == None)
-
-    # def refseqer(self):
-    #     """
-    #     Check refseq id from seq header.
-    #     """
-    #     self.assertEqual(self.refseq.id, 'NC_001489.1')
-
-    # def havnetampliconer(self):
-    #     """
-    #     Parse the reference amplicon, which excludes the primer sites.
-    #     """
-    #     self.assertEqual(self.refamplicon.id, "NC_001489_1_ampliconseq_IB")
 
     def suite_runner(self):
         """
         Run the pipeline using the full pipeline demo suite.
         """
-        # pass
         detection_pipeline = Pipeline(self.yaml)
-            # self.yaml['QUERY_FILES'],
-            #                           self.yaml['TEST_RUN']), #inseqs
-            #                           self.yaml['SUBJECT_AMPLICON'], #trim to amplicon
-            #                           self.yaml['SUBJECT_FILE'], # if None, use inbuilt refgenome
-            #                           self.yaml['redo'], # redo IQTree? No.
-            #                           self.yaml['CLUSTER_PICKER_SETTINGS'],
-            #                           self.yaml['MINIMAP2_SETTINGS']
-            #                           self.yaml['PLOTS'],
-            #                           self.yaml['OUTDIR']
-            #                         #   3, # How many SNPs?
-            #                         #   300, # SNPs in what seq len?
-            #                           True, #draw the plots
-            #                           PREFIX, # prepend this to outfiles
-            #                           OUTDIR, # send files here
-            #                           5, # k-mer size for minimap2
-            #                         #   "ClusterPicker", # tell me where CP is
-            #                           4) # how many threads to use for IQTree2
-        for key, value in detection_pipeline.__dict__.items():
-            print(f"{key}: {value}\n")
+        # for key, value in detection_pipeline.__dict__.items():
+        #     print(f"{key}: {value}\n")
+        self.assertEqual(detection_pipeline.yaml_in['QUERY_FILES'][0],
+                         'data/example1.fa')
         detection_pipeline._run()
 
 
-    # def pdfs_checker(self):
-    #     """
-    #     Check for two PDF files in OUTDIR
-    #     """
-    #     self.assertTrue(len(list(Path(OUTDIR).glob("*.pdf"))) == 2)
+    def pdfs_checker(self):
+        """
+        Check for two PDF files in OUTDIR
+        """
+        self.assertTrue(len(list(Path(self.yaml['OUTDIR']).glob("*.pdf"))) >= 2)
 
-    # def csvs_checker(self):
-    #     """
-    #     Check for two CSV files in OUTDIR
-    #     """
-    #     self.assertTrue(len(list(Path(OUTDIR).glob("*.csv"))) == 2)
+    def csvs_checker(self):
+        """
+        Check for two CSV files in OUTDIR
+        """
+        self.assertTrue(len(list(Path(self.yaml['OUTDIR']).glob("*.csv"))) == 2)
