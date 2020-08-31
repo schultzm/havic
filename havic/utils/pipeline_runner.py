@@ -6,7 +6,7 @@ Run the pipeline.
 Go
 """
 
-from .. import __parent_dir__
+from .. import __parent_dir__#, __nextflow_nf__
 from pkg_resources import resource_filename as rf
 import io
 import re
@@ -28,14 +28,14 @@ from ruffus import (mkdir,
                     pipeline_printout_graph,
                     originate)
 
-def make_path(outdir, filename):
+def make_path(parentdir, filename):
     """
     Make a filepath
-    :param outdir:
-    :param filename:
-    :return: filepath
+    :param parentdir: a parent directory
+    :param filename: a file in the parent dir
+    :return: joined filepath
     """
-    return Path(outdir).joinpath(filename).as_posix()
+    return Path(parentdir).joinpath(filename).as_posix()
 
 def absolute_path(fname_in, test_status):
     """Get absolute paths for filename.
@@ -242,7 +242,7 @@ class Pipeline:
                     self.reflen,
                     self.outfiles['fasta_from_bam'])
                 out_r.write(cmd)
-            # print(cmd)
+            print(cmd)
             os.system(f"R CMD BATCH {self.outfiles['bam2fasta']} {self.outfiles['bam2fasta_Rout']}")
         except OSError:
             sys.exit("bam2fasta error.  Run 'havic check'.")
@@ -347,6 +347,7 @@ class Pipeline:
         :return: None
         """
 
+        # os.system(f"nextflow run {rf(__parent_dir__, __nextflow_nf__)}")
         # Pipeline starts here without Ruffus
         # For development and testing.
         # os.mkdir(self.outdir)

@@ -7,7 +7,8 @@ Unit Tests.
 
 
 import unittest
-import pkg_resources
+# import pkg_resources
+from pkg_resources import resource_filename as rf
 from random import choice as rndm
 from string import ascii_letters
 from pathlib import Path, PurePath
@@ -23,11 +24,11 @@ from ..utils.pipeline_runner import Pipeline
 class MergeTestCasePass(unittest.TestCase):
     def setUp(self):
         self.version   = __version__
-        self.yaml = yaml.load(open(pkg_resources. \
-                                   resource_filename(__parent_dir__,
+        self.yaml = yaml.load(open(rf(__parent_dir__,
                                    __havic_yaml__)
                                   ),
                              Loader=yaml.FullLoader)
+        # print(self.yaml)
 
     def versioner(self):
         """

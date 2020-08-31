@@ -3,7 +3,7 @@ TEST_RUN:
   Yes # Yes if using havic packaged test data, No otherwise
 
 FORCE_OVERWRITE_AND_RE_RUN:
-  Yes # No if you want to start off from an interrupted run
+  Yes # No if you want to start off from an interrupted run, Yes for re-run.
 
 SUBJECT_FILE: # the "subject" sequence in BLAST terms, i.e., reference genome
   data/NC_001489.fa # relative or absolute paths to fasta file
@@ -59,6 +59,6 @@ TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
 QUERY_FILES: # also known as query sequences in BLAST terminology
   - data/example1.fa # relative or absolute paths to fasta files
   - data/example2.fa
-  - xyz
-  - ''
+  - xyz # to test a dud file name
+  - '' # to test an empty file name (which would return a folder, not file)
 ...

@@ -6,15 +6,16 @@ channels:
   - defaults
 
 dependencies:
-  - python=3.8
+  - python>=3.8
   - R
   - minimap2
   - iqtree
   - clusterpicker
+  - nextflow
   - which
   - graphviz
   - samtools
   - pip
   - pip:
-    - git+https://github.com/schultzm/HAVIC.git
+    - git+https://github.com/schultzm/havic.git
     - pylint

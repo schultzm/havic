@@ -60,3 +60,5 @@ class Dependency:
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+
+# add nextflow to the list
