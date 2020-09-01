@@ -1,19 +1,23 @@
 # These dependencies are required to run.
 
-SOFTWAREZ = ['iqtree', 'minimap2', 'R', 'samtools']
-
-R_LIBS = ['GenomicAlignments',
-    'Rsamtools',
-    'ggtree',
-    'treeio',
-    # 'tidyverse',
-    'phytools',
-    # 'ape',
-    # 'devtools',
-    # 'plotly',
-    'pheatmap',
-    'qualpalr',
-    'Biostrings'
+SOFTWAREZ = [
+    "iqtree",
+    "minimap2",
+    "R",
+    "samtools",
+    "ClusterPicker",
+    "which",
+    "graphviz",
 ]
 
-CLUSTER_PICKER = 'ClusterPicker'
+R_LIBS = [
+    "BiocManager",
+    "GenomicAlignments",
+    "Biostrings",
+    "Rsamtools",
+    "ggtree",
+    "tidyverse",
+    "pheatmap",
+    "Rcpp",
+    "phytools",
+]

@@ -7,13 +7,14 @@ channels:
 
 dependencies:
   - python>=3.8
+  - ruffus
   - R
   - minimap2
   - iqtree
   - clusterpicker
-  - nextflow
+  - pre-commit
+  - flake8
   - which
-  - graphviz
   - samtools
   - pip
   - pip:
