@@ -9,11 +9,10 @@ todo: doctest in classes
 """
 
 from datetime import datetime
-import random
-import string
 from pathlib import PurePath
 
 STARTTIME = datetime.now()
+
 
 def get_execution_time(outdir):
     "Calculate length of run."
@@ -75,7 +74,7 @@ def main():
 
     elif args.subparser_name == 'detect':
         from .utils.pipeline_runner import Pipeline
-        detection_pipeline = Pipeline((args.query_fofn, False), # test is False
+        detection_pipeline = Pipeline((args.query_fofn, False),  # test=False
                                       args.trim_seqs,
                                       args.subject_file,
                                       args.redo,

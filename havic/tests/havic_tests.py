@@ -44,16 +44,19 @@ class MergeTestCasePass(unittest.TestCase):
         """
         Check for two PDF files in OUTDIR
         """
-        self.assertTrue(len(list(Path(self.yaml["OUTDIR"]).glob("*.pdf"))) >= 2)
+        self.assertTrue(len(list(Path(self.yaml["OUTDIR"]).
+                                 glob("*.pdf"))) >= 2)
 
     def csvs_checker(self):
         """
         Check for two CSV files in OUTDIR
         """
-        self.assertTrue(len(list(Path(self.yaml["OUTDIR"]).glob("*.csv"))) == 2)
+        self.assertTrue(len(list(Path(self.yaml["OUTDIR"]).
+                                 glob("*.csv"))) == 2)
 
     def svg_checker(self):
         """Check for presence of svg file at end of run.  This doubly
         acts as a check for functioning graphviz install.
         """
-        self.assertTrue(len(list(Path(self.yaml["OUTDIR"]).glob("*.svg"))) == 1)
+        self.assertTrue(len(list(Path(self.yaml["OUTDIR"]).
+                                 glob("*.svg"))) == 1)

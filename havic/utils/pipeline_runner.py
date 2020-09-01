@@ -8,11 +8,10 @@ Go
 
 from .. import __parent_dir__  # , __nextflow_nf__
 from pkg_resources import resource_filename as rf
-import io
 import re
 import sys
 import os
-from pathlib import Path, PurePath
+from pathlib import Path
 import pandas as pd
 import shutil
 from subprocess import Popen, PIPE
@@ -22,12 +21,8 @@ from ruffus import (
     mkdir,
     follows,
     files,
-    transform,
-    formatter,
-    jobs_limit,
     pipeline_run,
     pipeline_printout_graph,
-    originate,
 )
 
 
@@ -105,7 +100,8 @@ class Pipeline:
         if not self.query_files:
             sys.exit("Unable to continue without input query_files.")
         self.trim_seqs = [correct_characters(i) for i in yaml_in["TRIM_SEQS"]]
-        self.subject = absolute_path(yaml_in["SUBJECT_FILE"], yaml_in["TEST_RUN"])
+        self.subject = absolute_path(yaml_in["SUBJECT_FILE"],
+                                     yaml_in["TEST_RUN"])
         for key, value in yaml_in.items():
             print(key, value)
         self.refseq = SeqIO.read(self.subject, "fasta")
@@ -118,40 +114,47 @@ class Pipeline:
             "seq_header_replacements": make_path(
                 self.outdir, f"{repstr}seq_id_replace.tsv"
             ),
-            "duplicates": make_path(self.outdir, f"{repstr}duplicate_seqs.txt"),
+            "duplicates": make_path(self.outdir,
+                                    f"{repstr}duplicate_seqs.txt"),
             "tmp_bam": make_path(self.outdir, f"{repstr}minimap2.bam"),
             "tmp_bam_idx": make_path(self.outdir, f"{repstr}minimap2.bam.bai"),
-            "bam2fasta": make_path(self.outdir, f"{repstr}minimap2.bam2fasta.R"),
+            "bam2fasta": make_path(self.outdir,
+                                   f"{repstr}minimap2.bam2fasta.R"),
             "bam2fasta_Rout": make_path(
                 self.outdir, f"{repstr}minimap2.bam2fasta.Rout"
             ),
-            "fasta_from_bam": make_path(self.outdir, f"{repstr}minimap2.stack.fa"),
+            "fasta_from_bam": make_path(self.outdir,
+                                        f"{repstr}minimap2.stack.fa"),
             "fasta_from_bam_trimmed": make_path(
-                self.outdir, f"{repstr}minimap2.stack" f".trimmed.fa"
+                self.outdir,
+                f"{repstr}minimap2.stack.trimmed.fa"
             ),
             "treefile": make_path(
-                self.outdir, f"{repstr}minimap2.stack.trimmed.fa" f".treefile"
+                self.outdir,
+                f"{repstr}minimap2.stack.trimmed.fa.treefile"
             ),
             "mp_treefile": make_path(
-                self.outdir, f"{repstr}minimap2.stack.trimmed" f".fa.mp.treefile"
+                self.outdir,
+                f"{repstr}minimap2.stack.trimmed.fa.mp.treefile"
             ),
             "clusterpicked_tree": make_path(
                 self.outdir,
-                f"{repstr}minimap2.stack.trimmed"
-                f".fa.mp_clusterPicks.nwk"
+                f"{repstr}minimap2.stack.trimmed.fa.mp_clusterPicks.nwk"
                 f".figTree",
             ),
             "clusterpicked_tree_bkp": make_path(
                 self.outdir,
                 f"{repstr}minimap2.stack"
                 f".trimmed.fa.div_"
-                f"{yaml_in['CLUSTER_PICKER_SETTINGS']['distance_fraction']}distancefraction"
+                f"{yaml_in['CLUSTER_PICKER_SETTINGS']['distance_fraction']}"
+                f"distancefraction"
                 f".mp_clusterPicks"
                 f".nwk.figTree",
             ),
             "cluster_assignments": make_path(
                 self.outdir,
-                f"{repstr}minimap2.stack.trimmed" f".fa.mp_clusterPicks_log.txt",
+                f"{repstr}minimap2.stack.trimmed"
+                f".fa.mp_clusterPicks_log.txt",
             ),
             "clusters_assigned": make_path(
                 self.outdir,
@@ -163,12 +166,13 @@ class Pipeline:
                 self.outdir, f"{repstr}minimap2.stack.trimmed.fa" f".Rplot.R"
             ),
             "treeplotr_out": make_path(
-                self.outdir, f"{repstr}minimap2.stack.trimmed.fa" f".Rplot.Rout"
-            ),
+                self.outdir,
+                f"{repstr}minimap2.stack.trimmed.fa" f".Rplot.Rout"),
         }
 
         self.minimap2_cmd = (
-            f"minimap2 -k {yaml_in['MINIMAP2_SETTINGS']['k_mer']} -a {self.subject} "
+            f"minimap2 -k {yaml_in['MINIMAP2_SETTINGS']['k_mer']} "
+            f"-a {self.subject} "
             f"{self.outfiles['tmp_fasta']} "
             f"| samtools sort > {self.outfiles['tmp_bam']}"
         )
@@ -210,7 +214,8 @@ class Pipeline:
                 # if str(record.id) != str(input_id):
                 keyval_ids[str(input_id)] = str(record.id)
                 # 1.02 Remove duplicates.
-                if record.id not in [record.id for record in quality_controlled_seqs]:
+                if record.id not in [record.id for
+                                     record in quality_controlled_seqs]:
                     quality_controlled_seqs.append(record)
                 else:
                     dups.append(str(record.id))
@@ -226,7 +231,9 @@ class Pipeline:
                 out_h.write("\n".join(dups))
         else:
             print("Zero duplicate sequences were found.")
-        SeqIO.write(quality_controlled_seqs, self.outfiles["tmp_fasta"], "fasta")
+        SeqIO.write(quality_controlled_seqs,
+                    self.outfiles["tmp_fasta"],
+                    "fasta")
 
     def _minimap2_input_fasta_to_ref(self):
         cmd = self.minimap2_cmd
@@ -238,12 +245,14 @@ class Pipeline:
         cmd = f"samtools view -f 4 {self.outfiles['tmp_bam']}"
         cmd2 = "cut -f 1"
         proc = Popen(shlex.split(cmd), stdout=PIPE, stderr=PIPE)
-        proc2 = Popen(shlex.split(cmd2), stdin=proc.stdout, stdout=PIPE, stderr=PIPE)
+        proc2 = Popen(shlex.split(cmd2),
+                      stdin=proc.stdout,
+                      stdout=PIPE,
+                      stderr=PIPE)
         result = proc2.communicate()[0].decode("UTF-8").split("\n")
         if result:
-            print(
-                f"\nUnmapped reads at k-mer {self.yaml_in['MINIMAP2_SETTINGS']['k_mer']}:"
-            )
+            print(f"\nUnmapped reads at k-mer "
+                  f"{self.yaml_in['MINIMAP2_SETTINGS']['k_mer']}:")
             print("\n".join(result))
         else:
             pass
@@ -267,9 +276,8 @@ class Pipeline:
                 )
                 out_r.write(cmd)
             # print(cmd)
-            os.system(
-                f"R CMD BATCH {self.outfiles['bam2fasta']} {self.outfiles['bam2fasta_Rout']}"
-            )
+            os.system(f"R CMD BATCH {self.outfiles['bam2fasta']} "
+                      f"{self.outfiles['bam2fasta_Rout']}")
         except OSError:
             sys.exit("bam2fasta error.  Run 'havic check'.")
 
@@ -277,9 +285,9 @@ class Pipeline:
         from Bio import AlignIO
         from Bio.Alphabet import generic_dna
 
-        alignment = AlignIO.read(
-            open(self.outfiles["fasta_from_bam"], "r"), "fasta", alphabet=generic_dna
-        )
+        alignment = AlignIO.read(open(self.outfiles["fasta_from_bam"], "r"),
+                                 "fasta",
+                                 alphabet=generic_dna)
         # 4.1 Trim the alignment for isolates in arg.trim_seq to match
         # refamplicon.
         from ..utils.trim_alignment import Trimmed_alignment
@@ -294,9 +302,8 @@ class Pipeline:
             aln_trim.trim_seqs_to_ref()
             # 4.1.1 Depad the alignment.
             aln_trim.depad_alignment()
-            AlignIO.write(
-                aln_trim.alignment, self.outfiles["fasta_from_bam_trimmed"], "fasta"
-            )
+            AlignIO.write(aln_trim.alignment,
+                          self.outfiles["fasta_from_bam_trimmed"], "fasta")
         else:
             return aln_trim.alignment
 
@@ -311,11 +318,10 @@ class Pipeline:
         root = tree.get_midpoint_outgroup()
         tree.set_outgroup(root)
         tree.ladderize(direction=1)
-        # tree.resolve_polytomy(default_dist=0.01)
-        # print(tree.write())
         # dist_formatter is to prevent scientific notation.
         # with branch lengths in scientific notation, ClusterPicker dies.
-        tree.write(outfile=self.outfiles["mp_treefile"], dist_formatter="%0.16f")
+        tree.write(outfile=self.outfiles["mp_treefile"],
+                   dist_formatter="%0.16f")
 
     def _clusterpick(self):
         """
@@ -325,21 +331,18 @@ class Pipeline:
         os.system(self.clusterpick_cmd)
 
     def _bkp_clusterpickedtree(self):
-        shutil.copyfile(
-            self.outfiles["clusterpicked_tree"], self.outfiles["clusterpicked_tree_bkp"]
-        )
+        shutil.copyfile(self.outfiles["clusterpicked_tree"],
+                        self.outfiles["clusterpicked_tree_bkp"])
 
     def _summarise_cluster_assignments(self):
         cmd = f"grep ClusterNumber {self.outfiles['cluster_assignments']} -n"
         proc = Popen(shlex.split(cmd), stdout=PIPE)
         line_number = int(proc.communicate()[0].decode("UTF-8").split(":")[0])
-        import pandas as pd
-
-        df = pd.read_table(
-            self.outfiles["cluster_assignments"], skiprows=line_number - 1, header=0
-        )
+        df = pd.read_table(self.outfiles["cluster_assignments"],
+                           skiprows=line_number-1,
+                           header=0)
         with open(self.outfiles["clusters_assigned"], "w") as output_handle:
-            output_handle.write(f"Isolate\tClusterNumber\n")
+            output_handle.write("Isolate\tClusterNumber\n")
             for i in df.index.values:
                 if isinstance(df.loc[i, "TipNames"], str):
                     tips = [
@@ -348,8 +351,7 @@ class Pipeline:
                     ]
                     for tip in tips:
                         output_handle.write(
-                            f"{tip}\tCluster_{df.loc[i, 'ClusterNumber']}\n"
-                        )
+                            f"{tip}\tCluster_{df.loc[i, 'ClusterNumber']}\n")
 
     def _plot_results(self):
         """
@@ -363,35 +365,38 @@ class Pipeline:
 
             cmd = (
                 plot_functions.replace(
-                    "<- z", '<- "' + self.outfiles["fasta_from_bam_trimmed"] + '"'
+                    "basename <- z", 'basename <- "' +
+                    self.outfiles["fasta_from_bam_trimmed"] + '"'
                 )
                 .replace(
-                    "<- a",
-                    "<- "
-                    + str(self.yaml_in["CLUSTER_PICKER_SETTINGS"]["distance_fraction"]),
+                    "distfract <- a",
+                    "distfract <- "
+                    + str(self.yaml_in["CLUSTER_PICKER_SETTINGS"]
+                                      ["distance_fraction"]),
                 )
                 .replace(
-                    "<- b",
-                    "<- "
-                    + str(
-                        self.yaml_in["CLUSTER_PICKER_SETTINGS"]["fine_cluster_support"]
-                    ),
+                    "supportvals <- b",
+                    "supportvals <- "
+                    + str(self.yaml_in["CLUSTER_PICKER_SETTINGS"]
+                          ["fine_cluster_support"]),
                 )
                 .replace(
-                    "<- hh",
-                    '<- "'
-                    + str(self.yaml_in["CLUSTER_PICKER_SETTINGS"]["distance_method"])
+                    "method <- hh",
+                    'method <- "'
+                    + str(self.yaml_in["CLUSTER_PICKER_SETTINGS"]
+                          ["distance_method"])
                     + '"',
                 )
-                .replace(
-                    "<- k", "<- " + str(self.yaml_in["MINIMAP2_SETTINGS"]["k_mer"])
-                )
-                .replace("<- e", "<- " + str(self.yaml_in["PLOTS"]).upper())
-            )
+                .replace("kmer <- k", "kmer <- " +
+                         str(self.yaml_in["MINIMAP2_SETTINGS"]["k_mer"]))
+                .replace("matrixplots <- e",
+                         "matrixplots <- " +
+                         str(self.yaml_in["PLOTS"]).upper()))
             # print(cmd)
             out_r.write(cmd)
         os.system(
-            f"R CMD BATCH {self.outfiles['treeplotr']} {self.outfiles['treeplotr_out']}"
+            f"R CMD BATCH {self.outfiles['treeplotr']} "
+            f"{self.outfiles['treeplotr_out']}"
         )
 
     def _run(self):
@@ -420,7 +425,9 @@ class Pipeline:
             pass
 
         @follows(create_outdir)
-        @files(self.query_files, self.outfiles["tmp_fasta"], self.havnet_ampliconseq)
+        @files(self.query_files,
+               self.outfiles["tmp_fasta"],
+               self.havnet_ampliconseq)
         def compile_input_fasta(infile, outfile, refamplicon):
             self._compile_input_fasta()
 
@@ -435,21 +442,21 @@ class Pipeline:
             self._bam2fasta()
 
         @follows(bam2fasta)
-        @files(self.outfiles["fasta_from_bam"], self.outfiles["fasta_from_bam_trimmed"])
+        @files(self.outfiles["fasta_from_bam"],
+               self.outfiles["fasta_from_bam_trimmed"])
         def get_cleaned_fasta(infile, outfile):
             aln = self._get_clean_fasta_alignment()
             if aln and len(aln) < 3:
                 exit_statement = (
                     f"{aln}\n"
-                    + f"Need at least three sequences in "
-                    + f"alignment to continue (n={len(aln)})"
-                )
+                    f"Need at least three sequences in "
+                    f"alignment to continue (n={len(aln)})")
                 import sys
-
                 sys.exit(exit_statement)
 
         @follows(get_cleaned_fasta)
-        @files(self.outfiles["fasta_from_bam_trimmed"], self.outfiles["mp_treefile"])
+        @files(self.outfiles["fasta_from_bam_trimmed"],
+               self.outfiles["mp_treefile"])
         def run_iqtree(infile, outfile):
             self._run_iqtree()
 
@@ -459,30 +466,28 @@ class Pipeline:
             self._midpoint_root_iqtree()
 
         @follows(midpoint_root_iqtree)
-        @files(
-            [self.outfiles["fasta_from_bam_trimmed"], self.outfiles["mp_treefile"]],
-            self.outfiles["clusterpicked_tree"],
-        )
+        @files([self.outfiles["fasta_from_bam_trimmed"],
+                self.outfiles["mp_treefile"]],
+               self.outfiles["clusterpicked_tree"])
         def clusterpick_from_mpr_iqtree_and_cleaned_fasta(infile, outfile):
             self._clusterpick()
 
         @follows(clusterpick_from_mpr_iqtree_and_cleaned_fasta)
-        @files(self.outfiles["cluster_assignments"], self.outfiles["clusters_assigned"])
+        @files(self.outfiles["cluster_assignments"],
+               self.outfiles["clusters_assigned"])
         def summarise_cluster_assignments(infile, outfile):
             self._summarise_cluster_assignments()
 
         @follows(clusterpick_from_mpr_iqtree_and_cleaned_fasta)
-        @files(
-            self.outfiles["clusterpicked_tree"], self.outfiles["clusterpicked_tree_bkp"]
-        )
+        @files(self.outfiles["clusterpicked_tree"],
+               self.outfiles["clusterpicked_tree_bkp"])
         def backup_clusterpicked_figtree(infile, outfile):
             self._bkp_clusterpickedtree()
 
         @follows(clusterpick_from_mpr_iqtree_and_cleaned_fasta)
-        @files(
-            [self.outfiles["fasta_from_bam_trimmed"], self.outfiles["mp_treefile"]],
-            self.outfiles["treeplotr"],
-        )
+        @files([self.outfiles["fasta_from_bam_trimmed"],
+                self.outfiles["mp_treefile"]],
+               self.outfiles["treeplotr"])
         def plot_results_ggtree(infiles, outfiles):
             self._plot_results()
 
@@ -494,9 +499,12 @@ class Pipeline:
             temp_sqlite_db = Path(tmpfile).joinpath(db_name)
             perm_sqlite_db = Path(self.outdir).joinpath(db_name)
             if self.yaml_in["FORCE_OVERWRITE_AND_RE_RUN"]:
-                pipeline_run(
-                    forcedtorun_tasks=create_outdir, history_file=temp_sqlite_db
-                )
+                if Path(self.outdir).exists():
+                    shutil.rmtree(Path(self.outdir))
+                else:
+                    pass
+                pipeline_run(forcedtorun_tasks=create_outdir,
+                             history_file=temp_sqlite_db)
                 shutil.copyfile(temp_sqlite_db, perm_sqlite_db)
             else:
                 shutil.copyfile(perm_sqlite_db, temp_sqlite_db)
@@ -504,8 +512,8 @@ class Pipeline:
                 shutil.copyfile(temp_sqlite_db, perm_sqlite_db)
 
             # Print out the pipeline graph
-            pipeline_printout_graph(make_path(self.outdir, "pipeline_graph.svg"), "svg")
-            # todo - 1.1 trim the sequences to remove primers
+            pipeline_printout_graph(make_path(self.outdir,
+                                              "pipeline_graph.svg"), "svg")
 
     #
     # def pipeline_of_pipelines(self):

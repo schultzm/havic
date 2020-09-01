@@ -60,11 +60,11 @@ class Trimmed_alignment(MultipleSeqAlignment):
                 sequence = MutableSeq(str(seq.seq), generic_dna)
                 # print(help(sequence))
                 sequence[0:self.boundary[0]] = self.gap_char * \
-                                               (self.boundary[0] - 0)
+                    (self.boundary[0] - 0)
                 # print(len(sequence))
                 # print(self.boundary)
                 sequence[self.boundary[1]:] = self.gap_char * \
-                                              (len(sequence) - self.boundary[1])
+                    (len(sequence) - self.boundary[1])
                 seq.seq = sequence
             if set(seq.seq) == set({self.gap_char}):
                 print(f"{seq.id} contains only gaps after trimming. "
@@ -74,10 +74,6 @@ class Trimmed_alignment(MultipleSeqAlignment):
             else:
                 temp_aln.append(seq)
         self.alignment = temp_aln
-
-            # print(seq.id, set(seq.seq))
-        # import sys
-        # sys.exit()
 
     def depad_alignment(self):
         """

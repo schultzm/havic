@@ -1,5 +1,5 @@
 # todo Need to allow for labelling 'new' tips in tree figure
-plot_functions = '''
+plot_functions = """
 library(phytools)
 library(tidyverse)
 library(ggtree)
@@ -21,7 +21,9 @@ cluster_picks
 for(tip in tree_clust$tip.label[grep('Clust', tree_clust$tip.label)]){
     outp_list_of_lists <- strsplit(tip, split = '_')
     output_list <- outp_list_of_lists[[1]]
-    cluster_picks <- rbind(cluster_picks, c(paste0(output_list[2:length(output_list)], collapse='_'), output_list[1]))
+    cluster_picks <- rbind(cluster_picks,
+                           c(paste0(output_list[2:length(output_list)],
+                           collapse='_'), output_list[1]))
     }
 
 cluster_picks <- data.frame(cluster_picks, stringsAsFactors=FALSE)
@@ -43,46 +45,70 @@ if(matrixplots){
     print(paste('FontSize for plot', fntsz))
 
     wdth <- 1
-    # library('qualpalr')
-    # #see https://cran.r-project.org/web/packages/qualpalr/README.html
-    # ncolours <- length(names(list_of_clusters))
-    # if(length(names(list_of_clusters)) < 2){
-    #     ncolours <- 2
-    #     }
-    # if(length(names(list_of_clusters)) >= 99){
-    #     ncolours <- 99
-    #     }
-    # 
-    # pal <- qualpal(n = ncolours, list(h = c(0, 360), s = c(0.5, 1), l = c(0.4, 0.4)))
-    #plot(pal)
-    #rownames(pal$HSL)
-    q <- plt + geom_tiplab(aes(label=label, color=Cluster), size=fntsz, linesize=0.1) +
-        # theme(legend.position = "right") +
+    q <- plt + geom_tiplab(aes(label=label,
+                               color=Cluster),
+                           size=fntsz,
+                           linesize=0.1) +
         geom_tippoint(aes(color=Cluster), size=fntsz, na.rm=T) +
-        geom_text2(aes(x=branch, label=as.integer(label), vjust=-0.3, hjust=1, subset=(isTip!=TRUE & as.integer(label)>=70), na.rm=TRUE), size=fntsz, na.rm=TRUE) +
-        geom_treescale(x=0.01, y =-2, offset=1, fontsize = fntsz, linesize=0.1) +
-        annotate("text", x = 0.015, y=-4, label = "Substitutions per site", size=fntsz) +
-        ggtitle(label = "ML IQtree with bootstrap %, tips cluster-picked (left); fasta alignment (right)", subtitle = paste0('Clusters (coloured tips) have been picked as clades with >= ', supportvals, '% support and divergence <= ', distfract*100, '%, genetic distances as \\'', method, '\\'')) #+
-    #    scale_colour_manual(values=rownames(pal$HSL), na.value = "black")
-    q
-    pdf(file=paste0(basename, '.mp.treefile_', distfract*100, 'percent_divergence_', method, '_msa.pdf'), paper = 'a4r', width=11.69, height=8.27)
+        geom_text2(aes(x=branch,
+                       label=as.integer(label),
+                       vjust=-0.3,
+                       hjust=1,
+                       subset=(isTip!=TRUE & as.integer(label)>=70),
+                       na.rm=TRUE),
+                   size=fntsz,
+                   na.rm=TRUE) +
+        geom_treescale(x=0.01,
+                       y =-2,
+                       offset=1,
+                       fontsize = fntsz,
+                       linesize=0.1) +
+        annotate("text",
+                 x = 0.015,
+                 y=-4, label = "Substitutions per site",
+                 size=fntsz) +
+        ggtitle(label = "ML IQtree with bootstrap %,
+                         tips cluster-picked (left); fasta alignment (right)",
+                subtitle = paste0('Clusters (coloured tips) have been picked,
+                                  as clades with >= ',
+                                  supportvals,
+                                  '% support and divergence <= ',
+                                  distfract*100,
+                                  '%, genetic distances as \\'', method,
+                                  '\\'')
+               )
+    # q
+    pdf(file=paste0(basename,
+                   '.mp.treefile_',
+                   distfract*100,
+                   'percent_divergence_',
+                   method, '_msa.pdf'),
+        paper = 'a4r',
+        width=11.69,
+        height=8.27)
 
-    h <- msaplot(p=q, fasta=basename, offset = offst, width = wdth, bg_line = FALSE, color=c('#f7fcfd', #white
-                                                                                        '#ef3b2c', #red
-                                                                                        '#41ab5d', #green
-                                                                                        '#ffffbf', #yellow
-                                                                                        '#4292c6', #blue
-                                                                                        '#dface5',
-                                                                                        '#c699cc',
-                                                                                        '#ad86b2',
-                                                                                        '#947399',
-                                                                                        '#7c607f',
-                                                                                        '#634c66',
-                                                                                        '#4a394c',
-                                                                                        '#312633',
-                                                                                        '#181319',
-                                                                                        '#000000',
-                                                                                        '#f8c0ff'))
+    h <- msaplot(p=q,
+                 fasta=basename,
+                 offset = offst,
+                 width = wdth,
+                 bg_line = FALSE,
+                 color=c('#f7fcfd', #white
+                         '#ef3b2c', #red
+                         '#41ab5d', #green
+                         '#ffffbf', #yellow
+                         '#4292c6', #blue
+                         '#dface5',
+                         '#c699cc',
+                         '#ad86b2',
+                         '#947399',
+                         '#7c607f',
+                         '#634c66',
+                         '#4a394c',
+                         '#312633',
+                         '#181319',
+                         '#000000',
+                         '#f8c0ff')
+                )
     print(h)
     dev.off()
 }
@@ -95,7 +121,11 @@ snp_dists <- function(alignment, exclude_char){
     rownames(mat) <- rownames(alignment)
     mat_snps <- mat
     pw_dist <- function(Aln_sub){
-        len_aln <- Aln_sub[, c(which(!(Aln_sub[1,] %in% exclude_char) & !(Aln_sub[2,] %in% exclude_char))), drop=FALSE]
+        len_aln <- Aln_sub[, c(which(!(Aln_sub[1,] %in% exclude_char) &
+                                     !(Aln_sub[2,] %in% exclude_char)
+                                    )
+                              ),
+                           drop=FALSE]
         n_snps <- len_aln[, c(which(len_aln[1,]!=len_aln[2,])), drop=FALSE]
         return(c(paste0('=', ncol(n_snps), '/', ncol(len_aln)), ncol(n_snps)))
     }
@@ -113,7 +143,12 @@ snp_dists <- function(alignment, exclude_char){
     return(list(mat, mat_snps))
 }
 
-exclusions <- tolower(c(names(IUPAC_CODE_MAP)[!(names(IUPAC_CODE_MAP) %in% c('A', 'C', 'T', 'G'))], '-', '?'))
+exclusions <- tolower(c(names(IUPAC_CODE_MAP)[!(names(IUPAC_CODE_MAP) %in%
+                                                c('A', 'C', 'T', 'G')
+                                               )
+                                             ],
+                        '-', '?')
+                     )
 
 #Returns two matrices
 snps <- snp_dists(aln, exclusions)
@@ -142,4 +177,4 @@ write.csv(x=heatmap_data, file=paste0(basename,
 write.csv(snps[[1]], file=paste0(basename,
                                  '_SNPcountsOverAlignLength.csv'),
           quote = FALSE)
-'''
+"""

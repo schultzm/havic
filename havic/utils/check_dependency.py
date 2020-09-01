@@ -2,7 +2,7 @@
 
 from havic.tests import check_r_dependencies
 
-#TODO: this check tool does not work properly. FIX!
+# TODO: this check tool does not work properly. FIX!
 
 
 class Dependency:
@@ -48,7 +48,7 @@ class Dependency:
                     file=sys.stderr)
         if self.category == 'rmodule':
             try:
-                #result = check_r_dependencies.importr_tryhard(self.software)
+                # result = check_r_dependencies.importr_tryhard(self.software)
                 # print(result)
                 print(f"R library {self.software}".ljust(28) + ": ok",
                       file=sys.stderr)
@@ -57,8 +57,7 @@ class Dependency:
                 print(f"R library {self.software}".ljust(28) + ": not found",
                       file=sys.stderr)
 
+
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-
-# add nextflow to the list
