@@ -1,21 +1,23 @@
 ---
-TEST_RUN:
-  Yes # Yes if using havic packaged test data, No otherwise
-
 FORCE_OVERWRITE_AND_RE_RUN:
-  No # No if you want to start off from an interrupted run, Yes for re-run.
+  Yes # Yes for full re-run, No to start from an interrupted run,
+
+DEFAULT_REFS:
+  Yes # Yes if using havic pre-packaged test data, No otherwise
 
 SUBJECT_FILE: # the "subject" sequence in BLAST terms, i.e., reference genome
   data/NC_001489.fa # relative or absolute paths to fasta file
+  # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
 
 SUBJECT_AMPLICON: # the amplicon sequence, with primers excluded
   data/havnet_amplicon.fa # in fasta format, relative or absolute paths okay
+  # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
 
 OUTDIR: # the parent directory for the results folders
   havic_test_results # relative or absolute path to parent result folder
 
 PLOTS:
-  Yes # For large runs, turn off with No
+  Yes # Yes to make plots (slow for large runs), No otherwise.
 
 CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
   executable:
@@ -44,7 +46,7 @@ IQTREE2_SETTINGS:
     '--ufboot 1000' # use of aLRT will cause ClusterPicker to fall over
   protect_violations: #to protect against severe model violations
     '--bnni'
-  redo: # recompute everything
+  redo: # recompute everything in iqtree run
     '--redo' # leave empty string ('') if not wanting to redo, else '--redo'
 
 MINIMAP2_SETTINGS:

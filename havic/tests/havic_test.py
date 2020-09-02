@@ -11,8 +11,11 @@ import unittest
 from pkg_resources import resource_filename as rf
 from pathlib import Path
 import yaml
+import pandas as pd
 from .. import __parent_dir__, __havic_yaml__, __version__
 from ..utils.pipeline_runner import Pipeline
+from ..utils.check_dependency import Dependency
+from ..data.dependencies import SOFTWAREZ, R_LIBS
 
 
 class MergeTestCasePass(unittest.TestCase):
@@ -21,6 +24,22 @@ class MergeTestCasePass(unittest.TestCase):
         self.yaml = yaml.load(
             open(rf(__parent_dir__, __havic_yaml__)), Loader=yaml.FullLoader
         )
+
+    def yamler(self):
+        """Check yaml loader."""
+        self.assertEqual(self.yaml["SUBJECT_FILE"], "data/NC_001489.fa")
+
+    def dependency_checker(self):
+        """Check software dependencies."""
+        df_list = []
+        for software in SOFTWAREZ:
+            df_list.append(Dependency(software, "software").check())
+        for rlib in R_LIBS:
+            df_list.append(Dependency(rlib, "rmodule").check())
+        df = pd.concat(df_list)
+        df.columns = ["type", "status"]
+        print("\n", df, "\n")
+        self.assertFalse("not found" in df.status.unique().tolist())
 
     def versioner(self):
         """

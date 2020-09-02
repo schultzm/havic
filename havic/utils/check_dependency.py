@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 
 from rpy2.robjects.packages import importr, isinstalled
-
-# import rpy2.rinterface as rinterface
-
-# from rpy2.rinterface import RRuntimeWarning
-# from rpy2.robjects.help.Package
+import pandas as pd
+import shutil
+import os
 
 
 def importr_tryhard(packname):
@@ -56,21 +54,30 @@ class Dependency:
         grep                        : ok (/usr/bin/grep)
         >>> Dependency('Rsamtools', 'rmodule').check()
         """
+        path = None
         if self.category == "software":
-            import shutil
-            import os
-
-            path = shutil.which(self.software, mode=os.X_OK)
-            if path is not None:
-                print(f"{self.software.ljust(40)}: ok")
+            result = shutil.which(self.software, mode=os.X_OK)
+            if result:
+                path = pd.DataFrame(
+                    {"type": "software", "status": "ok"}, index=[self.software]
+                )
             else:
-                print(f"Dependency {self.software} not found")
-        if self.category == "rmodule":
-            rlib = importr_tryhard(self.software)
-            if rlib:
-                print(f"Rlib {rlib.__name__}".ljust(40) + ": ok")
+                path = pd.DataFrame(
+                    {"type": "software", "status": "not found"}, index=[self.software]
+                )
+        elif self.category == "rmodule":
+            result = importr_tryhard(self.software)
+            if result:
+                path = pd.DataFrame(
+                    {"type": "Rlib", "status": "ok"}, index=[self.software]
+                )
             else:
-                print(f"R library {self.software}".ljust(40) + ": not found")
+                path = pd.DataFrame(
+                    {"type": "Rlib", "status": "not found"}, index=[self.software]
+                )
+        else:
+            pass
+        return path
 
 
 if __name__ == "__main__":

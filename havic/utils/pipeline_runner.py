@@ -92,7 +92,7 @@ class Pipeline:
             filter(
                 None,
                 [
-                    absolute_path(fname, yaml_in["TEST_RUN"])
+                    absolute_path(fname, yaml_in["DEFAULT_REFS"])
                     for fname in yaml_in["QUERY_FILES"]
                 ],
             )
@@ -100,7 +100,7 @@ class Pipeline:
         if not self.query_files:
             sys.exit("Unable to continue without input query_files.")
         self.trim_seqs = [correct_characters(i) for i in yaml_in["TRIM_SEQS"]]
-        self.subject = absolute_path(yaml_in["SUBJECT_FILE"], yaml_in["TEST_RUN"])
+        self.subject = absolute_path(yaml_in["SUBJECT_FILE"], yaml_in["DEFAULT_REFS"])
         for key, value in yaml_in.items():
             print(key, value)
         self.refseq = SeqIO.read(self.subject, "fasta")

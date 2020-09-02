@@ -1,23 +1,15 @@
 # These dependencies are required to run.
 
-SOFTWAREZ = [
-    "iqtree",
-    "minimap2",
-    "R",
-    "samtools",
-    "ClusterPicker",
-    # "which",
-    # "graphviz",
-]
+SOFTWAREZ = ["ClusterPicker", "iqtree", "minimap2", "R", "samtools"]
 
 R_LIBS = [
     "BiocManager",
-    "GenomicAlignments",
     "Biostrings",
-    "Rsamtools",
+    "GenomicAlignments",
     "ggtree",
-    "tidyverse",
     "pheatmap",
-    "Rcpp",
     "phytools",
+    "Rcpp",
+    "Rsamtools",
+    "tidyverse",
 ]

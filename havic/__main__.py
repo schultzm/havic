@@ -45,11 +45,6 @@ def main():
         "version", help="Print version.", description="Print version."
     )
     subparser_modules.add_parser(
-        "depcheck",
-        help="Check dependencies are in path.  Requires Rpy2.",
-        description="Check dependencies.",
-    )
-    subparser_modules.add_parser(
         "test",
         help="Run HAVIC test using pre-packaged example data.",
         description="Run HAVIC test using pre-packaged example data.",
@@ -59,16 +54,8 @@ def main():
 
     if not args.subparser_name:
         parser.print_help()
-    elif args.subparser_name == "depcheck":
-        from .utils.check_dependency import Dependency
-        from .data.dependencies import SOFTWAREZ, R_LIBS
 
-        for software in SOFTWAREZ:
-            Dependency(software, "software").check()
-        for rlib in R_LIBS:
-            Dependency(rlib, "rmodule").check()
-
-    elif args.subparser_name == "test":
+    if args.subparser_name == "test":
         import unittest
         from .tests.suite_test import suite
 
@@ -76,26 +63,16 @@ def main():
         runner.run(suite())
 
     elif args.subparser_name == "detect":
+        import yaml
+
+        yaml_in = yaml.load(open(args.yaml_path, "r"), Loader=yaml.FullLoader)
         from .utils.pipeline_runner import Pipeline
 
-        detection_pipeline = Pipeline(
-            (args.query_fofn, False),  # test=False
-            args.trim_seqs,
-            args.subject_file,
-            args.redo,
-            args.n_snps,
-            args.seqlen,
-            args.matrixplots,
-            args.prefix,
-            args.outdir,
-            args.minimap2_kmer,
-            args.path_to_clusterpicker,
-            args.iqtree_threads,
-        )
+        detection_pipeline = Pipeline(yaml_in)
         for key, value in detection_pipeline.__dict__.items():
             print(f"{key}: {value}\n")
         detection_pipeline._run()
-        get_execution_time(args.outdir)
+        get_execution_time(yaml_in["OUTDIR"])
 
     elif args.subparser_name == "version":
         from .utils.version import Version
