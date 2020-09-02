@@ -6,8 +6,8 @@ SOFTWAREZ = [
     "R",
     "samtools",
     "ClusterPicker",
-    "which",
-    "graphviz",
+    # "which",
+    # "graphviz",
 ]
 
 R_LIBS = [

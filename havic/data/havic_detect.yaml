@@ -3,7 +3,7 @@ TEST_RUN:
   Yes # Yes if using havic packaged test data, No otherwise
 
 FORCE_OVERWRITE_AND_RE_RUN:
-  Yes # No if you want to start off from an interrupted run, Yes for re-run.
+  No # No if you want to start off from an interrupted run, Yes for re-run.
 
 SUBJECT_FILE: # the "subject" sequence in BLAST terms, i.e., reference genome
   data/NC_001489.fa # relative or absolute paths to fasta file
@@ -32,7 +32,7 @@ CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
     ambiguity # options are ambiguity, valid, gap, or abs
 
 IQTREE2_SETTINGS:
-  executable: 
+  executable:
     iqtree # command to call iqtree2
   threads: # threads
     '-T AUTO -ntmax 24' # automatically determine the best threading parameter

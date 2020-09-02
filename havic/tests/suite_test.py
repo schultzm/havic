@@ -6,7 +6,7 @@ Unit Test suite builder.
 """
 
 import unittest
-from ..tests.havic_tests import MergeTestCasePass
+from ..tests.havic_test import MergeTestCasePass
 
 
 def suite():
