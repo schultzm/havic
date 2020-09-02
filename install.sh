@@ -5,7 +5,7 @@ conda env create -f environment.yml
 conda init
 source ~/.bashrc
 conda activate havic_env
-echo "install.packages('BiocManager', repos='https://cran.ms.unimelb.edu.au/')
+echo "install.packages('BiocManager', repos='https://cloud.r-project.org')
 BiocManager::install('GenomicAlignments')
 BiocManager::install('Biostrings')
 BiocManager::install('Rsamtools')

@@ -17,5 +17,5 @@ dependencies:
   - samtools
   - pip
   - pip:
-    args: [-e havic]
-  #   - pylint
+    - -e . # developer mode install of havic
+    - pylint
