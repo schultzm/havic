@@ -5,7 +5,7 @@ jobs:
     docker:
       - image: continuumio/miniconda3
 
-    working_directory: ~/HAVIC
+    working_directory: ~/havic
     steps:
       - checkout
       - run: |

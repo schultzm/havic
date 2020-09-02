@@ -17,5 +17,5 @@ dependencies:
   - samtools
   - pip
   - pip:
-    - git+https://github.com/schultzm/havic.git
-    - pylint
+    args: [-e havic]
+  #   - pylint
