@@ -3,12 +3,12 @@ FORCE_OVERWRITE_AND_RE_RUN:
   Yes # Yes for full re-run, No to start from an interrupted run,
 
 DEFAULT_REFS:
-  Yes # Yes if using havic pre-packaged subject/reference seqs, No otherwise
+  Yes # Yes if using havic pre-packaged SUBJECT test data, No otherwise
 
 DEFAULT_QUERIES:
-  Yes # Yes if using havic pre-packaged query sequences, No otherwise
+  No # Yes if using havic pre-packaged QUERY test data, No otherwise
 
-SUBJECT_FILE: # the "subject" sequence in BLAST terms, i.e., reference genome
+SUBJECT_FILE: # the "SUBJECT" sequence in BLAST terms, i.e., reference genome
   data/NC_001489.fa # relative or absolute paths to fasta file
   # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
 
@@ -61,7 +61,7 @@ TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
   - RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty
   - nDNLdjtgha#HashInSeqName
 
-QUERY_FILES: # also known as query sequences in BLAST terminology
+QUERY_FILES: # also known as QUERY sequences in BLAST terminology
   - data/example1.fa # relative or absolute paths to fasta files
   - data/example2.fa
   - xyz # to test a dud file name
