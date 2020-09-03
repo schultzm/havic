@@ -249,27 +249,20 @@ class Pipeline:
         Convert the bam file to fasta by stacking strings on ref to get MSA.
         :return: MSA fasta from input bam file
         """
-        try:
-            with open(self.outfiles["bam2fasta"], "w") as out_r:
-                from ..mapping.bam2fasta import bam2fasta
+        with open(self.outfiles["bam2fasta"], "w") as out_r:
+            from ..mapping.bam2fasta import bam2fasta
 
-                cmd = bam2fasta % (
-                    self.outfiles["tmp_bam"],
-                    self.outfiles["tmp_bam_idx"],
-                    self.header,
-                    1,
-                    self.reflen,
-                    self.outfiles["fasta_from_bam"],
-                )
-                out_r.write(cmd)
-            # print(cmd)
-            cmd2 = f"R CMD BATCH {self.outfiles['bam2fasta']} {self.outfiles['bam2fasta_Rout']}"
-            print(cmd2)
-            os.system(
-                cmd2
+            cmd = bam2fasta % (
+                self.outfiles["tmp_bam"],
+                self.outfiles["tmp_bam_idx"],
+                self.header,
+                1,
+                self.reflen,
+                self.outfiles["fasta_from_bam"],
             )
-        except OSError:
-            sys.exit("bam2fasta error.  Run 'havic check'.")
+            out_r.write(cmd)
+        # print(cmd)
+        os.system(f"R CMD BATCH {self.outfiles['bam2fasta']} {self.outfiles['bam2fasta_Rout']}")
 
     def _get_clean_fasta_alignment(self):
         from Bio import AlignIO
@@ -389,9 +382,7 @@ class Pipeline:
             )
             # print(cmd)
             out_r.write(cmd)
-        os.system(
-            f"R CMD BATCH {self.outfiles['treeplotr']} {self.outfiles['treeplotr_out']}"
-        )
+        os.system(f"R CMD BATCH {self.outfiles['treeplotr']} {self.outfiles['treeplotr_out']}")
 
     def _run(self):
         """
