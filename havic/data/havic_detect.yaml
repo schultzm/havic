@@ -3,7 +3,10 @@ FORCE_OVERWRITE_AND_RE_RUN:
   Yes # Yes for full re-run, No to start from an interrupted run,
 
 DEFAULT_REFS:
-  Yes # Yes if using havic pre-packaged test data, No otherwise
+  Yes # Yes if using havic pre-packaged subject/reference seqs, No otherwise
+
+DEFAULT_QUERIES:
+  Yes # Yes if using havic pre-packaged query sequences, No otherwise
 
 SUBJECT_FILE: # the "subject" sequence in BLAST terms, i.e., reference genome
   data/NC_001489.fa # relative or absolute paths to fasta file

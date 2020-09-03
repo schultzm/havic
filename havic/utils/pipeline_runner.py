@@ -92,7 +92,7 @@ class Pipeline:
             filter(
                 None,
                 [
-                    absolute_path(fname, yaml_in["DEFAULT_REFS"])
+                    absolute_path(fname, yaml_in["DEFAULT_QUERIES"])
                     for fname in yaml_in["QUERY_FILES"]
                 ],
             )
