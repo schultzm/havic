@@ -264,8 +264,7 @@ class Pipeline:
                 out_r.write(cmd)
             # print(cmd)
             os.system(
-                f"R CMD BATCH {self.outfiles['bam2fasta']} "
-                f"{self.outfiles['bam2fasta_Rout']}"
+                f"R CMD BATCH {self.outfiles['bam2fasta']} {self.outfiles['bam2fasta_Rout']}"
             )
         except OSError:
             sys.exit("bam2fasta error.  Run 'havic check'.")
@@ -389,8 +388,7 @@ class Pipeline:
             # print(cmd)
             out_r.write(cmd)
         os.system(
-            f"R CMD BATCH {self.outfiles['treeplotr']} "
-            f"{self.outfiles['treeplotr_out']}"
+            f"R CMD BATCH {self.outfiles['treeplotr']} {self.outfiles['treeplotr_out']}"
         )
 
     def _run(self):
