@@ -1,5 +1,5 @@
 # install miniconda - see https://docs.conda.io/en/latest/miniconda.html
-# export PATH=/bin:/usr/bin:${CONDA_EXE}
+export PATH=/bin:/usr/bin:$(dirname ${CONDA_EXE})
 # . $HOME/miniconda3/etc/profile.d/conda.sh
 conda init
 source ~/.bashrc
