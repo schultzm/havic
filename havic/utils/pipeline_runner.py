@@ -263,8 +263,10 @@ class Pipeline:
                 )
                 out_r.write(cmd)
             # print(cmd)
+            cmd2 = f"R CMD BATCH {self.outfiles['bam2fasta']} {self.outfiles['bam2fasta_Rout']}"
+            print(cmd2)
             os.system(
-                f"R CMD BATCH {self.outfiles['bam2fasta']} {self.outfiles['bam2fasta_Rout']}"
+                cmd2
             )
         except OSError:
             sys.exit("bam2fasta error.  Run 'havic check'.")
