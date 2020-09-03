@@ -69,8 +69,8 @@ def main():
         from .utils.pipeline_runner import Pipeline
 
         detection_pipeline = Pipeline(yaml_in)
-        for key, value in detection_pipeline.__dict__.items():
-            print(f"{key}: {value}\n")
+        # for key, value in detection_pipeline.__dict__.items():
+        #     print(f"{key}: {value}\n")
         detection_pipeline._run()
         get_execution_time(yaml_in["OUTDIR"])
 
