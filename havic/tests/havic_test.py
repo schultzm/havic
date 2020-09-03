@@ -12,6 +12,7 @@ from pkg_resources import resource_filename as rf
 from pathlib import Path
 import yaml
 import pandas as pd
+import sys
 from .. import __parent_dir__, __havic_yaml__, __version__
 from ..utils.pipeline_runner import Pipeline
 from ..utils.check_dependency import Dependency
@@ -39,7 +40,10 @@ class MergeTestCasePass(unittest.TestCase):
         df = pd.concat(df_list)
         df.columns = ["type", "status"]
         print("\n", df, "\n")
-        self.assertFalse("not found" in df.status.unique().tolist())
+        status_set = df.status.unique().tolist()
+        if "not found" in status_set:
+            sys.exit("Fix software dependencies.  Exiting.")
+        self.assertFalse("not found" in status_set)
 
     def versioner(self):
         """

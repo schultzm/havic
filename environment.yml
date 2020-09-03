@@ -7,10 +7,11 @@ channels:
 
 dependencies:
   - python>=3.8
-  - ruffus
   - R
   - minimap2
+  - graphviz # trying this
   - iqtree
+  - imagemagick
   - clusterpicker
   - pre-commit
   - flake8

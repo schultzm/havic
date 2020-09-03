@@ -7,6 +7,7 @@ R_LIBS = [
     "Biostrings",
     "GenomicAlignments",
     "ggtree",
+    "magick",
     "pheatmap",
     "phytools",
     "Rcpp",

@@ -1,6 +1,6 @@
 ---
 FORCE_OVERWRITE_AND_RE_RUN:
-  Yes # Yes for full re-run, No to start from an interrupted run,
+  No # Yes for full re-run, No to start from an interrupted run,
 
 DEFAULT_REFS:
   Yes # Yes if using havic pre-packaged test data, No otherwise
