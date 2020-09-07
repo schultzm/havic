@@ -132,7 +132,7 @@ class Pipeline:
             ),
             "clusterpicked_tree": make_path(
                 self.outdir,
-                f"{repstr}minimap2.stack.trimmed.fa.mp_clusterPicks.nwk" f".figTree",
+                f"{repstr}minimap2.stack.trimmed.fa.mp_clusterPicks.nwk.figTree",
             ),
             "clusterpicked_tree_bkp": make_path(
                 self.outdir,
@@ -145,7 +145,7 @@ class Pipeline:
             ),
             "cluster_assignments": make_path(
                 self.outdir,
-                f"{repstr}minimap2.stack.trimmed" f".fa.mp_clusterPicks_log.txt",
+                f"{repstr}minimap2.stack.trimmed.fa.mp_clusterPicks_log.txt",
             ),
             "clusters_assigned": make_path(
                 self.outdir,
@@ -154,10 +154,10 @@ class Pipeline:
                 f".txt",
             ),
             "treeplotr": make_path(
-                self.outdir, f"{repstr}minimap2.stack.trimmed.fa" f".Rplot.R"
+                self.outdir, f"{repstr}minimap2.stack.trimmed.fa.Rplot.R"
             ),
             "treeplotr_out": make_path(
-                self.outdir, f"{repstr}minimap2.stack.trimmed.fa" f".Rplot.Rout"
+                self.outdir, f"{repstr}minimap2.stack.trimmed.fa.Rplot.Rout"
             ),
         }
 
@@ -347,7 +347,7 @@ class Pipeline:
         print("Starting results summaries using R")
         with open(self.outfiles["treeplotr"], "w") as out_r:
             from ..plotters.treeplot_snpplot import plot_functions
-
+            tiphighlights = "c('" + "', '".join(self.yaml_in["HIGHLIGHT_TIP"]) + "')"
             cmd = (
                 plot_functions.replace(
                     "basename <- z",
@@ -378,6 +378,10 @@ class Pipeline:
                 .replace(
                     "matrixplots <- e",
                     "matrixplots <- " + str(self.yaml_in["PLOTS"]).upper(),
+                )
+                .replace(
+                    "highlight <- wz",
+                    "highlight <- " + tiphighlights,
                 )
             )
             # print(cmd)

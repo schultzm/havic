@@ -15,8 +15,8 @@ matrixplots <- e
 highlight <- wz
 tree <- read.newick(file=paste0(basename, '.mp.treefile'))
 tree_clust <- read.newick(file=paste0(basename, '.mp_clusterPicks.nwk'))
-cluster_picks <- matrix(nrow = 0, ncol = 3)
-colnames(cluster_picks) <- c('Isolate', 'Cluster', 'Highlight')
+cluster_picks <- matrix(nrow = 0, ncol = 2)
+colnames(cluster_picks) <- c('Isolate', 'Cluster')
 cluster_picks
 
 for(tip in tree_clust$tip.label[grep('Clust', tree_clust$tip.label)]){
@@ -35,6 +35,13 @@ list_of_clusters <- split(cluster_picks$Isolate, cluster_picks$Cluster)
 
 if(matrixplots){
     plt <- ggtree(tree, size=0.1) %<+% cluster_picks
+    plt$data <- plt$data %>% add_column(Highlight = 'context')
+    for(i in highlight) {
+        plt$data[which(plt$data$label == i), 'Highlight'] <- 'query'
+    }
+    plt$data$Highlight <- factor(plt$data$Highlight, levels=c('context', 'query'))
+    print(as.data.frame(plt$data))
+    str(plt$data)
     offst <- 0.4401 *max(dist.nodes(tree))+-0.4526
     if(offst <= 0){
         offst <- 0.1
@@ -50,7 +57,7 @@ if(matrixplots){
                                color=Cluster),
                            size=fntsz,
                            linesize=0.1) +
-        geom_tippoint(aes(color=Highlight), size=fntsz, na.rm=T) +
+        geom_tippoint(aes(shape=Highlight), size=fntsz, alpha=0.5) +
         geom_text2(aes(x=branch,
                        label=as.integer(label),
                        vjust=-0.3,
@@ -68,16 +75,16 @@ if(matrixplots){
                  x = 0.015,
                  y=-4, label = "Substitutions per site",
                  size=fntsz) +
-        ggtitle(label = "ML IQtree with bootstrap %,
-                         tips cluster-picked (left); fasta alignment (right)",
-                subtitle = paste0('Clusters (coloured tips) have been picked,
-                                  as clades with >= ',
+        ggtitle(label = "ML IQtree with bootstrap %, tips cluster-picked (left); fasta alignment (right)",
+                subtitle = paste0('Clusters (coloured labels) have been picked, as clades with >= ',
                                   supportvals,
                                   '% support and divergence <= ',
                                   distfract*100,
-                                  '%, genetic distances as \\'', method,
+                                  '%, distances method = \\'', method,
                                   '\\'')
-               )
+               ) +
+        scale_colour_hue(na.value = "black") +
+        guides(color = guide_legend(override.aes = list(size = 3)))
     # q
     pdf(file=paste0(basename,
                    '.mp.treefile_',

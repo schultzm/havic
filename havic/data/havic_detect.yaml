@@ -6,7 +6,7 @@ DEFAULT_REFS:
   Yes # Yes if using havic pre-packaged SUBJECT test data, No otherwise
 
 DEFAULT_QUERIES:
-  No # Yes if using havic pre-packaged QUERY test data, No otherwise
+  Yes # Yes if using havic pre-packaged QUERY test data, No otherwise
 
 SUBJECT_FILE: # the "SUBJECT" sequence in BLAST terms, i.e., reference genome
   data/NC_001489.fa # relative or absolute paths to fasta file
@@ -34,7 +34,7 @@ CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
   large_cluster_threshold:
     15
   distance_method:
-    ambiguity # options are ambiguity, valid, gap, or abs
+    valid # options are ambiguity, valid, gap, or abs
 
 IQTREE2_SETTINGS:
   executable:
@@ -56,7 +56,7 @@ MINIMAP2_SETTINGS:
   k_mer: # select an odd number, between 3 and 27 inclusive
     5 # 5 has been good for the HAV amplicon seqs
 
-HIGHLIGHT_SEQS:
+HIGHLIGHT_TIP:
   - CmvAXJTIqH # Specify tip name to highlight in final plot
   - CCHkiFhcxG # Specify tip name to highlight in final plot
   - PAvYXhYkLM # Specify tip name to highlight in final plot
