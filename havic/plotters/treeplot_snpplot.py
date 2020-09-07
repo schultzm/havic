@@ -12,10 +12,11 @@ supportvals <- b
 method <- hh
 kmer <- k
 matrixplots <- e
+highlight <- wz
 tree <- read.newick(file=paste0(basename, '.mp.treefile'))
 tree_clust <- read.newick(file=paste0(basename, '.mp_clusterPicks.nwk'))
-cluster_picks <- matrix(nrow = 0, ncol = 2)
-colnames(cluster_picks) <- c('Isolate', 'Cluster')
+cluster_picks <- matrix(nrow = 0, ncol = 3)
+colnames(cluster_picks) <- c('Isolate', 'Cluster', 'Highlight')
 cluster_picks
 
 for(tip in tree_clust$tip.label[grep('Clust', tree_clust$tip.label)]){
@@ -49,7 +50,7 @@ if(matrixplots){
                                color=Cluster),
                            size=fntsz,
                            linesize=0.1) +
-        geom_tippoint(aes(color=Cluster), size=fntsz, na.rm=T) +
+        geom_tippoint(aes(color=Highlight), size=fntsz, na.rm=T) +
         geom_text2(aes(x=branch,
                        label=as.integer(label),
                        vjust=-0.3,
