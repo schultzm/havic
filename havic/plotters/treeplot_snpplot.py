@@ -4,6 +4,7 @@ library(phytools)
 library(tidyverse)
 library(ggtree)
 library(Biostrings)
+library(colorspace)
 
 basename <- z
 print(paste0('basename: ', basename))
@@ -35,11 +36,20 @@ list_of_clusters <- split(cluster_picks$Isolate, cluster_picks$Cluster)
 
 if(matrixplots){
     plt <- ggtree(tree, size=0.1) %<+% cluster_picks
-    plt$data <- plt$data %>% add_column(Highlight = 'context')
+    plt$data <- plt$data %>% add_column(Highlight = as.character(NA))
     for(i in highlight) {
         plt$data[which(plt$data$label == i), 'Highlight'] <- 'query'
     }
     plt$data$Highlight <- factor(plt$data$Highlight, levels=c('context', 'query'))
+    plt$data$labclust <- as.character(NA)
+    for(row in 1:nrow(plt$data)) {
+        if(is.na(plt$data[row, 'Cluster'])) {
+            plt$data[row, 'labclust'] <- plt$data[row, 'label']
+        }
+        else {
+            plt$data[row, 'labclust'] <- paste0(plt$data[row, 'label'], '_', plt$data[row, 'Cluster'])
+        }
+    }
     print(as.data.frame(plt$data))
     str(plt$data)
     offst <- 0.4401 *max(dist.nodes(tree))+-0.4526
@@ -55,9 +65,10 @@ if(matrixplots){
     wdth <- 1
     q <- plt + geom_tiplab(aes(label=label,
                                color=Cluster),
+                           align=TRUE,
                            size=fntsz,
                            linesize=0.1) +
-        geom_tippoint(aes(shape=Highlight), size=fntsz, alpha=0.5) +
+        geom_tippoint(aes(shape=Highlight), size=fntsz, color='red', alpha=0.7) +
         geom_text2(aes(x=branch,
                        label=as.integer(label),
                        vjust=-0.3,
@@ -76,14 +87,13 @@ if(matrixplots){
                  y=-4, label = "Substitutions per site",
                  size=fntsz) +
         ggtitle(label = "ML IQtree with bootstrap %, tips cluster-picked (left); fasta alignment (right)",
-                subtitle = paste0('Clusters (coloured labels) have been picked, as clades with >= ',
+                subtitle = paste0('Clusters (coloured labels) have been picked as clades with >= ',
                                   supportvals,
                                   '% support and divergence <= ',
                                   distfract*100,
-                                  '%, distances method = \\'', method,
-                                  '\\'')
+                                  '% (distance method=\\'',method, '\\')')
                ) +
-        scale_colour_hue(na.value = "black") +
+        scale_color_discrete_qualitative(palette = "Dark3", na.value = "black") +
         guides(color = guide_legend(override.aes = list(size = 3)))
     # q
     pdf(file=paste0(basename,
@@ -168,15 +178,35 @@ if(matrixplots){
                       '_SNPdists.pdf'),
         width=11.69,
         height=8.27)
+    annos <- cluster_picks
+    rownames(annos) <- cluster_picks$Isolate
+    annos <- annos['Cluster']
+    labs_row <- c()
+    for(i in 1:length(row.names(heatmap_data))){
+        labs_row <- c(labs_row, annos[row.names(heatmap_data)[i],'Cluster'])
+    }
+    colors_anfang <- unique(ggplot_build(q)$data[[3]][,c('colour', 'label')])
+    # colors_anfang$cluster <- as.character(NA)
+    colnames(colors_anfang) <- c('Colour', 'Isolate')
+    cluster_colors <- unique(merge(cluster_picks, colors_anfang, by='Isolate')[,c('Cluster', 'Colour')])
+    cluster_colors_ <- cluster_colors$Colour
+    names(cluster_colors_) <- cluster_colors$Cluster
+    cluster_colors_ <- list(Cluster=cluster_colors_)
     print(pheatmap(heatmap_data,
-             show_rownames = T,
-             show_colnames = T,
-             display_numbers = TRUE,
-             number_format = '%.0f',
-             fontsize = fntsz*2))
-
+         show_rownames = TRUE,
+         show_colnames = TRUE,
+         annotation_names_row = TRUE,
+         annotation_names_col = TRUE,
+         annotation_row = annos,
+         annotation_col = annos,
+         annotation_colors = cluster_colors_,
+         labels_row = labs_row,
+         display_numbers = TRUE,
+         number_format = '%.0f',
+         fontsize = fntsz*2))
     dev.off()
 }
+
 
 write.csv(x=heatmap_data, file=paste0(basename,
                                       '_SNPdists.csv'),

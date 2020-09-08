@@ -5,6 +5,7 @@ SOFTWAREZ = ["ClusterPicker", "iqtree", "minimap2", "R", "samtools"]
 R_LIBS = [
     "BiocManager",
     "Biostrings",
+    "colorspace",
     "GenomicAlignments",
     "ggtree",
     "magick",
