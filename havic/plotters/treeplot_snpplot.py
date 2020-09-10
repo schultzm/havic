@@ -183,7 +183,7 @@ if(matrixplots){
     annos <- annos['Cluster']
     labs_row <- c()
     for(i in 1:length(row.names(heatmap_data))){
-        labs_row <- c(labs_row, annos[row.names(heatmap_data)[i],'Cluster'])
+        labs_row <- c(labs_row, paste0(annos[row.names(heatmap_data)[i],'Cluster'], '_', row.names(heatmap_data)[i]))
     }
     colors_anfang <- unique(ggplot_build(q)$data[[3]][,c('colour', 'label')])
     # colors_anfang$cluster <- as.character(NA)

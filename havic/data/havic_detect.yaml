@@ -12,12 +12,15 @@ SUBJECT_FILE: # the "SUBJECT" sequence in BLAST terms, i.e., reference genome
   data/NC_001489.fa # relative or absolute paths to fasta file
   # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
 
-SUBJECT_AMPLICON: # the amplicon sequence, with primers excluded
+SUBJECT_TARGET_REGION: # the target region of the genome to focus on
   data/havnet_amplicon.fa # in fasta format, relative or absolute paths okay
   # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
 
 OUTDIR: # the parent directory for the results folders
-  havic_test_results # relative or absolute path to parent result folder
+  havic_test_results/r1 # relative or absolute path to parent result folder
+
+RUN_PREFIX:
+  HAV_all_
 
 PLOTS:
   Yes # Yes to make plots (slow for large runs), No otherwise.
@@ -65,8 +68,6 @@ TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
   - AY644337_55443_seq_1 # these are sequences in the QUERY_FILES
   - RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty
   - nDNLdjtgha#HashInSeqName
-
-  # add a sequences to flag option
 
 QUERY_FILES: # also known as QUERY sequences in BLAST terminology
   - data/example1.fa # relative or absolute paths to fasta files

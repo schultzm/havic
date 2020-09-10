@@ -36,18 +36,18 @@ def make_path(parentdir, filename):
     return Path(parentdir).joinpath(filename).as_posix()
 
 
-def absolute_path(fname_in, test_status):
+def absolute_path(fname_in, default_path):
     """Get absolute paths for filename.
 
     Args:
         fname (string): filename
-        test_status(boolean): This file is for dev purposes
+        test_status(boolean): This file is a pre-packaged havic datafile.
 
     Returns:
         valid absolute file path if it is a file, else None
     """
     fname_out = None
-    if test_status:
+    if default_path:
         fname_in = rf(__parent_dir__, fname_in)
     else:
         pass
@@ -107,7 +107,7 @@ class Pipeline:
         self.reflen = len(self.refseq.seq)
         self.header = self.refseq.id
         self.outdir = yaml_in["OUTDIR"]
-        repstr = "HAV_all_"
+        repstr = yaml_in["RUN_PREFIX"]
         self.outfiles = {
             "tmp_fasta": make_path(self.outdir, f"{repstr}tmpfasta.fa"),
             "seq_header_replacements": make_path(
@@ -187,15 +187,15 @@ class Pipeline:
             f"{yaml_in['IQTREE2_SETTINGS']['protect_violations']} "
             f"{yaml_in['IQTREE2_SETTINGS']['redo']}"
         )
-        self.havnet_ampliconseq = SeqIO.read(
-            open(rf(__parent_dir__, yaml_in["SUBJECT_AMPLICON"]), "r"), "fasta"
+        self.target_region = SeqIO.read(
+            open(absolute_path(yaml_in["SUBJECT_TARGET_REGION"], yaml_in["DEFAULT_REFS"]), "r"), "fasta"
         )
 
     def _compile_input_fasta(self):
         # 1 Compile the fasta files to single file
         quality_controlled_seqs = []
         # 1.01 Append the reference amplicon
-        quality_controlled_seqs.append(self.havnet_ampliconseq)
+        quality_controlled_seqs.append(self.target_region)
         keyval_ids = {}
         dups = []
         for query_file in self.query_files:
@@ -278,7 +278,7 @@ class Pipeline:
         if not self.trim_seqs:
             self.trim_seqs = ""
         aln_trim = Trimmed_alignment(
-            alignment, self.havnet_ampliconseq.id, "-", self.trim_seqs
+            alignment, self.target_region.id, "-", self.trim_seqs
         )
         if len(aln_trim.alignment) > 2:
             aln_trim._get_refseq_boundary()
@@ -347,7 +347,7 @@ class Pipeline:
         print("Starting results summaries using R")
         with open(self.outfiles["treeplotr"], "w") as out_r:
             from ..plotters.treeplot_snpplot import plot_functions
-            tiphighlights = "c('" + "', '".join(self.yaml_in["HIGHLIGHT_TIP"]) + "')"
+            tiphighlights = "c('" + "', '".join([correct_characters(i) for i in self.yaml_in["HIGHLIGHT_TIP"]]) + "')"
             cmd = (
                 plot_functions.replace(
                     "basename <- z",
@@ -414,7 +414,7 @@ class Pipeline:
             pass
 
         @follows(create_outdir)
-        @files(self.query_files, self.outfiles["tmp_fasta"], self.havnet_ampliconseq)
+        @files(self.query_files, self.outfiles["tmp_fasta"], self.target_region)
         def compile_input_fasta(infile, outfile, refamplicon):
             self._compile_input_fasta()
 
