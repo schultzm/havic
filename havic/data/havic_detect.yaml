@@ -1,6 +1,14 @@
 ---
 FORCE_OVERWRITE_AND_RE_RUN:
-  Yes # Yes for full re-run, No to start from an interrupted run,
+  Yes # Yes for full re-run, No to start from an interrupted run
+
+OUTDIRS: # the parent directory for the output results folders
+  parentdir:
+    havic_test_results # relative or absolute path to parent result folder
+  childdirs:
+    - r1
+    - r2
+    - r3
 
 DEFAULT_REFS:
   Yes # Yes if using havic pre-packaged SUBJECT test data, No otherwise
@@ -15,9 +23,6 @@ SUBJECT_FILE: # the "SUBJECT" sequence in BLAST terms, i.e., reference genome
 SUBJECT_AMPLICON: # the amplicon sequence, with primers excluded
   data/havnet_amplicon.fa # in fasta format, relative or absolute paths okay
   # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
-
-OUTDIR: # the parent directory for the results folders
-  havic_test_results # relative or absolute path to parent result folder
 
 PLOTS:
   Yes # Yes to make plots (slow for large runs), No otherwise.
@@ -56,17 +61,15 @@ MINIMAP2_SETTINGS:
   k_mer: # select an odd number, between 3 and 27 inclusive
     5 # 5 has been good for the HAV amplicon seqs
 
-HIGHLIGHT_TIP:
-  - CmvAXJTIqH # Specify tip name to highlight in final plot
-  - CCHkiFhcxG # Specify tip name to highlight in final plot
-  - PAvYXhYkLM # Specify tip name to highlight in final plot
+HIGHLIGHT_SAMPLE:
+  - CmvAXJTIqH # Specify sample name to highlight in final plots
+  - CCHkiFhcxG # Specify sample name to highlight in final plots
+  - PAvYXhYkLM # Specify sample name to highlight in final plots
 
 TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
   - AY644337_55443_seq_1 # these are sequences in the QUERY_FILES
   - RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty
   - nDNLdjtgha#HashInSeqName
-
-  # add a sequences to flag option
 
 QUERY_FILES: # also known as QUERY sequences in BLAST terminology
   - data/example1.fa # relative or absolute paths to fasta files
