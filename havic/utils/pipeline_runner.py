@@ -162,10 +162,10 @@ class Pipeline:
         }
 
         self.minimap2_cmd = (
-            f"minimap2 -k {yaml_in['MINIMAP2_SETTINGS']['k_mer']} "
+            f"minimap2 --secondary=no -Y -k {yaml_in['MINIMAP2_SETTINGS']['k_mer']} "
             f"-a {self.subject} "
             f"{self.outfiles['tmp_fasta']} "
-            f"| samtools sort > {self.outfiles['tmp_bam']}"
+            f"| samtools view -h -F 256 -F 2048 | samtools sort > {self.outfiles['tmp_bam']}"
         )
         self.clusterpick_cmd = (
             f"{yaml_in['CLUSTER_PICKER_SETTINGS']['executable']} "
