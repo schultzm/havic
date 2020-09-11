@@ -19,6 +19,9 @@ SUBJECT_TARGET_REGION: # the target region of the genome to focus on
 OUTDIR: # the parent directory for the results folders
   havic_test_results/r1 # relative or absolute path to parent result folder
 
+TREE_ROOT:
+  midpoint # use the sequence name to root on sequence, or midpoint for mp root
+
 RUN_PREFIX:
   HAV_all_
 
