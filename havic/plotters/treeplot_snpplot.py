@@ -14,8 +14,8 @@ method <- hh
 kmer <- k
 matrixplots <- e
 highlight <- wz
-tree <- read.newick(file=paste0(basename, '.mp.treefile'))
-tree_clust <- read.newick(file=paste0(basename, '.mp_clusterPicks.nwk'))
+tree <- read.newick(file=paste0(basename, '.rooted.treefile'))
+tree_clust <- read.newick(file=paste0(basename, '.rooted_clusterPicks.nwk'))
 cluster_picks <- matrix(nrow = 0, ncol = 2)
 colnames(cluster_picks) <- c('Isolate', 'Cluster')
 cluster_picks
@@ -97,7 +97,7 @@ if(matrixplots){
         guides(color = guide_legend(override.aes = list(size = 3)))
     # q
     pdf(file=paste0(basename,
-                   '.mp.treefile_',
+                   '.rooted.treefile_',
                    distfract*100,
                    'percent_divergence_',
                    method, '_msa.pdf'),

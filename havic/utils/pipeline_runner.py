@@ -88,6 +88,8 @@ class Pipeline:
             yaml_in (dict): A dictionary object parsed from a yaml input file.
         """
         self.yaml_in = yaml_in  # a dict object
+        for key, value in yaml_in.items():
+            print(key, value)
         self.query_files = list(
             filter(
                 None,
@@ -101,8 +103,6 @@ class Pipeline:
             sys.exit("Unable to continue without input query_files.")
         self.trim_seqs = [correct_characters(i) for i in yaml_in["TRIM_SEQS"]]
         self.subject = absolute_path(yaml_in["SUBJECT_FILE"], yaml_in["DEFAULT_REFS"])
-        for key, value in yaml_in.items():
-            print(key, value)
         self.refseq = SeqIO.read(self.subject, "fasta")
         self.reflen = len(self.refseq.seq)
         self.header = self.refseq.id
@@ -127,30 +127,30 @@ class Pipeline:
             "treefile": make_path(
                 self.outdir, f"{repstr}minimap2.stack.trimmed.fa.treefile"
             ),
-            "mp_treefile": make_path(
-                self.outdir, f"{repstr}minimap2.stack.trimmed.fa.mp.treefile"
+            "rooted_treefile": make_path(
+                self.outdir, f"{repstr}minimap2.stack.trimmed.fa.rooted.treefile"
             ),
             "clusterpicked_tree": make_path(
                 self.outdir,
-                f"{repstr}minimap2.stack.trimmed.fa.mp_clusterPicks.nwk.figTree",
+                f"{repstr}minimap2.stack.trimmed.fa.rooted_clusterPicks.nwk.figTree",
             ),
-            "clusterpicked_tree_bkp": make_path(
-                self.outdir,
-                f"{repstr}minimap2.stack"
-                f".trimmed.fa.div_"
-                f"{yaml_in['CLUSTER_PICKER_SETTINGS']['distance_fraction']}"
-                f"distancefraction"
-                f".mp_clusterPicks"
-                f".nwk.figTree",
-            ),
+            # "clusterpicked_tree_bkp": make_path(
+            #     self.outdir,
+            #     f"{repstr}minimap2.stack"
+            #     f".trimmed.fa.div_"
+            #     f"{yaml_in['CLUSTER_PICKER_SETTINGS']['distance_fraction']}"
+            #     f"distancefraction"
+            #     f".rooted_clusterPicks"
+            #     f".nwk.figTree",
+            # ),
             "cluster_assignments": make_path(
                 self.outdir,
-                f"{repstr}minimap2.stack.trimmed.fa.mp_clusterPicks_log.txt",
+                f"{repstr}minimap2.stack.trimmed.fa.rooted_clusterPicks_log.txt",
             ),
             "clusters_assigned": make_path(
                 self.outdir,
                 f"{repstr}minimap2.stack.trimmed"
-                f".fa.mp_clusterPicks_summarised"
+                f".fa.rooted_clusterPicks_summarised"
                 f".txt",
             ),
             "treeplotr": make_path(
@@ -170,7 +170,7 @@ class Pipeline:
         self.clusterpick_cmd = (
             f"{yaml_in['CLUSTER_PICKER_SETTINGS']['executable']} "
             f"{self.outfiles['fasta_from_bam_trimmed']} "
-            f"{self.outfiles['mp_treefile']} "
+            f"{self.outfiles['rooted_treefile']} "
             f"{yaml_in['CLUSTER_PICKER_SETTINGS']['coarse_subtree_support']} "
             f"{yaml_in['CLUSTER_PICKER_SETTINGS']['fine_cluster_support']} "
             f"{yaml_in['CLUSTER_PICKER_SETTINGS']['distance_fraction']} "
@@ -198,6 +198,7 @@ class Pipeline:
         quality_controlled_seqs.append(self.target_region)
         keyval_ids = {}
         dups = []
+        exit_program = True
         for query_file in self.query_files:
             for record in SeqIO.parse(query_file, "fasta"):
                 input_id = record.id
@@ -221,7 +222,10 @@ class Pipeline:
                 out_h.write("\n".join(dups))
         else:
             print("Zero duplicate sequences were found.")
-        SeqIO.write(quality_controlled_seqs, self.outfiles["tmp_fasta"], "fasta")
+        if self.yaml_in["TREE_ROOT"] != 'midpoint' and correct_characters(self.yaml_in["TREE_ROOT"]) not in [record.id for record in quality_controlled_seqs]:
+            sys.exit('Unable to determine user-choice for tree rooting. In the run.yaml file, specify a name for the outgroup as a sequence name that is in one of the query files or use \'midpoint\' to midpoint root the tree.')
+        else:
+            SeqIO.write(quality_controlled_seqs, self.outfiles["tmp_fasta"], "fasta")
 
     def _minimap2_input_fasta_to_ref(self):
         cmd = self.minimap2_cmd
@@ -294,17 +298,22 @@ class Pipeline:
     def _run_iqtree(self):
         os.system(self.iqtree_cmd)
 
-    def _midpoint_root_iqtree(self):
-        # 5.1 Midpoint root the phylogeny using ete3
+    def root_iqtree(self):
+        """Midpoint or user-defined root setting of iqtree.
+        """
         from ete3 import Tree
-
         tree = Tree(self.outfiles["treefile"], format=0)
-        root = tree.get_midpoint_outgroup()
+        root_ = self.yaml_in["TREE_ROOT"]
+        root = None
+        if root_ == 'midpoint':
+            root = tree.get_midpoint_outgroup()
+        else:
+            root = root_
         tree.set_outgroup(root)
         tree.ladderize(direction=1)
         # dist_formatter is to prevent scientific notation.
         # with branch lengths in scientific notation, ClusterPicker dies.
-        tree.write(outfile=self.outfiles["mp_treefile"], dist_formatter="%0.16f")
+        tree.write(outfile=self.outfiles["rooted_treefile"], dist_formatter="%0.16f")
 
     def _clusterpick(self):
         """
@@ -313,10 +322,10 @@ class Pipeline:
         """
         os.system(self.clusterpick_cmd)
 
-    def _bkp_clusterpickedtree(self):
-        shutil.copyfile(
-            self.outfiles["clusterpicked_tree"], self.outfiles["clusterpicked_tree_bkp"]
-        )
+    # def _bkp_clusterpickedtree(self):
+    #     shutil.copyfile(
+    #         self.outfiles["clusterpicked_tree"], self.outfiles["clusterpicked_tree_bkp"]
+    #     )
 
     def _summarise_cluster_assignments(self):
         cmd = f"grep ClusterNumber {self.outfiles['cluster_assignments']} -n"
@@ -404,7 +413,7 @@ class Pipeline:
         # self._bam2fasta()
         # self._get_clean_fasta_alignment()
         # self._run_iqtree()
-        # self._midpoint_root_iqtree()
+        # self.root_iqtree()
         # self._clusterpick()
         # self._plot_results()
 
@@ -443,38 +452,38 @@ class Pipeline:
                 sys.exit(exit_statement)
 
         @follows(get_cleaned_fasta)
-        @files(self.outfiles["fasta_from_bam_trimmed"], self.outfiles["mp_treefile"])
+        @files(self.outfiles["fasta_from_bam_trimmed"], self.outfiles["rooted_treefile"])
         def run_iqtree(infile, outfile):
             self._run_iqtree()
 
         @follows(run_iqtree)
-        @files(self.outfiles["treefile"], self.outfiles["mp_treefile"])
-        def midpoint_root_iqtree(infile, outfile):
-            self._midpoint_root_iqtree()
+        @files(self.outfiles["treefile"], self.outfiles["rooted_treefile"])
+        def root_iqtree(infile, outfile):
+            self.root_iqtree()
 
-        @follows(midpoint_root_iqtree)
+        @follows(root_iqtree)
         @files(
-            [self.outfiles["fasta_from_bam_trimmed"], self.outfiles["mp_treefile"]],
+            [self.outfiles["fasta_from_bam_trimmed"], self.outfiles["rooted_treefile"]],
             self.outfiles["clusterpicked_tree"],
         )
-        def clusterpick_from_mpr_iqtree_and_cleaned_fasta(infile, outfile):
+        def clusterpick_from_rooted_iqtree_and_cleaned_fasta(infile, outfile):
             self._clusterpick()
 
-        @follows(clusterpick_from_mpr_iqtree_and_cleaned_fasta)
+        @follows(clusterpick_from_rooted_iqtree_and_cleaned_fasta)
         @files(self.outfiles["cluster_assignments"], self.outfiles["clusters_assigned"])
         def summarise_cluster_assignments(infile, outfile):
             self._summarise_cluster_assignments()
 
-        @follows(clusterpick_from_mpr_iqtree_and_cleaned_fasta)
-        @files(
-            self.outfiles["clusterpicked_tree"], self.outfiles["clusterpicked_tree_bkp"]
-        )
-        def backup_clusterpicked_figtree(infile, outfile):
-            self._bkp_clusterpickedtree()
+        # @follows(clusterpick_from_rooted_iqtree_and_cleaned_fasta)
+        # @files(
+        #     self.outfiles["clusterpicked_tree"], self.outfiles["clusterpicked_tree_bkp"]
+        # )
+        # def backup_clusterpicked_figtree(infile, outfile):
+        #     self._bkp_clusterpickedtree()
 
-        @follows(clusterpick_from_mpr_iqtree_and_cleaned_fasta)
+        @follows(clusterpick_from_rooted_iqtree_and_cleaned_fasta)
         @files(
-            [self.outfiles["fasta_from_bam_trimmed"], self.outfiles["mp_treefile"]],
+            [self.outfiles["fasta_from_bam_trimmed"], self.outfiles["rooted_treefile"]],
             self.outfiles["treeplotr"],
         )
         def plot_results_ggtree(infiles, outfiles):
@@ -495,9 +504,12 @@ class Pipeline:
                 pipeline_run(forcedtorun_tasks=create_outdir, history_file=temp_sqlite)
                 shutil.copyfile(temp_sqlite, perm_sqlite)
             else:
-                shutil.copyfile(perm_sqlite, temp_sqlite)
-                pipeline_run(history_file=temp_sqlite)
-                shutil.copyfile(temp_sqlite, perm_sqlite)
+                if not perm_sqlite.exists():
+                    sys.exit(f'Unable to find the SQLite database. Please delete or move {self.outdir}, or set "FORCE_OVERWRITE_AND_RE_RUN" to "No" in the run.yaml file.')
+                else:
+                    shutil.copyfile(perm_sqlite, temp_sqlite)
+                    pipeline_run(history_file=temp_sqlite)
+                    shutil.copyfile(temp_sqlite, perm_sqlite)
 
             # Print out the pipeline graph
             pipeprintgraph(make_path(self.outdir, "pipeline_graph.svg"), "svg")

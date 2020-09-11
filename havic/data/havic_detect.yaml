@@ -20,7 +20,7 @@ OUTDIR: # the parent directory for the results folders
   havic_test_results/r1 # relative or absolute path to parent result folder
 
 TREE_ROOT:
-  midpoint # use the sequence name to root on sequence, or midpoint for mp root
+  midpoint # sequence name to root iqtree on, or midpoint for midpoint root
 
 RUN_PREFIX:
   HAV_all_
@@ -71,6 +71,8 @@ TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
   - AY644337_55443_seq_1 # these are sequences in the QUERY_FILES
   - RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty
   - nDNLdjtgha#HashInSeqName
+  - '' # give it nothing
+  - xyxyx # give it a non-name
 
 QUERY_FILES: # also known as QUERY sequences in BLAST terminology
   - data/example1.fa # relative or absolute paths to fasta files
