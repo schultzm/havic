@@ -20,10 +20,10 @@ class Trimmed_alignment(MultipleSeqAlignment):
     Given an alignment, trim the 5' and 3' gap-only regions.
     """
 
-    def __init__(self, alignment, refisolate, gap_char, trim_seqs):
+    def __init__(self, alignment, trimguide, gap_char, trim_seqs):
 
         self.alignment = alignment
-        self.refisolate = refisolate
+        self.trimguide = trimguide # this will guide the trimming
         self.gap_char = gap_char
         self.boundary = None
         self.trim_seqs = trim_seqs
@@ -37,7 +37,7 @@ class Trimmed_alignment(MultipleSeqAlignment):
         start_pos = None
         end_pos = None
         for seq in self.alignment:
-            if seq.id == self.refisolate:
+            if seq.id == self.trimguide:
                 from re import finditer
                 for match in finditer(f"{self.gap_char}[A-Z]",
                                       str(seq.seq).upper()):
