@@ -101,7 +101,7 @@ class Pipeline:
         )
         if not self.query_files:
             sys.exit("Unable to continue without input query_files.")
-        self.trim_seqs = [correct_characters(i) for i in yaml_in["TRIM_SEQS"]]
+        self.trim_seqs = list(set(filter(None, [correct_characters(i) for i in yaml_in["TRIM_SEQS"]])))
         self.subject = absolute_path(yaml_in["SUBJECT_FILE"], yaml_in["DEFAULT_REFS"])
         self.refseq = SeqIO.read(self.subject, "fasta")
         self.reflen = len(self.refseq.seq)
@@ -269,31 +269,34 @@ class Pipeline:
         os.system(f"R CMD BATCH {self.outfiles['bam2fasta']} {self.outfiles['bam2fasta_Rout']}")
 
     def _get_clean_fasta_alignment(self):
+        """Trim the alignment to desired length.  Give it a haircut.
+
+        Returns:
+            MSA: The Biopython Multiple Sequence Alignment object
+        """
         from Bio import AlignIO
         from Bio.Alphabet import generic_dna
 
         alignment = AlignIO.read(
             open(self.outfiles["fasta_from_bam"], "r"), "fasta", alphabet=generic_dna
         )
-        # 4.1 Trim the alignment for isolates in arg.trim_seq to match
-        # refamplicon.
         from ..utils.trim_alignment import Trimmed_alignment
-
-        if not self.trim_seqs:
-            self.trim_seqs = ""
+            # self.trim_seqs = ""
         aln_trim = Trimmed_alignment(
             alignment, self.target_region.id, "-", self.trim_seqs
         )
-        if len(aln_trim.alignment) > 2:
+        if len(aln_trim.alignment) < 3:
+            sys.exit('Not enough sequences to perform analysis.  Exiting now.\n')
+        if self.trim_seqs:
             aln_trim._get_refseq_boundary()
             aln_trim.trim_seqs_to_ref()
             # 4.1.1 Depad the alignment.
-            aln_trim.depad_alignment()
-            AlignIO.write(
-                aln_trim.alignment, self.outfiles["fasta_from_bam_trimmed"], "fasta"
-            )
-        else:
-            return aln_trim.alignment
+        aln_trim.depad_alignment()
+        AlignIO.write(
+            aln_trim.alignment, self.outfiles["fasta_from_bam_trimmed"], "fasta"
+        )
+        # else:
+        return aln_trim.alignment
 
     def _run_iqtree(self):
         os.system(self.iqtree_cmd)

@@ -23,7 +23,7 @@ class Trimmed_alignment(MultipleSeqAlignment):
     def __init__(self, alignment, trimguide, gap_char, trim_seqs):
 
         self.alignment = alignment
-        self.trimguide = trimguide # this will guide the trimming
+        self.trimguide = trimguide # trim to this reference guide sequence
         self.gap_char = gap_char
         self.boundary = None
         self.trim_seqs = trim_seqs
@@ -52,7 +52,7 @@ class Trimmed_alignment(MultipleSeqAlignment):
 
     def trim_seqs_to_ref(self):
         """
-        Trim the alignment.
+        Trim the requested sequences to the reference length in the alignment.
         """
         temp_aln = MultipleSeqAlignment([])
         for seq in self.alignment:
@@ -81,7 +81,7 @@ class Trimmed_alignment(MultipleSeqAlignment):
         """
         site_set = {self.gap_char}
         start_pos = 0
-        # Get the start position for trim
+        # Get the start_pos for trim
         while len(site_set) == 1:
             site_set = set(self.alignment[:, start_pos])
             if len(site_set) > 1:
