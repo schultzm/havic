@@ -52,10 +52,10 @@ if(matrixplots){
     }
     print(as.data.frame(plt$data))
     str(plt$data)
-    offst <- 0.4401 *max(dist.nodes(tree))+-0.4526
-    if(offst <= 0){
-        offst <- 0.1
-    }
+    offst <- max(dist.nodes(tree))/5
+    # if(offst <= 0){
+    #     offst <- 0.1
+    # }
     fntsz <- -0.005093*length(tree$tip.label)+1.955556
     if(fntsz < 0.5) {
         fntsz <- 0.5
@@ -77,15 +77,8 @@ if(matrixplots){
                        na.rm=TRUE),
                    size=fntsz,
                    na.rm=TRUE) +
-        geom_treescale(x=0.01,
-                       y =-2,
-                       offset=1,
-                       fontsize = fntsz,
+        geom_treescale(fontsize = fntsz,
                        linesize=0.1) +
-        annotate("text",
-                 x = 0.015,
-                 y=-4, label = "Substitutions per site",
-                 size=fntsz) +
         ggtitle(label = "ML IQtree with bootstrap %, tips cluster-picked (left); fasta alignment (right)",
                 subtitle = paste0('Clusters (coloured labels) have been picked as clades with >= ',
                                   supportvals,
