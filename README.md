@@ -4,19 +4,46 @@
 
 Detect **H**epatitis **A** **V**irus **I**nfection **C**lusters from HAVNET amplicon sequences.  
 
+## Overview
+
+## Installation
+
+Installation requires [Miniconda](https://docs.conda.io/en/latest/miniconda.html) and [git](https://git-scm.com/downloads).  After installing these packages, simply do:
+
+    git clone https://github.com/schultzm/havic.git
+    cd havic
+    . install.sh
+
+The process will take up to 30 minutes and you should see verbose output during the install.
+
 ## Usage
+
+### Quickstart
 
     havic detect
     havic version
     havic test
 
+### General usage
 
-## Installation
+### Example usage
 
-Installation requires [Miniconda](https://docs.conda.io/en/latest/miniconda.html) and [git](https://git-scm.com/downloads).
+### Advance usage
 
-Then do:
+### Tips and tricks
 
-    git clone https://github.com/schultzm/havic.git
-    cd havic
-    . install.sh
+## Release history
+
+## Frequently Asked Questions
+
+_Can havic be used with a custom SUBJECT sequence?_
+
+Yes.  
+
+_Can the the subject sequence consist of multiple contigs?_
+
+No.
+
+_How does it scale?_
+
+At the outset, the pipeline compiles all the input query files into a single file using `cat` (`O(n)`) and discards duplicate sequence IDs (`O(n)`).  
