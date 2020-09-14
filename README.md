@@ -44,6 +44,6 @@ _Can the the subject sequence consist of multiple contigs?_
 
 No.
 
-_How does it scale?_
+<!-- _How does it scale?_
 
-At the outset, the pipeline compiles all the input query files into a single file using `cat` (`O(n)`) and discards duplicate sequence IDs (`O(n)`).  
+At the outset, the pipeline compiles all the input query files into a single file using `cat` (`O(n)`, i.e., linear time complexity), discards duplicate sequence IDs (`O(n)`), throws away the bad characters in the sequence headers (`O(n)`) and writes the set of sequences to file (`O(n)`).   -->
