@@ -198,7 +198,6 @@ class Pipeline:
         quality_controlled_seqs.append(self.target_region)
         keyval_ids = {}
         dups = []
-        exit_program = True
         for query_file in self.query_files:
             for record in SeqIO.parse(query_file, "fasta"):
                 input_id = record.id
