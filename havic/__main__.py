@@ -34,8 +34,8 @@ def main():
     )
     subparser_modules.add_parser(
         "detect",
-        help="""Detect Hepatitis A Virus infection clusters from HAVNET
-                protocol amplicon sequences.""",
+        help="""Detect infection clusters from cDNA or 
+        DNA consensus sequences.""",
         description="Start the infection cluster detection pipeline.",
         parents=[subparser_args1],
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
