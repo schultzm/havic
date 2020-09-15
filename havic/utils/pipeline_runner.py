@@ -81,7 +81,7 @@ def correct_characters(input_string):
 class Pipeline:
     def __init__(self, yaml_in):
         """Read the dictionary, and make it available to Pipeline() methods.
-        The dictionary contains all the run parameters, such as minimap2
+        The dictionary contains all the run parameters, such as mapping
         or iqtree2 settings.
 
         Args:
@@ -114,29 +114,29 @@ class Pipeline:
                 self.outdir, f"{repstr}seq_id_replace.tsv"
             ),
             "duplicates": make_path(self.outdir, f"{repstr}duplicate_seqs.txt"),
-            "tmp_bam": make_path(self.outdir, f"{repstr}minimap2.bam"),
-            "tmp_bam_idx": make_path(self.outdir, f"{repstr}minimap2.bam.bai"),
-            "bam2fasta": make_path(self.outdir, f"{repstr}minimap2.bam2fasta.R"),
+            "tmp_bam": make_path(self.outdir, f"{repstr}map.bam"),
+            "tmp_bam_idx": make_path(self.outdir, f"{repstr}map.bam.bai"),
+            "bam2fasta": make_path(self.outdir, f"{repstr}map.bam2fasta.R"),
             "bam2fasta_Rout": make_path(
-                self.outdir, f"{repstr}minimap2.bam2fasta.Rout"
+                self.outdir, f"{repstr}map.bam2fasta.Rout"
             ),
-            "fasta_from_bam": make_path(self.outdir, f"{repstr}minimap2.stack.fa"),
+            "fasta_from_bam": make_path(self.outdir, f"{repstr}map.stack.fa"),
             "fasta_from_bam_trimmed": make_path(
-                self.outdir, f"{repstr}minimap2.stack.trimmed.fa"
+                self.outdir, f"{repstr}map.stack.trimmed.fa"
             ),
             "treefile": make_path(
-                self.outdir, f"{repstr}minimap2.stack.trimmed.fa.treefile"
+                self.outdir, f"{repstr}map.stack.trimmed.fa.treefile"
             ),
             "rooted_treefile": make_path(
-                self.outdir, f"{repstr}minimap2.stack.trimmed.fa.rooted.treefile"
+                self.outdir, f"{repstr}map.stack.trimmed.fa.rooted.treefile"
             ),
             "clusterpicked_tree": make_path(
                 self.outdir,
-                f"{repstr}minimap2.stack.trimmed.fa.rooted_clusterPicks.nwk.figTree",
+                f"{repstr}map.stack.trimmed.fa.rooted_clusterPicks.nwk.figTree",
             ),
             # "clusterpicked_tree_bkp": make_path(
             #     self.outdir,
-            #     f"{repstr}minimap2.stack"
+            #     f"{repstr}map.stack"
             #     f".trimmed.fa.div_"
             #     f"{yaml_in['CLUSTER_PICKER_SETTINGS']['distance_fraction']}"
             #     f"distancefraction"
@@ -145,24 +145,24 @@ class Pipeline:
             # ),
             "cluster_assignments": make_path(
                 self.outdir,
-                f"{repstr}minimap2.stack.trimmed.fa.rooted_clusterPicks_log.txt",
+                f"{repstr}map.stack.trimmed.fa.rooted_clusterPicks_log.txt",
             ),
             "clusters_assigned": make_path(
                 self.outdir,
-                f"{repstr}minimap2.stack.trimmed"
+                f"{repstr}map.stack.trimmed"
                 f".fa.rooted_clusterPicks_summarised"
                 f".txt",
             ),
             "treeplotr": make_path(
-                self.outdir, f"{repstr}minimap2.stack.trimmed.fa.Rplot.R"
+                self.outdir, f"{repstr}map.stack.trimmed.fa.Rplot.R"
             ),
             "treeplotr_out": make_path(
-                self.outdir, f"{repstr}minimap2.stack.trimmed.fa.Rplot.Rout"
+                self.outdir, f"{repstr}map.stack.trimmed.fa.Rplot.Rout"
             ),
         }
 
-        self.minimap2_cmd = (
-            f"minimap2 --secondary=no -Y -k {yaml_in['MINIMAP2_SETTINGS']['k_mer']} "
+        self.map_cmd = (
+            f"{yaml_in['MAPPER_SETTINGS']['executable']} {yaml_in['MAPPER_SETTINGS']['other']} {yaml_in['MAPPER_SETTINGS']['k_mer']} "
             f"-a {self.subject} "
             f"{self.outfiles['tmp_fasta']} "
             f"| samtools view -h -F 256 -F 2048 | samtools sort > {self.outfiles['tmp_bam']}"
@@ -226,13 +226,13 @@ class Pipeline:
         else:
             SeqIO.write(quality_controlled_seqs, self.outfiles["tmp_fasta"], "fasta")
 
-    def _minimap2_input_fasta_to_ref(self):
-        cmd = self.minimap2_cmd
+    def _map_input_fasta_to_ref(self):
+        cmd = self.map_cmd
         print(cmd)
         os.system(cmd)
         cmd = f"samtools index {self.outfiles['tmp_bam']}"
         os.system(cmd)
-        # 3.1 find the unmapped sequences.
+        # Find and print the unmapped sequences.
         cmd = f"samtools view -f 4 {self.outfiles['tmp_bam']}"
         cmd2 = "cut -f 1"
         proc = Popen(shlex.split(cmd), stdout=PIPE, stderr=PIPE)
@@ -241,7 +241,7 @@ class Pipeline:
         if result:
             print(
                 f"\nUnmapped reads at k-mer "
-                f"{self.yaml_in['MINIMAP2_SETTINGS']['k_mer']}:"
+                f"{self.yaml_in['MAPPER_SETTINGS']['k_mer']}:"
             )
             print("\n".join(result))
         else:
@@ -384,7 +384,7 @@ class Pipeline:
                 )
                 .replace(
                     "kmer <- k",
-                    "kmer <- " + str(self.yaml_in["MINIMAP2_SETTINGS"]["k_mer"]),
+                    "kmer <- " + str(self.yaml_in["MAPPER_SETTINGS"]["k_mer"].rstrip().split(' ')[-1]),
                 )
                 .replace(
                     "matrixplots <- e",
@@ -411,7 +411,7 @@ class Pipeline:
         # For development and testing.
         # os.mkdir(self.outdir)
         # self._compile_input_fasta()
-        # self._minimap2_input_fasta_to_ref()
+        # self._map_input_fasta_to_ref()
         # self._bam2fasta()
         # self._get_clean_fasta_alignment()
         # self._run_iqtree()
@@ -431,10 +431,10 @@ class Pipeline:
 
         @follows(compile_input_fasta)
         @files(self.outfiles["tmp_fasta"], self.outfiles["tmp_bam"])
-        def minimap2_input_fasta_to_ref(infile, outfile):
-            self._minimap2_input_fasta_to_ref()
+        def map_input_fasta_to_ref(infile, outfile):
+            self._map_input_fasta_to_ref()
 
-        @follows(minimap2_input_fasta_to_ref)
+        @follows(map_input_fasta_to_ref)
         @files(self.outfiles["tmp_bam"], self.outfiles["fasta_from_bam"])
         def bam2fasta(infile, outfile):
             self._bam2fasta()

@@ -58,9 +58,13 @@ IQTREE2_SETTINGS:
   redo: # recompute everything in iqtree run
     '--redo' # leave empty string ('') if not wanting to redo, else '--redo'
 
-MINIMAP2_SETTINGS:
+MAPPER_SETTINGS:
+  executable:
+    minimap2
+  other:
+    --secondary=no -Y
   k_mer: # select an odd number, between 3 and 27 inclusive
-    5 # 5 has been good for the HAV amplicon seqs
+    -k 5 # 5 has been good for the HAV amplicon seqs, adjust sensibly
 
 HIGHLIGHT_TIP:
   - CmvAXJTIqH # Specify tip name to highlight in final plot
