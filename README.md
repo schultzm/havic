@@ -1,4 +1,4 @@
-# HAVIC
+# havic
 
 [![CircleCI](https://circleci.com/gh/schultzm/havic.svg?style=svg&circle-token=9d17418bb752aa29e07f95b09af106aef7cc6b02)](https://app.circleci.com/pipelines/github/schultzm/havic)
 
@@ -14,7 +14,7 @@ Installation requires [Miniconda](https://docs.conda.io/en/latest/miniconda.html
     cd havic
     . install.sh
 
-The process will take up to 30 minutes and verbose output will be printed to screen during the install.
+The process will take up to 30 minutes and verbose output will be printed to screen during the install.  If the installation fails, read the screen output and traceback to the error.  Submit installation issues to github.
 
 ## Usage
 
@@ -30,14 +30,24 @@ Sub-commands help:
   
     detect    Detect infection clusters from cDNA or DNA consensus sequences.
     version   Print version.
-    test      Run HAVIC test using pre-packaged example data.
+    test      Run havic test using pre-packaged example data.
 ```
 
 ### Quickstart
 
+```{bash}
     havic detect
     havic version
     havic test
+```
+
+The main program is accessed via three subcommands.  To get help on any of the sub-commands just add the `-h` suffix to the command.  
+
+`havic detect` is the sub-command that will run an analysis on a user-specified data-set, given a correctly formatted yaml file.  
+`havic version` will print the installed version to `stdout`.
+`havic test` will run `havic detect` on a pre-packaged test dataset.  If successful, the analyst should see `ok` at the end of each test.
+
+To run the detect sub-comm .  
 
 ### General usage
 
@@ -70,7 +80,7 @@ To maintain consistency with already established methods, SUBJECT ([BLAST](https
 
 _Can havic be used with a custom SUBJECT sequence?_
 
-Yes.  The HAVIC pipeline is expected to work for any non-segmented virus genome.
+Yes.  The havic pipeline is expected to work for any non-segmented virus genome.
 
 _Can the the SUBJECT file consist of multiple contigs?_
 
@@ -88,6 +98,6 @@ _What's all this talk about consensus sequences?  I'm used to talking about cont
 
 In the 2020 pandemic era, virus genome sequencing is dominated by tiled-PCR-amplicon Illumina paired-end sequencing and/or Oxford Nanpore Technologies (ONT) long read sequencing.  The typically low input nucleic acid quantity from clinical samples means that Illumina sequencing of tiled PCR amplicons is the preferred method whole genome sequencing of clinical virus samples.  Tiled amplicon Illumina sequencing allows mapping of reads from a single sample to a single reference, with the final sample genome sequence called as the consensus variants against the reference, padded by inter-variant reference bases.  The final sample sequence is not produced from a de novo assembly of reads so is referred to as a consensus sequence.  Further, in diagnostic laboratories worldwide, quantitative Reverse Transcriptase Real-time PCR (qRT-PCR, qPCR or sometimes just RT-PCR) is used to detect positive cases.  Due to difficulties associated with whole genome sequencing, diagnostic laboratorie often use Sanger sequencing of PCR products to call the strain of virus.  `havic` was originally written to discover and characterise outbreak clusters from short amplicon Sanger sequences, but now is also capable of analysis virus whole genome consensus sequences.  
 
-_Will HAVIC work on organisms other than viruses?
+_Will havic work on organisms other than viruses?
 
-Probably.  HAVIC has been designed and tested specifically to work on Hepatitis A Virus (HAV) genomes.  However, `havic` should work on any non-segmented virus genome, and successful test analyses have been performed on Measles and SARS-CoV-2 genomes.  Ultimately it is up to the analyst to decide whether `havic`'s treatment of the data makes biological sense.  
+Probably.  havic has been designed and tested specifically to work on Hepatitis A Virus (HAV) genomes.  However, `havic` should work on any non-segmented virus genome, and successful test analyses have been performed on Measles and SARS-CoV-2 genomes.  Ultimately it is up to the analyst to decide whether `havic`'s treatment of the data makes biological sense.  

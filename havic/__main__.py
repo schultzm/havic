@@ -46,8 +46,8 @@ def main():
     )
     subparser_modules.add_parser(
         "test",
-        help="Run HAVIC test using pre-packaged example data.",
-        description="Run HAVIC test using pre-packaged example data.",
+        help="Run havic test using pre-packaged example data.",
+        description="Run havic test using pre-packaged example data.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     args = parser.parse_args()
