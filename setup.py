@@ -47,7 +47,7 @@ setup(
     author=havic.__author__,
     author_email=havic.__author_email__,
     license=havic.__license__,
-    package_data={"": ["*.fa", "*.gbk", "*.bed", "*.fai"]},
+    package_data={"": ["*.fa", "*.gbk", "*.bed", "*.fai", "*.png", "*.svg"]},
     install_requires=["ete3>=3.1.1",
                       "ruffus>=2.6.2",
                       "biopython>=1.77",
