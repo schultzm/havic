@@ -6,9 +6,15 @@ Detect **H**epatitis **A** **V**irus **I**nfection **C**lusters from virus conse
 
 ## Overview
 
+`havic` is a bioinformatics pipeline for detecting infection clusters in Hepatitis A Virus samples based on DNA or cDNA sequence data.  The pipeline is written in python3 and pipes together a number of open-source software tools to achieve this task.  The figure below is a schematic representation of the process.  
+
 ![Pipeline](https://github.com/schultzm/havic/blob/docs/havic/data/pipeline_graph.svg?raw=true)
 
-![Amplicon](https://github.com/schultzm/havic/blob/docs/havic/data/VP1P2A.png?raw=true)(href "The HAV genome with HAVNET amplicon")
+The pipeline is summarised briefly here.  Firstly an output directory is created to receive the output files from a `havic` run.  Query sequences are collected into a single batch, duplicates sequences are discarded based on the sequence headers in the query fasta files, and troublesome characters in sequence headers are replaced with underscore.  
+![Amplicon](https://github.com/schultzm/havic/blob/docs/havic/data/VP1P2A.png?raw=true "The HAV genome with HAVNET amplicon, sourced from RIVM")
+
+
+
 
 ## Installation
 
