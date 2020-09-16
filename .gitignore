@@ -2,7 +2,7 @@
 havic_test_results
 havic_test_results/*
 .ruffus_history.sqlite
-
+pipeline_flowchart.drawio
 
 # R dregs
 .RData

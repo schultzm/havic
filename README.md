@@ -18,6 +18,8 @@ The process will take up to 30 minutes and verbose output will be printed to scr
 
 ## Usage
 
+### Quickstart
+
 After installing, the most basic usage of havic is to type `havic` on the command line and hit enter/return.  If the install has worked correctly, the user should see:
 
 ```{bash}
@@ -33,27 +35,46 @@ Sub-commands help:
     test      Run havic test using pre-packaged example data.
 ```
 
-### Quickstart
-
-```{bash}
-    havic detect
-    havic version
-    havic test
-```
-
 The main program is accessed via three subcommands.  To get help on any of the sub-commands just add the `-h` suffix to the command.  
 
-`havic detect` is the sub-command that will run an analysis on a user-specified data-set, given a correctly formatted yaml file.  
-`havic version` will print the installed version to `stdout`.
+`havic version` will print the installed version to `stdout`.  
 `havic test` will run `havic detect` on a pre-packaged test dataset.  If successful, the analyst should see `ok` at the end of each test.
 
-To run the detect sub-comm .  
-
-### General usage
+`havic detect` is the main sub-command.  Use this for detecting infection clusters from user-specified cDNA or DNA consensus sequences.  
 
 ### Example usage
 
+`cd` to a working directory (preferably not inside the git cloned folder) and do `wget https://raw.githubusercontent.com/schultzm/havic/master/havic/data/havic_detect.yaml`.  This is the template yaml file which needs to be edited and passed to `havic detect`.  The template is used in runs of `havic test` so has been verified as functional.  
+
+For a basic analysis of HAV VP1/P2A amplicons, the analyst will likely want to view the output in the context of HAV strains circulating globally.  Hence, the first step of analysis should be to collect samples from a global database of sequences (e.g., NCBI GenBank or HAVNET).  `havic` requires at least three query sequences to run.  
+
+#### Editing the yaml file for running `havic detect`
+
+##### Input query files
+
+Input query sequences should be in fasta format with one sequence per sample.  Multiple samples may be included per file, and/or multiple files may be passed to `havic`.  Query sequences within files will be reverse complemented as necessary during their mapping to the subject/reference.  If the query sequence files are named `batch1.fa`, `batch2.fa`, `batch3.fa`,  edit the `QUERY_FILES` section of the yaml file as follows:
+
+```{bash}
+QUERY_FILES:
+  - batch1.fa # relative or absolute paths to fasta files
+  - batch2.fa
+  - batch3.fa
+```
+
+##### Highlighting samples of interest
+
+To highlight query sequences in the final plots, list the sequence names under `HIGHLIGHT_TIP` in the yaml, otherwise ignore this section.  
+
+##### Trimming sequences to genomic region of interest
+
+To trim input queries to the reference VP1/P2A amplicon, list the sequence name of the query under `TRIM_SEQS`, otherwise ignore this section.  
+
 ### Advanced usage
+
+`havic` was originally designed to work for the VP1/P2A amplicon recommended by the Hepatitis A Virus Network ([HAVNET](https://www.rivm.nl/en/havnet)).  During development of `havic`, it was recognised that HAV surveillance will likely move to whole genome sequencing in the near future.  To improve utility of `havic` over the coming years, the software is written to allow the user to pass in any query sequence and any subject sequence.  Prior to phylogenetic analysis, query headers listed under `TRIM_SEQS` will be trimmed to the subject target region given by `SUBJECT_TARGET_REGION`.  Defining the subject target region in this way as opposed to using a bed file of coordinates is a feature to allow the user to not have to know in advance exactly where the target region is.  With changing references, the target region may differ slightly from the expected region, so by allowing the mapper to find the region, the user is relieved the burden of having to find and define the region a priori.  
+
+`havic` will read query sequences and map them to the subject sequence provided under `SUBJECT_FILE`.  The subject file can be any single contig the user desires.  `havic` has been tested on HAV (~7.5kb) genomes with preliminary testing also being successful for Measles (~15.9kb) and SARS-CoV-2 (~30kb) genomes.  The upper limit has not yet been found.  
+
 
 ### Tips and tricks
 
