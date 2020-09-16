@@ -60,6 +60,97 @@ For a basic analysis of HAV VP1/P2A amplicons, the analyst will likely want to v
 
 #### Editing the yaml file for running `havic detect`
 
+`havic` receives instructions for each run from a yaml file via the command `havic detect path/to/detect.yaml`.  The `test.yaml` file is presented and explained below:
+
+```{bash}
+---
+FORCE_OVERWRITE_AND_RE_RUN:
+  Yes # Yes for full re-run, No to start from an interrupted run,
+
+DEFAULT_REFS:
+  Yes # Yes if using havic pre-packaged SUBJECT test data, No otherwise
+
+DEFAULT_QUERIES:
+  Yes # Yes if using havic pre-packaged QUERY test data, No otherwise
+
+SUBJECT_FILE: # the "SUBJECT" sequence in BLAST terms, i.e., reference genome
+  data/NC_001489.fa # relative or absolute paths to fasta file
+  # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
+
+SUBJECT_TARGET_REGION: # the target region of the genome to focus on
+  data/havnet_amplicon.fa # in fasta format, relative or absolute paths okay
+  # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
+
+OUTDIR: # the parent directory for the results folders
+  havic_test_results/r1 # relative or absolute path to parent result folder
+
+TREE_ROOT:
+  midpoint # sequence name to root iqtree on, or midpoint for midpoint root
+
+RUN_PREFIX:
+  HAV_all_
+
+PLOTS:
+  Yes # Yes to make plots (slow for large runs), No otherwise.
+
+CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
+  executable:
+    ClusterPicker
+  coarse_subtree_support: # divide tree into subtrees at/above this threshold
+    70
+  fine_cluster_support: # branch support minimum value for clusters of tips
+    95
+  distance_fraction: # float please, genetic distance
+    0.01 # (e.g., 1 SNP in 100 bp = 0.01)
+  large_cluster_threshold:
+    15
+  distance_method:
+    valid # options are ambiguity, valid, gap, or abs
+
+IQTREE2_SETTINGS:
+  executable:
+    iqtree # command to call iqtree2
+  threads: # threads
+    '-T AUTO -ntmax 24' # automatically determine the best threading parameter
+  model_finder: # model-finder
+    '-m MFP' # extended model find with FreeRate heterogeneity + tree inference
+  state_frequency:
+    '+FO' # Optimized sgate frequencies by maximum-likelihood
+  ultrafast_bootstrap:
+    '--ufboot 1000' # use of aLRT will cause ClusterPicker to fall over
+  protect_violations: #to protect against severe model violations
+    '--bnni'
+  redo: # recompute everything in iqtree run
+    '--redo' # leave empty string ('') if not wanting to redo, else '--redo'
+
+MAPPER_SETTINGS:
+  executable:
+    minimap2
+  other:
+    --secondary=no -Y
+  k_mer: # select an odd number, between 3 and 27 inclusive
+    -k 5 # 5 has been good for the HAV amplicon seqs, adjust sensibly
+
+HIGHLIGHT_TIP:
+  - zz # Specify tip name to highlight in final plot
+  - '' # Specify tip name to highlight in final plot
+  - '' # Specify tip name to highlight in final plot
+
+TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
+  - AY644337_55443_seq_1 # these are sequences in the QUERY_FILES
+  - RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty
+  - nDNLdjtgha#HashInSeqName
+  - '' # give it nothing
+  - xyxyx # give it a non-name
+
+QUERY_FILES:
+  - data/example1.fa # relative or absolute paths to fasta files
+  - data/example2.fa
+  - xyz # to test a dud file name
+  - '' # to test an empty file name (which would return a folder, not file)
+...
+```
+
 ##### Input query files
 
 Input query sequences should be in fasta format with one sequence per sample.  Multiple samples may be included per file, and/or multiple files may be passed to `havic`.  Query sequences within files will be reverse complemented as necessary during their mapping to the subject/reference.  If the query sequence files are named `batch1.fa`, `batch2.fa`, `batch3.fa`,  edit the `QUERY_FILES` section of the yaml file as follows:
