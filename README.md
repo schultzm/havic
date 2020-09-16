@@ -8,7 +8,7 @@ Detect **H**epatitis **A** **V**irus **I**nfection **C**lusters from virus conse
 
 ![Pipeline](https://github.com/schultzm/havic/blob/docs/havic/data/pipeline_graph.svg?raw=true)
 
-![](havic/data/table 1-1.png?raw=true)
+![Amplicon](https://github.com/schultzm/havic/blob/docs/havic/data/VP1P2A.png?raw=true)
 
 ## Installation
 
