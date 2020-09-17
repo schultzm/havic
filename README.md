@@ -6,151 +6,155 @@ Detect **H**epatitis **A** **V**irus **I**nfection **C**lusters from virus conse
 
 ## Overview
 
-`havic` is a bioinformatics pipeline for detecting infection clusters in Hepatitis A Virus samples based on DNA or cDNA sequence data.  The pipeline is written in python3 and connects  a number of open-source software tools to achieve this task.  The figure below is a schematic representation of the process.  
+`havic` is a bioinformatics pipeline for detecting infection clusters in Hepatitis A Virus samples from DNA or cDNA sequence data.  The pipeline is written in `python3` and uses `ruffus` to connect a number of open-source software tools to achieve this task.  The user feeds `havic` some query files via a `yaml` config file, waits for the program to run and then checks the output folder for results.  The figure below is a schematic representation of the pipeline.  
 
 ![Pipeline](https://github.com/schultzm/havic/blob/docs/havic/data/pipeline_graph.svg?raw=true)
 
-The pipeline is summarised briefly here.  Firstly an output directory is created to receive the output files from a `havic` run.  Query sequences are collected into a single batch, duplicates sequences are discarded based on the sequence headers in the query fasta files, and troublesome characters in sequence headers are replaced with underscore.  `havic` was originally designed to work for the VP1/P2A amplicon recommended by the Hepatitis A Virus Network ([HAVNET](https://www.rivm.nl/en/havnet)).  The amplicon target in the context of the HAV genome is depicted here:
+The above pipeline is summarised briefly here.  Firstly an output directory is created to receive the output files from a `havic` run.  Query sequences are collected into a single set, duplicates sequences are discarded (based on the sequence headers in the query fasta files) and 'troublesome' characters in sequence headers are replaced with underscore.  `havic` was originally designed for analysis of the the VP1/P2A amplicon, which is the genomic marker recommended by the Hepatitis A Virus Network ([HAVNET](https://www.rivm.nl/en/havnet)).  The VP1/P2A amplicon target is the product of a nested PCR reaction, and is shown here in the context of the HAV genome:
 
 ![Amplicon](https://github.com/schultzm/havic/blob/docs/havic/data/VP1P2A.png?raw=true "The HAV genome with HAVNET amplicon, sourced from RIVM")
 
-
-
-
 ## Installation
 
-Installation requires [Miniconda](https://docs.conda.io/en/latest/miniconda.html) and [git](https://git-scm.com/downloads).  After installing these packages, simply do:
+Installation of `havic` requires [Miniconda](https://docs.conda.io/en/latest/miniconda.html) and [git](https://git-scm.com/downloads).  After installing these packages, simply do:
 
     git clone https://github.com/schultzm/havic.git
     cd havic
     . install.sh
 
-The installation process will take up to 30 minutes and verbose output will be printed to screen during the install.  If the installation fails, read the screen output and traceback to the error.  Submit installation issues to github.
+The installation process will take up to 30 minutes with verbose output printed to screen during the install.  If the installation fails, read the screen output to determine the error via traceback.  Submit installation issues to github.  Installation has been tested via continuous integration on CircleCI and tested inside a conda environment.  
 
 ## Usage
 
 ### Quickstart
 
-After installing, activate the `havic` conda environment containing by doing `conda activate havic_env` the most basic usage of `havic` is to type `havic` on the command line and hit enter/return.  If the install has worked correctly, the user should see:
+After installing, activate the conda environment by doing `conda activate havic_env`.  The most basic usage of `havic` is to type `havic` on the command line and hit enter/return.  If the install has worked correctly, the user should see:
 
-```{bash}
-usage: havic [-h]  ...
+    usage: havic [-h]  ...
 
-optional arguments:
-  -h, --help  show this help message and exit
+    optional arguments:
+    -h, --help  show this help message and exit
 
-Sub-commands help:
-  
-    detect    Detect infection clusters from cDNA or DNA consensus sequences.
-    version   Print version.
-    test      Run havic test using pre-packaged example data.
-```
+    Sub-commands help:
+    
+        detect    Detect infection clusters from cDNA or DNA consensus sequences.
+        version   Print version.
+        test      Run havic test using pre-packaged example data.
 
-The main program is accessed via three subcommands.  To get help on any of the sub-commands just add the `-h` suffix to the command.  
+The program is accessed via three subcommands, with help via the `-h` suffix.  
 
 `havic detect` is the main sub-command.  Use this for detecting infection clusters from user-specified cDNA or DNA consensus sequences.  
 `havic version` will print the installed version to `stdout`.  
 `havic test` will run `havic detect` on a pre-packaged test dataset.  If successful, the analyst should see `ok` at the end of each test.
 
-
 ### Example usage
 
-For a basic analysis of HAV VP1/P2A amplicons, the analyst will likely want to view the output in the context of HAV strains circulating globally.  Hence, the first step of analysis should be to collect samples from a global database of sequences (e.g., NCBI GenBank or HAVNET).  `havic` requires at least three query sequences to run.  
+For a basic analysis of HAV VP1/P2A amplicons, the analyst will likely need to view the output in the context of circulating HAV strains.  Hence, the first step of analysis should be to collect samples from a database of sequences (e.g., NCBI GenBank or HAVNET).  `havic` requires at least three query sequences to run.  After collecting the sequences into a fasta file/s, edit the `yaml` config file before trying to perform any analysis.
 
-#### Editing the yaml file for running `havic detect`
+#### Editing the `yaml` file for parsing by `havic detect`
 
-`havic` receives instructions for each run from a yaml file via the command `havic detect path/to/detect.yaml`.  The `test.yaml` file is presented and explained below:
+`havic` receives instructions for each run from a `yaml` config file via the command `havic detect path/to/detect.yaml`.  The `test.yaml` file from `havic/havic/data/havic_detect.yaml` is presented below as an example:
+
+    ---
+    FORCE_OVERWRITE_AND_RE_RUN:
+    Yes # Yes for full re-run, No to start from an interrupted run,
+
+    DEFAULT_REFS:
+    Yes # Yes if using havic pre-packaged SUBJECT test data, No otherwise
+
+    DEFAULT_QUERIES:
+    Yes # Yes if using havic pre-packaged QUERY test data, No otherwise
+
+    SUBJECT_FILE: # the "SUBJECT" sequence in BLAST terms, i.e., reference genome
+    data/NC_001489.fa # relative or absolute paths to fasta file
+    # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
+
+    SUBJECT_TARGET_REGION: # the target region of the genome to focus on
+    data/havnet_amplicon.fa # in fasta format, relative or absolute paths okay
+    # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
+
+    OUTDIR: # the parent directory for the results folders
+    havic_test_results/r1 # relative or absolute path to parent result folder
+
+    TREE_ROOT:
+    midpoint # sequence name to root iqtree on, or midpoint for midpoint root
+
+    RUN_PREFIX:
+    HAV_all_
+
+    PLOTS:
+    Yes # Yes to make plots (slow for large runs), No otherwise.
+
+    CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
+    executable:
+        ClusterPicker
+    coarse_subtree_support: # divide tree into subtrees at/above this threshold
+        70
+    fine_cluster_support: # branch support minimum value for clusters of tips
+        95
+    distance_fraction: # float please, genetic distance
+        0.01 # (e.g., 1 SNP in 100 bp = 0.01)
+    large_cluster_threshold:
+        15
+    distance_method:
+        valid # options are ambiguity, valid, gap, or abs
+
+    IQTREE2_SETTINGS:
+    executable:
+        iqtree # command to call iqtree2
+    threads: # threads
+        '-T AUTO -ntmax 24' # automatically determine the best threading parameter
+    model_finder: # model-finder
+        '-m MFP' # extended model find with FreeRate heterogeneity + tree inference
+    state_frequency:
+        '+FO' # Optimized sgate frequencies by maximum-likelihood
+    ultrafast_bootstrap:
+        '--ufboot 1000' # use of aLRT will cause ClusterPicker to fall over
+    protect_violations: #to protect against severe model violations
+        '--bnni'
+    redo: # recompute everything in iqtree run
+        '--redo' # leave empty string ('') if not wanting to redo, else '--redo'
+
+    MAPPER_SETTINGS:
+    executable:
+        minimap2
+    other:
+        --secondary=no -Y
+    k_mer: # select an odd number, between 3 and 27 inclusive
+        -k 5 # 5 has been good for the HAV amplicon seqs, adjust sensibly
+
+    HIGHLIGHT_TIP:
+    - CmvAXJTIqH # Specify tip name to highlight in final plot
+    - CCHkiFhcxG # Specify tip name to highlight in final plot
+    - PAvYXhYkLM # Specify tip name to highlight in final plot
+
+    TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
+    - AY644337_55443_seq_1 # these are sequences in the QUERY_FILES
+    - RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty
+    - nDNLdjtgha#HashInSeqName
+    - '' # give it nothing
+    - xyzyx # give it a non-name
+
+    QUERY_FILES:
+    - data/example1.fa # relative or absolute paths to fasta files
+    - data/example2.fa
+    - xyz # to test a dud file name
+    - '' # to test an empty file name (which would return a folder, not file)
+    ...
+
+Before starting a run, `cd` to a working directory (preferably not inside the git cloned folder).  Either copy the above `yaml` to file, or use `wget https://raw.githubusercontent.com/schultzm/havic/master/havic/data/havic_detect.yaml`.  For more information on the `yaml` standard, refer to [https://yaml.org/](https://yaml.org/).  Lets go through the input config step-by-step.
+
+##### Opening and closing fields
+
+Notice that `yaml` code block opens with `---` on a line by itself, and closes with `...` on a line by itself.  These lines are essential, so first step is to ensure your file is correctly formatted to include these.  Indents are two spaces.  
+
+##### Force overwrite and re-run
 
 ```{bash}
----
 FORCE_OVERWRITE_AND_RE_RUN:
-  Yes # Yes for full re-run, No to start from an interrupted run,
-
-DEFAULT_REFS:
-  Yes # Yes if using havic pre-packaged SUBJECT test data, No otherwise
-
-DEFAULT_QUERIES:
-  Yes # Yes if using havic pre-packaged QUERY test data, No otherwise
-
-SUBJECT_FILE: # the "SUBJECT" sequence in BLAST terms, i.e., reference genome
-  data/NC_001489.fa # relative or absolute paths to fasta file
-  # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
-
-SUBJECT_TARGET_REGION: # the target region of the genome to focus on
-  data/havnet_amplicon.fa # in fasta format, relative or absolute paths okay
-  # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
-
-OUTDIR: # the parent directory for the results folders
-  havic_test_results/r1 # relative or absolute path to parent result folder
-
-TREE_ROOT:
-  midpoint # sequence name to root iqtree on, or midpoint for midpoint root
-
-RUN_PREFIX:
-  HAV_all_
-
-PLOTS:
-  Yes # Yes to make plots (slow for large runs), No otherwise.
-
-CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
-  executable:
-    ClusterPicker
-  coarse_subtree_support: # divide tree into subtrees at/above this threshold
-    70
-  fine_cluster_support: # branch support minimum value for clusters of tips
-    95
-  distance_fraction: # float please, genetic distance
-    0.01 # (e.g., 1 SNP in 100 bp = 0.01)
-  large_cluster_threshold:
-    15
-  distance_method:
-    valid # options are ambiguity, valid, gap, or abs
-
-IQTREE2_SETTINGS:
-  executable:
-    iqtree # command to call iqtree2
-  threads: # threads
-    '-T AUTO -ntmax 24' # automatically determine the best threading parameter
-  model_finder: # model-finder
-    '-m MFP' # extended model find with FreeRate heterogeneity + tree inference
-  state_frequency:
-    '+FO' # Optimized sgate frequencies by maximum-likelihood
-  ultrafast_bootstrap:
-    '--ufboot 1000' # use of aLRT will cause ClusterPicker to fall over
-  protect_violations: #to protect against severe model violations
-    '--bnni'
-  redo: # recompute everything in iqtree run
-    '--redo' # leave empty string ('') if not wanting to redo, else '--redo'
-
-MAPPER_SETTINGS:
-  executable:
-    minimap2
-  other:
-    --secondary=no -Y
-  k_mer: # select an odd number, between 3 and 27 inclusive
-    -k 5 # 5 has been good for the HAV amplicon seqs, adjust sensibly
-
-HIGHLIGHT_TIP:
-  - zz # Specify tip name to highlight in final plot
-  - '' # Specify tip name to highlight in final plot
-  - '' # Specify tip name to highlight in final plot
-
-TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
-  - AY644337_55443_seq_1 # these are sequences in the QUERY_FILES
-  - RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty
-  - nDNLdjtgha#HashInSeqName
-  - '' # give it nothing
-  - xyxyx # give it a non-name
-
-QUERY_FILES:
-  - data/example1.fa # relative or absolute paths to fasta files
-  - data/example2.fa
-  - xyz # to test a dud file name
-  - '' # to test an empty file name (which would return a folder, not file)
-...
+  Yes
 ```
 
-Before starting a run, `cd` to a working directory (preferably not inside the git cloned folder).  Either copy the above yaml to file, or use `wget https://raw.githubusercontent.com/schultzm/havic/master/havic/data/havic_detect.yaml`.  For a basic analysis of HAV 
 
 ##### Input query files
 
@@ -165,7 +169,7 @@ QUERY_FILES:
 
 ##### Highlighting samples of interest
 
-To highlight query sequences in the final plots, list the sequence names under `HIGHLIGHT_TIP` in the yaml, otherwise ignore this section.  
+To highlight query sequences in the final plots, list the sequence names under `HIGHLIGHT_TIP` in the `yaml`, otherwise ignore this section.  
 
 ##### Trimming sequences to genomic region of interest
 

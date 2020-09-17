@@ -67,9 +67,9 @@ MAPPER_SETTINGS:
     -k 5 # 5 has been good for the HAV amplicon seqs, adjust sensibly
 
 HIGHLIGHT_TIP:
-  - zz # Specify tip name to highlight in final plot
-  - '' # Specify tip name to highlight in final plot
-  - '' # Specify tip name to highlight in final plot
+  - CmvAXJTIqH # Specify tip name to highlight in final plot
+  - CCHkiFhcxG # Specify tip name to highlight in final plot
+  - PAvYXhYkLM # Specify tip name to highlight in final plot
 
 TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
   - AY644337_55443_seq_1 # these are sequences in the QUERY_FILES
@@ -78,7 +78,7 @@ TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
   - '' # give it nothing
   - xyxyx # give it a non-name
 
-QUERY_FILES:
+QUERY_FILES: # also known as QUERY sequences in BLAST terminology
   - data/example1.fa # relative or absolute paths to fasta files
   - data/example2.fa
   - xyz # to test a dud file name
