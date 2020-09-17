@@ -6,11 +6,12 @@ Detect **H**epatitis **A** **V**irus **I**nfection **C**lusters from virus conse
 
 ## Overview
 
-`havic` is a bioinformatics pipeline for detecting infection clusters in Hepatitis A Virus samples based on DNA or cDNA sequence data.  The pipeline is written in python3 and pipes together a number of open-source software tools to achieve this task.  The figure below is a schematic representation of the process.  
+`havic` is a bioinformatics pipeline for detecting infection clusters in Hepatitis A Virus samples based on DNA or cDNA sequence data.  The pipeline is written in python3 and connects  a number of open-source software tools to achieve this task.  The figure below is a schematic representation of the process.  
 
 ![Pipeline](https://github.com/schultzm/havic/blob/docs/havic/data/pipeline_graph.svg?raw=true)
 
-The pipeline is summarised briefly here.  Firstly an output directory is created to receive the output files from a `havic` run.  Query sequences are collected into a single batch, duplicates sequences are discarded based on the sequence headers in the query fasta files, and troublesome characters in sequence headers are replaced with underscore.  
+The pipeline is summarised briefly here.  Firstly an output directory is created to receive the output files from a `havic` run.  Query sequences are collected into a single batch, duplicates sequences are discarded based on the sequence headers in the query fasta files, and troublesome characters in sequence headers are replaced with underscore.  `havic` was originally designed to work for the VP1/P2A amplicon recommended by the Hepatitis A Virus Network ([HAVNET](https://www.rivm.nl/en/havnet)).  The amplicon target in the context of the HAV genome is depicted here:
+
 ![Amplicon](https://github.com/schultzm/havic/blob/docs/havic/data/VP1P2A.png?raw=true "The HAV genome with HAVNET amplicon, sourced from RIVM")
 
 
@@ -24,13 +25,13 @@ Installation requires [Miniconda](https://docs.conda.io/en/latest/miniconda.html
     cd havic
     . install.sh
 
-The process will take up to 30 minutes and verbose output will be printed to screen during the install.  If the installation fails, read the screen output and traceback to the error.  Submit installation issues to github.
+The installation process will take up to 30 minutes and verbose output will be printed to screen during the install.  If the installation fails, read the screen output and traceback to the error.  Submit installation issues to github.
 
 ## Usage
 
 ### Quickstart
 
-After installing, the most basic usage of havic is to type `havic` on the command line and hit enter/return.  If the install has worked correctly, the user should see:
+After installing, activate the `havic` conda environment containing by doing `conda activate havic_env` the most basic usage of `havic` is to type `havic` on the command line and hit enter/return.  If the install has worked correctly, the user should see:
 
 ```{bash}
 usage: havic [-h]  ...
@@ -47,14 +48,12 @@ Sub-commands help:
 
 The main program is accessed via three subcommands.  To get help on any of the sub-commands just add the `-h` suffix to the command.  
 
+`havic detect` is the main sub-command.  Use this for detecting infection clusters from user-specified cDNA or DNA consensus sequences.  
 `havic version` will print the installed version to `stdout`.  
 `havic test` will run `havic detect` on a pre-packaged test dataset.  If successful, the analyst should see `ok` at the end of each test.
 
-`havic detect` is the main sub-command.  Use this for detecting infection clusters from user-specified cDNA or DNA consensus sequences.  
 
 ### Example usage
-
-`cd` to a working directory (preferably not inside the git cloned folder) and do `wget https://raw.githubusercontent.com/schultzm/havic/master/havic/data/havic_detect.yaml`.  This is the template yaml file which needs to be edited and passed to `havic detect`.  The template is used in runs of `havic test` so has been verified as functional.  
 
 For a basic analysis of HAV VP1/P2A amplicons, the analyst will likely want to view the output in the context of HAV strains circulating globally.  Hence, the first step of analysis should be to collect samples from a global database of sequences (e.g., NCBI GenBank or HAVNET).  `havic` requires at least three query sequences to run.  
 
@@ -151,6 +150,8 @@ QUERY_FILES:
 ...
 ```
 
+Before starting a run, `cd` to a working directory (preferably not inside the git cloned folder).  Either copy the above yaml to file, or use `wget https://raw.githubusercontent.com/schultzm/havic/master/havic/data/havic_detect.yaml`.  For a basic analysis of HAV 
+
 ##### Input query files
 
 Input query sequences should be in fasta format with one sequence per sample.  Multiple samples may be included per file, and/or multiple files may be passed to `havic`.  Query sequences within files will be reverse complemented as necessary during their mapping to the subject/reference.  If the query sequence files are named `batch1.fa`, `batch2.fa`, `batch3.fa`,  edit the `QUERY_FILES` section of the yaml file as follows:
@@ -172,7 +173,7 @@ To trim input queries to the reference VP1/P2A amplicon, list the sequence name 
 
 ### Advanced usage
 
-`havic` was originally designed to work for the VP1/P2A amplicon recommended by the Hepatitis A Virus Network ([HAVNET](https://www.rivm.nl/en/havnet)).  During development of `havic`, it was recognised that HAV surveillance will likely move to whole genome sequencing in the near future.  To improve utility of `havic` over the coming years, the software is written to allow the user to pass in any query sequence and any subject sequence.  Prior to phylogenetic analysis, query headers listed under `TRIM_SEQS` will be trimmed to the subject target region given by `SUBJECT_TARGET_REGION`.  Defining the subject target region in this way as opposed to using a bed file of coordinates is a feature to allow the user to not have to know in advance exactly where the target region is.  With changing references, the target region may differ slightly from the expected region, so by allowing the mapper to find the region, the user is relieved the burden of having to find and define the region a priori.  
+ During development of `havic`, it was recognised that HAV surveillance will likely move to whole genome sequencing in the near future.  To improve utility of `havic` over the coming years, the software is written to allow the user to pass in any query sequence and any subject sequence.  Prior to phylogenetic analysis, query headers listed under `TRIM_SEQS` will be trimmed to the subject target region given by `SUBJECT_TARGET_REGION`.  Defining the subject target region in this way as opposed to using a bed file of coordinates is a feature to allow the user to not have to know in advance exactly where the target region is.  With changing references, the target region may differ slightly from the expected region, so by allowing the mapper to find the region, the user is relieved the burden of having to find and define the region a priori.  
 
 `havic` will read query sequences and map them to the subject sequence provided under `SUBJECT_FILE`.  The subject file can be any single contig the user desires.  `havic` has been tested on HAV (~7.5kb) genomes with preliminary testing also being successful for Measles (~15.9kb) and SARS-CoV-2 (~30kb) genomes.  The upper limit has not yet been found.  
 

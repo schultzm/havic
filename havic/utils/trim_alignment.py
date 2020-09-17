@@ -10,7 +10,6 @@ Input:
 
 from Bio.Align import MultipleSeqAlignment
 from Bio.Seq import MutableSeq
-from Bio.Alphabet import generic_dna
 import sys
 
 
@@ -57,7 +56,7 @@ class Trimmed_alignment(MultipleSeqAlignment):
         temp_aln = MultipleSeqAlignment([])
         for seq in self.alignment:
             if seq.id in self.trim_seqs:
-                sequence = MutableSeq(str(seq.seq), generic_dna)
+                sequence = MutableSeq(str(seq.seq))
                 # print(help(sequence))
                 sequence[0:self.boundary[0]] = self.gap_char * \
                     (self.boundary[0] - 0)

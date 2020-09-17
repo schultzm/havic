@@ -274,11 +274,9 @@ class Pipeline:
             MSA: The Biopython Multiple Sequence Alignment object
         """
         from Bio import AlignIO
-        from Bio.Alphabet import generic_dna
 
         alignment = AlignIO.read(
-            open(self.outfiles["fasta_from_bam"], "r"), "fasta", alphabet=generic_dna
-        )
+            open(self.outfiles["fasta_from_bam"], "r"), "fasta")
         from ..utils.trim_alignment import Trimmed_alignment
             # self.trim_seqs = ""
         aln_trim = Trimmed_alignment(
