@@ -53,7 +53,7 @@ For a basic analysis of HAV VP1/P2A amplicons, the analyst will likely need to v
 
 #### Editing the `yaml` file for parsing by `havic detect`
 
-`havic` receives instructions for each run from a `yaml` config file via the command `havic detect path/to/detect.yaml`.  The `test.yaml` file from `havic/havic/data/havic_detect.yaml` is presented below as an example:
+`havic detect` receives instructions from a `yaml` config file via the command `havic detect path/to/yaml.yaml`.  The `test.yaml` file from `havic/havic/data/havic_detect.yaml` is presented below as an example:
 
     ---
     FORCE_OVERWRITE_AND_RE_RUN:
@@ -142,23 +142,33 @@ For a basic analysis of HAV VP1/P2A amplicons, the analyst will likely need to v
     - '' # to test an empty file name (which would return a folder, not file)
     ...
 
-Before starting a run, `cd` to a working directory (preferably not inside the git cloned folder).  Either copy the above `yaml` to file, or use `wget https://raw.githubusercontent.com/schultzm/havic/master/havic/data/havic_detect.yaml`.  For more information on the `yaml` standard, refer to [https://yaml.org/](https://yaml.org/).  Lets go through the input config step-by-step.
+Before starting a run, `cd` to a working directory (preferably not inside the git cloned folder).  Either copy the above `yaml` to file, or use `wget https://raw.githubusercontent.com/schultzm/havic/master/havic/data/havic_detect.yaml`.  For more information on the `yaml` standard, refer to [https://yaml.org/](https://yaml.org/).  
 
-##### Opening and closing fields
+Lets go through the `yaml` step-by-step.
 
-Notice that `yaml` code block opens with `---` on a line by itself, and closes with `...` on a line by itself.  These lines are essential, so first step is to ensure your file is correctly formatted to include these.  Indents are two spaces.  
+##### Opening and closing fields, nesting
+
+`yaml` code blocks open and close with `---` and `...`, respectively.  Ensure your file includes these lines.  Indents are two spaces to increase a nesting level.  
 
 ##### Force overwrite and re-run
 
-```{bash}
-FORCE_OVERWRITE_AND_RE_RUN:
-  Yes
-```
+    FORCE_OVERWRITE_AND_RE_RUN:
+    Yes
 
+`havic` manages tasks via [`ruffus`](https://code.google.com/archive/p/ruffus/), and out-of-date stages of the pipeline will be re-run as required.  To start a new run or force overwrite files in the OUTDIR, set `FORCE_OVERWRITE_AND_RE_RUN` to `Yes`.  Otherwise to start off from the last point, set to `No`.  
 
+##### Default Refs and Queries
+
+    DEFAULT_REFS:
+    Yes # Yes if using havic pre-packaged SUBJECT test data, No otherwise
+
+    DEFAULT_QUERIES:
+    Yes # Yes if using havic pre-packaged QUERY test data, No otherwise
+
+To use the pre-packaged 
 ##### Input query files
 
-Input query sequences should be in fasta format with one sequence per sample.  Multiple samples may be included per file, and/or multiple files may be passed to `havic`.  Query sequences within files will be reverse complemented as necessary during their mapping to the subject/reference.  If the query sequence files are named `batch1.fa`, `batch2.fa`, `batch3.fa`,  edit the `QUERY_FILES` section of the yaml file as follows:
+Input query sequences should be in fasta format with one sequence per sample.  Multiple samples may be included per file, and/or multiple files may be passed to `havic`.  Query sequences within files will be reverse complemented as necessary during their mapping to the subject/reference.  If the query sequence files are named `batch1.fa`, `batch2.fa`, `batch3.fa`,  edit the `QUERY_FILES` section of the `yaml` file as follows:
 
 ```{bash}
 QUERY_FILES:
@@ -176,7 +186,7 @@ To highlight query sequences in the final plots, list the sequence names under `
 To trim input queries to the reference VP1/P2A amplicon, list the sequence name of the query under `TRIM_SEQS`, otherwise ignore this section.  
 
 ### Advanced usage
-
+preifx with something != RUN_PREFIX
  During development of `havic`, it was recognised that HAV surveillance will likely move to whole genome sequencing in the near future.  To improve utility of `havic` over the coming years, the software is written to allow the user to pass in any query sequence and any subject sequence.  Prior to phylogenetic analysis, query headers listed under `TRIM_SEQS` will be trimmed to the subject target region given by `SUBJECT_TARGET_REGION`.  Defining the subject target region in this way as opposed to using a bed file of coordinates is a feature to allow the user to not have to know in advance exactly where the target region is.  With changing references, the target region may differ slightly from the expected region, so by allowing the mapper to find the region, the user is relieved the burden of having to find and define the region a priori.  
 
 `havic` will read query sequences and map them to the subject sequence provided under `SUBJECT_FILE`.  The subject file can be any single contig the user desires.  `havic` has been tested on HAV (~7.5kb) genomes with preliminary testing also being successful for Measles (~15.9kb) and SARS-CoV-2 (~30kb) genomes.  The upper limit has not yet been found.  
@@ -189,9 +199,9 @@ To trim input queries to the reference VP1/P2A amplicon, list the sequence name 
 Active development.  Pre-release.  
 ## Frequently Asked Questions
 
-_Why the name `havic`?_
+_Why the name_ `havic`_?_
 
-`havic` is an acronym for **H**epatitis **A** **V**irus **I**nfection **C**luster (HAVIC), the VIC doubles as an abbreviation for Victoria, Australia, where our laboratories are based.
+`havic` is an acronym for **H**epatitis **A** **V**irus **I**nfection **C**luster (HAVIC), the **VIC** acknowledges that the development team hails from Victoria, Australia.
 
 _Who is `havic` for?_
 

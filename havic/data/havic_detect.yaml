@@ -2,7 +2,7 @@
 FORCE_OVERWRITE_AND_RE_RUN:
   Yes # Yes for full re-run, No to start from an interrupted run,
 
-DEFAULT_REFS:
+DEFAULT_SUBJECT:
   Yes # Yes if using havic pre-packaged SUBJECT test data, No otherwise
 
 DEFAULT_QUERIES:
@@ -10,11 +10,11 @@ DEFAULT_QUERIES:
 
 SUBJECT_FILE: # the "SUBJECT" sequence in BLAST terms, i.e., reference genome
   data/NC_001489.fa # relative or absolute paths to fasta file
-  # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
+  # if DEFAULT_SUBJECT is Yes, path will be prefixed to use pre-packaged data
 
 SUBJECT_TARGET_REGION: # the target region of the genome to focus on
   data/havnet_amplicon.fa # in fasta format, relative or absolute paths okay
-  # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
+  # if DEFAULT_SUBJECT is Yes, path will be prefixed to use pre-packaged data
 
 OUTDIR: # the parent directory for the results folders
   havic_test_results/r1 # relative or absolute path to parent result folder

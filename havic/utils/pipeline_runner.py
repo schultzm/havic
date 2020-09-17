@@ -102,7 +102,7 @@ class Pipeline:
         if not self.query_files:
             sys.exit("Unable to continue without input query_files.")
         self.trim_seqs = list(set(filter(None, [correct_characters(i) for i in yaml_in["TRIM_SEQS"]])))
-        self.subject = absolute_path(yaml_in["SUBJECT_FILE"], yaml_in["DEFAULT_REFS"])
+        self.subject = absolute_path(yaml_in["SUBJECT_FILE"], yaml_in["DEFAULT_SUBJECT"])
         self.refseq = SeqIO.read(self.subject, "fasta")
         self.reflen = len(self.refseq.seq)
         self.header = self.refseq.id
@@ -188,7 +188,7 @@ class Pipeline:
             f"{yaml_in['IQTREE2_SETTINGS']['redo']}"
         )
         self.target_region = SeqIO.read(
-            open(absolute_path(yaml_in["SUBJECT_TARGET_REGION"], yaml_in["DEFAULT_REFS"]), "r"), "fasta"
+            open(absolute_path(yaml_in["SUBJECT_TARGET_REGION"], yaml_in["DEFAULT_SUBJECT"]), "r"), "fasta"
         )
 
     def _compile_input_fasta(self):
@@ -497,15 +497,15 @@ class Pipeline:
             temp_sqlite = Path(tmpfile).joinpath(db_name)
             perm_sqlite = Path(self.outdir).joinpath(db_name)
             if self.yaml_in["FORCE_OVERWRITE_AND_RE_RUN"]:
-                if Path(self.outdir).exists():
-                    shutil.rmtree(Path(self.outdir))
-                else:
-                    pass
+                for fname in Path(self.outdir).glob(f"{self.yaml_in['RUN_PREFIX']}*"):
+                    Path.unlink(fname)
+                # else:
+                #     pass
                 pipeline_run(forcedtorun_tasks=create_outdir, history_file=temp_sqlite)
                 shutil.copyfile(temp_sqlite, perm_sqlite)
             else:
                 if not perm_sqlite.exists():
-                    sys.exit(f'Unable to find the SQLite database. Please delete or move {self.outdir}, or set "FORCE_OVERWRITE_AND_RE_RUN" to "No" in the run.yaml file.')
+                    sys.exit(f'Unable to find the SQLite database. Please delete or move {self.outdir}, or set "FORCE_OVERWRITE_AND_RE_RUN" to "Yes" in the run.yaml file.')
                 else:
                     shutil.copyfile(perm_sqlite, temp_sqlite)
                     pipeline_run(history_file=temp_sqlite)
