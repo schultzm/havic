@@ -50,7 +50,7 @@ setup(
     package_data={"": ["*.fa", "*.gbk", "*.bed", "*.fai", "*.png", "*.svg"]},
     install_requires=["ete3>=3.1.1",
                       "ruffus>=2.6.2",
-                      "biopython>=1.77",
+                      "biopython>=1.78",
                       "pandas>=1.0.5",
                       "PyYAML>=5.3.1",
                       "rpy2>=3.3.5"],
