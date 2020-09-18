@@ -1,5 +1,6 @@
 # havic
 
+[![Github All Releases](https://img.shields.io/github/downloads/schultzm/havic/total.svg)]()  
 [![CircleCI](https://circleci.com/gh/schultzm/havic.svg?style=svg&circle-token=9d17418bb752aa29e07f95b09af106aef7cc6b02)](https://app.circleci.com/pipelines/github/schultzm/havic)
 
 Detect **H**epatitis **A** **V**irus **I**nfection **C**lusters from virus consensus sequences.  
