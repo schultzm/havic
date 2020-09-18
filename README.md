@@ -8,11 +8,11 @@ Detect **H**epatitis **A** **V**irus **I**nfection **C**lusters from virus conse
 
 `havic` is a bioinformatics pipeline for detecting infection clusters in Hepatitis A Virus samples from DNA or cDNA sequence data.  The pipeline is written in `python3` and uses `ruffus` to connect a number of open-source software tools to achieve this task.  The user feeds `havic` some query files via a `yaml` config file, waits for the program to run and then checks the output folder for results.  The figure below is a schematic representation of the pipeline.  
 
-![Pipeline](https://github.com/schultzm/havic/blob/docs/havic/data/pipeline_graph.svg?raw=true)
+![Pipeline](https://github.com/schultzm/havic/blob/master/havic/data/pipeline_graph.svg?raw=true)
 
 The above pipeline is summarised briefly here.  Firstly an output directory is created to receive the output files from a `havic` run.  Query sequences are collected into a single set, duplicates sequences are discarded (based on the sequence headers in the query fasta files) and 'troublesome' characters in sequence headers are replaced with underscore.  `havic` was originally designed for analysis of the the VP1/P2A amplicon, which is the genomic marker recommended by the Hepatitis A Virus Network ([HAVNET](https://www.rivm.nl/en/havnet)).  The VP1/P2A amplicon target is the product of a nested PCR reaction, and is shown here in the context of the HAV genome:
 
-![Amplicon](https://github.com/schultzm/havic/blob/docs/havic/data/VP1P2A.png?raw=true "The HAV genome with HAVNET amplicon, sourced from RIVM")
+![Amplicon](https://github.com/schultzm/havic/blob/master/havic/data/VP1P2A.png?raw=true "The HAV genome with HAVNET amplicon, sourced from RIVM")
 
 ## Installation
 
@@ -252,9 +252,9 @@ To facilitate tracking of output files, the user is able to specify a custom pre
 
 This setting controls the drawing of output plots.  The plots are helpful to understand how the multiple sequence alignment affects tree topology, cluster detection and pairwise SNP distances.
 
-![Heatmap](https://github.com/schultzm/havic/blob/docs/havic/data/heatmap_SNPs.png?raw=true "Pairwise genetic distances and ClusterPicker clusters")
+![Heatmap](https://github.com/schultzm/havic/blob/master/havic/data/heatmap_SNPs.png?raw=true "Pairwise genetic distances and ClusterPicker clusters")
 
-![Tree](https://github.com/schultzm/havic/blob/docs/havic/data/tree_MSA_clusters.png?raw=true "Maximum Likelihood tree with bootstrap support, ClusterPicker clusters, and Multiple Sequence Alignment")
+![Tree](https://github.com/schultzm/havic/blob/master/havic/data/tree_MSA_clusters.png?raw=true "Maximum Likelihood tree with bootstrap support, ClusterPicker clusters, and Multiple Sequence Alignment")
 
 
 ##### Input query files
