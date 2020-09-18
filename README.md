@@ -99,7 +99,7 @@ For a basic analysis of HAV VP1/P2A amplicons, the analyst will likely need to v
     distance_method:
         valid # options are ambiguity, valid, gap, or abs
 
-    IQTREE2_SETTINGS:
+    IQTREE2_SETTINGS: # http://www.iqtree.org/doc/iqtree-doc.pdf
     executable:
         iqtree # command to call iqtree2
     threads: # threads
@@ -117,7 +117,7 @@ For a basic analysis of HAV VP1/P2A amplicons, the analyst will likely need to v
 
     MAPPER_SETTINGS:
     executable:
-        minimap2
+        minimap2 # https://github.com/lh3/minimap2
     other:
         --secondary=no -Y
     k_mer: # select an odd number, between 3 and 27 inclusive
@@ -250,12 +250,11 @@ To facilitate tracking of output files, the user is able to specify a custom pre
     PLOTS:
     Yes # Yes to make plots (slow for large runs), No otherwise.
 
-This setting controls the drawing of output plots.  The plots are helpful to understand how the multiple sequence alignment affects tree topology, cluster detection and pairwise SNP distances.
+This setting controls the drawing of output plots.  The plots (shown below) are helpful to understand how the multiple sequence alignment affects tree topology, cluster detection and pairwise SNP distances.
 
 ![Heatmap](https://github.com/schultzm/havic/blob/master/havic/data/_heatmap_SNPs.png?raw=true "Pairwise genetic distances and ClusterPicker clusters")
 
 ![Tree](https://github.com/schultzm/havic/blob/master/havic/data/tree_MSA_clusters.png?raw=true "Maximum Likelihood tree with bootstrap support, ClusterPicker clusters, and Multiple Sequence Alignment")
-
 
 ##### Input query files
 
@@ -273,6 +272,18 @@ To highlight query sequences in the final plots, list the sequence names under `
 ##### Trimming sequences to genomic region of interest
 
 To trim input queries to the reference VP1/P2A amplicon, list the sequence name of the query under `TRIM_SEQS`, otherwise ignore this section.  
+
+##### Executables settings
+
+
+    CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
+
+    IQTREE2_SETTINGS: # http://www.iqtree.org/doc/iqtree-doc.pdf
+
+    MAPPER_SETTINGS: # https://github.com/lh3/minimap2
+
+Use these to set the parameters for `ClusterPicker`, `IQ-tree2` and `Minimap2`.  For further information, refer to the user manuals in the above links for each software.
+
 
 
 ### Advanced usage
