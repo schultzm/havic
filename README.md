@@ -49,7 +49,7 @@ The program is accessed via three subcommands, with help via the `-h` suffix.
 
 ### Example usage
 
-For a basic analysis of HAV VP1/P2A amplicons, the analyst will likely need to view the output in the context of circulating HAV strains.  Hence, the first step of analysis should be to collect samples from a database of sequences (e.g., NCBI GenBank or HAVNET).  `havic` requires at least three query sequences to run.  After collecting the sequences into a fasta file/s, edit the `yaml` config file before trying to perform any analysis.
+The results in this example were obtained using the command `havic test`.  Let's walk-through this test analysis of HAV VP1/P2A amplicons, using the same `config.yaml` as `havic test`.  With the user's own config.yaml file, the command would be `havic detect path/to/config.yaml`.  
 
 #### Editing the `yaml` file for parsing by `havic detect`
 
@@ -324,11 +324,13 @@ To run the pipeline from a user-specified stage, delete or re-prefix the files i
 
 During development of `havic`, it was recognised that HAV surveillance will move to whole genome sequencing in the near future.  To improve utility of `havic` over the coming years, `havic` is written to allow the user to pass in any query and subject sequences.  Prior to phylogenetic analysis, query headers listed under `TRIM_SEQS` will be trimmed to the subject target region given by `SUBJECT_TARGET_REGION`.  To avoid cropping the alignment, either set the value of `SUBJECT_TARGET_REGION` to `SUBJECT_FILE` or set `TRIM_SEQS` to `''`.  
 
-`havic` has been tested on HAV (~7.5kb) genomes with preliminary testing also being successful for Measles (~15.9kb) and SARS-CoV-2 (~30kb) genomes.  The upper limit has not been determined.  
+#### Include the reference/subject sequence in the final alignment
+
+To include the subject sequence in the final alignment, just add the path to the subject file to the list in the `QUERY_FILES` block.
 
 ## Release history
 
-Active development.  Pre-release.  
+Pre-release.  
 
 ## Frequently Asked Questions
 
@@ -336,7 +338,7 @@ _Why the name_ `havic`_?_
 
 `havic` is an acronym for **H**epatitis **A** **V**irus **I**nfection **C**luster (HAVIC), the **VIC** acknowledges that the development team hails from Victoria, Australia.
 
-_Who is `havic` for?_
+_Who is_ `havic` _for?_
 
 `havic` is for molecular epidemiologists working in public health laboratories who want to discover infection clusters in their virus sample cDNA or DNA sequences.  
 
@@ -344,11 +346,11 @@ _What is `havic` for?_
 
 `havic` is for bioinformatic analysis of Hepatitis A Virus genome sequences.  It takes fasta files as input (`QUERIES`), maps the `QUERIES` to a reference (`SUBJECT`), extracts the alignment from the binary alignment map (bam) file, infers a phylogenetic tree from the alignment, picks infection clusters within the `QUERIES` using the tree and alignment as evidence.  Theoretically, `havic` can be used on other viral genomes though testing on non-HAV samples has so far been limited to Measles and SARS-CoV-2.
 
-_How do you define `SUBJECT` and `QUERY` sequences?_
+_How do you define_ `SUBJECT` _and_ `QUERY` _sequences?_
 
-To maintain consistency with already established methods, SUBJECT ([BLAST](https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs&DOC_TYPE=References) nomenclature) is used interchangeably with REFERENCE, REF or reference allele [.vcf standard](https://www.internationalgenome.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-40/).  SUBJECT is the backbone onto which all QUERY sequences will be mapped.  QUERY (BLAST nomenclature) is used interchangeably with ALTERNATE or ALT or alternate allele (.vcf standard).  
+To maintain consistency with already established methods, SUBJECT ([BLAST](https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs&DOC_TYPE=References) nomenclature) is used interchangeably with REFERENCE, REF or reference allele [.vcf standard](https://www.internationalgenome.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-40/).  `SUBJECT` is the backbone onto which all `QUERY` sequences will be mapped.  `QUERY` (BLAST nomenclature) is used interchangeably with `ALTERNATE` or `ALT` or alternate allele (`.vcf` standard).  
 
-_Can havic be used with a custom `SUBJECT` sequence?_
+_Can havic be used with a custom_ `SUBJECT` _sequence?_
 
 Yes.  The havic pipeline is expected to work for any non-segmented virus genome.
 
@@ -356,23 +358,35 @@ _Can the the SUBJECT file consist of multiple contigs?_
 
 No.  The SUBJECT sequence needs to be a single consensus sequence from a single sample.  
 
-_Can input QUERY samples be comprised of multiple consensus sequences from the same sample?_
+_Can input_ `QUERY` _samples be comprised of multiple consensus sequences from the same sample?_
 
-No.  A QUERY file may NOT consist of multiple contigs from the same sample.  However, a QUERY file may consist of multiple sequences, one sequence from each sample.  
+No.  A `QUERY` file may NOT consist of multiple contigs from the same sample.  However, a `QUERY` file may consist of multiple sequences, one sequence from each sample.  
 
-_Can input QUERY files consist of multiple sequences?_
+_Can input_ `QUERY` _files consist of multiple sequences?_
 
-Yes.  A QUERY file may either be a single consensus sequence from a single sample, or multiple samples with a single consensus sequence for each sample.  A single QUERY file can be input to `havic`, but the program is designed to accept as many QUERY files as you wish to feed it.  
+Yes.  A `QUERY` file may either be a single consensus sequence from a single sample, or multiple samples with a single consensus sequence for each sample.  A single `QUERY` file can be input to `havic`, but the program is designed to accept as many `QUERY` files as you wish to feed it.  
 
 _What's all this talk about consensus sequences?  I'm used to talking about contigs._
 
 In the 2020 pandemic era, virus genome sequencing is dominated by tiled-PCR-amplicon Illumina paired-end sequencing and/or Oxford Nanpore Technologies (ONT) long read sequencing.  The typically low input nucleic acid quantity from clinical samples means that Illumina sequencing of tiled PCR amplicons is the preferred method whole genome sequencing of clinical virus samples.  Tiled amplicon Illumina sequencing allows mapping of reads from a single sample to a single reference, with the final sample genome sequence called as the consensus variants against the reference, padded by inter-variant reference bases.  The final sample sequence is not produced from a de novo assembly of reads so is referred to as a consensus sequence.  Further, in diagnostic laboratories worldwide, quantitative Reverse Transcriptase Real-time PCR (qRT-PCR, qPCR or sometimes just RT-PCR) is used to detect positive cases.  Due to difficulties associated with whole genome sequencing, diagnostic laboratorie often use Sanger sequencing of PCR products to call the strain of virus.  `havic` was originally written to discover and characterise outbreak clusters from short amplicon Sanger sequences, but now is also capable of analysis virus whole genome consensus sequences.  
 
-_Will havic work on organisms other than viruses?_
+_Will_ `havic` _work on organisms other than viruses?_
 
-Probably.  havic has been designed and tested specifically to work on Hepatitis A Virus (HAV) genomes.  However, `havic` should work on any non-segmented virus genome, and successful test analyses have been performed on Measles and SARS-CoV-2 genomes.  Ultimately it is up to the analyst to decide whether `havic`'s treatment of the data makes biological sense.  
+Probably.  havic has been designed and tested specifically to work on Hepatitis A Virus (HAV, genome size ~7.5kb) genomes.  However, `havic` should work on any non-segmented virus genome, and successful test analyses have been performed on Measles (~15.9kb) and SARS-CoV-2 (~30kb) genomes.  Ultimately it is up to the analyst to decide whether `havic`'s treatment of the data makes biological sense.  
+
+_What is the minimum number of sequences that can be analysed using_ `havic`_?_
+
+The answer is 3.  To obtain context sequences for the query sample/s, go to NCBI's GenBank or RIVM's HAVNET.  It is recommended to use `entrez e-utils` for obtaining large numbers of sequences and associated metadata.
+
 
 ## Glossary
 
-HAV    Hepatitis A Virus
-MSA    Multiple Sequence Alignment
+Acronym | Expansion
+---|---
+HAV | Hepatitis A Virus
+MSA | Multiple Sequence Alignment
+HAVNET | Hepatitis A Virus Network
+NCBI | National Center for Biotechnology Information
+RIVM | Rijksinstituut voor Volksgezondheid en Milieu
+PCR | Polymerase Chain Reaction
+cDNA | complementary DNA
