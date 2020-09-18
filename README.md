@@ -85,19 +85,13 @@ For a basic analysis of HAV VP1/P2A amplicons, the analyst will likely need to v
     PLOTS:
     Yes # Yes to make plots (slow for large runs), No otherwise.
 
-    CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
+    MAPPER_SETTINGS:
     executable:
-        ClusterPicker
-    coarse_subtree_support: # divide tree into subtrees at/above this threshold
-        70
-    fine_cluster_support: # branch support minimum value for clusters of tips
-        95
-    distance_fraction: # float please, genetic distance
-        0.01 # (e.g., 1 SNP in 100 bp = 0.01)
-    large_cluster_threshold:
-        15
-    distance_method:
-        valid # options are ambiguity, valid, gap, or abs
+        minimap2 # https://github.com/lh3/minimap2
+    other:
+        --secondary=no -Y
+    k_mer: # select an odd number, between 3 and 27 inclusive
+        -k 5 # 5 has been good for the HAV amplicon seqs, adjust sensibly
 
     IQTREE2_SETTINGS: # http://www.iqtree.org/doc/iqtree-doc.pdf
     executable:
@@ -115,13 +109,19 @@ For a basic analysis of HAV VP1/P2A amplicons, the analyst will likely need to v
     redo: # recompute everything in iqtree run
         '--redo' # leave empty string ('') if not wanting to redo, else '--redo'
 
-    MAPPER_SETTINGS:
+    CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
     executable:
-        minimap2 # https://github.com/lh3/minimap2
-    other:
-        --secondary=no -Y
-    k_mer: # select an odd number, between 3 and 27 inclusive
-        -k 5 # 5 has been good for the HAV amplicon seqs, adjust sensibly
+        ClusterPicker
+    coarse_subtree_support: # divide tree into subtrees at/above this threshold
+        70
+    fine_cluster_support: # branch support minimum value for clusters of tips
+        95
+    distance_fraction: # float please, genetic distance
+        0.01 # (e.g., 1 SNP in 100 bp = 0.01)
+    large_cluster_threshold:
+        15
+    distance_method:
+        valid # options are ambiguity, valid, gap, or abs
 
     HIGHLIGHT_TIP:
     - CmvAXJTIqH # Specify tip name to highlight in final plot
@@ -173,7 +173,7 @@ If `Yes`, for `DEFAULT_SUBJECT`, `havic` will prefix the filepaths in `SUBJECT_F
     data/NC_001489.fa # relative or absolute paths to fasta file
     # if DEFAULT_SUBJECT is Yes, path will be prefixed to use pre-packaged data
 
-`havic` will use this fasta sequence as the subject/reference sequence.  If a different reference is required, change the path value.  
+`havic` will use this fasta sequence as the subject/reference sequence.  If a different reference is required, change the path value.  The subject sequence may only be a single consensus sequence.
 
 ##### Subject target region
 
@@ -275,30 +275,61 @@ To trim input queries to the reference VP1/P2A amplicon, list the sequence name 
 
 ##### Executables settings
 
-
-    CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
+    MAPPER_SETTINGS: # https://github.com/lh3/minimap2
 
     IQTREE2_SETTINGS: # http://www.iqtree.org/doc/iqtree-doc.pdf
 
-    MAPPER_SETTINGS: # https://github.com/lh3/minimap2
+    CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
 
-Use these to set the parameters for `ClusterPicker`, `IQ-tree2` and `Minimap2`.  For further information, refer to the user manuals in the above links for each software.
+Use these variables to set parameters for `Minimap2`, `IQ-tree2` and `ClusterPicker`.  For further information, refer to the user manuals for each software in the above links.  
 
+##### Highlight tips
 
+    HIGHLIGHT_TIP:
+    - CmvAXJTIqH # Specify tip name to highlight in final plot
+    - CCHkiFhcxG # Specify tip name to highlight in final plot
+    - PAvYXhYkLM # Specify tip name to highlight in final plot
 
-### Advanced usage
+Samples listed under HIGHLIGHT_TIP will be annotated in the final tree plot with a red dot, as shown below.  
 
-preifx with something != RUN_PREFIX
- During development of `havic`, it was recognised that HAV surveillance will likely move to whole genome sequencing in the near future.  To improve utility of `havic` over the coming years, the software is written to allow the user to pass in any query sequence and any subject sequence.  Prior to phylogenetic analysis, query headers listed under `TRIM_SEQS` will be trimmed to the subject target region given by `SUBJECT_TARGET_REGION`.  Defining the subject target region in this way as opposed to using a bed file of coordinates is a feature to allow the user to not have to know in advance exactly where the target region is.  With changing references, the target region may differ slightly from the expected region, so by allowing the mapper to find the region, the user is relieved the burden of having to find and define the region a priori.  
+![Tree](https://github.com/schultzm/havic/blob/master/havic/data/highlight_tip.png?raw=true "Tip CmvAXJTIqH highlighted as requested under HIGHLIGHT_TIP")
+![Tree](https://github.com/schultzm/havic/blob/master/havic/data/highlight_tips.png?raw=true "Tips CCHkiFhcxG and PAvYXhYkLM highlighted as requested under HIGHLIGHT_TIP")
 
-`havic` will read query sequences and map them to the subject sequence provided under `SUBJECT_FILE`.  The subject file can be any single contig the user desires.  `havic` has been tested on HAV (~7.5kb) genomes with preliminary testing also being successful for Measles (~15.9kb) and SARS-CoV-2 (~30kb) genomes.  The upper limit has not yet been found.  
+##### Trim sequences to SUBJECT_TARGET_REGION
 
+    TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
+    - AY644337_55443_seq_1 # these are sequences in the QUERY_FILES
+    - RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty
+    - nDNLdjtgha#HashInSeqName
+
+Sometimes query sequences are whole genome, off target, or longer than the target regions.  By supplying those sequence names here, `havic` will trim the aligned sequence to the SUBJECT_TARGET_REGION.  This list may be long, which is why it is placed toward the end of the `yaml` file.   
+
+##### Query sequences
+
+    QUERY_FILES:
+    - data/example1.fa # relative or absolute paths to fasta files
+    - data/example2.fa
+    - xyz # to test a dud file name
+    - '' # to test an empty file name (which would return a folder, not file)
+
+Provide relative or absolute paths to files containing query sequences.  Each sample may only consist of a single sequence.  Each file may contain one or more samples.  Multiple files may be input to `havic` via this option.  
 
 ### Tips and tricks
+
+#### Re-run from specified stage
+
+To run the pipeline from a user-specified stage, delete or re-prefix the files in the output directory and set `FORCE_OVERWRITE_AND_RE_RUN` to `No`.  For example, to re-run the pipeline from the ClusterPicker stage, firstly set `FORCE_OVERWRITE_AND_RE_RUN` to `No` and then delete files shown in the **Output files** table (above) numbered 8 and larger.  Alternatively, re-prefix the files numbered 8 and larger with an underscore.  Note, when `FORCE_OVERWRITE_AND_RE_RUN` is set to `Yes`, all files in `OUTDIR` with the prefix as per `RUN_PREFIX` will be deleted.  
+
+#### Input whole genome sequences (or do not trim the MSA)
+
+During development of `havic`, it was recognised that HAV surveillance will move to whole genome sequencing in the near future.  To improve utility of `havic` over the coming years, `havic` is written to allow the user to pass in any query and subject sequences.  Prior to phylogenetic analysis, query headers listed under `TRIM_SEQS` will be trimmed to the subject target region given by `SUBJECT_TARGET_REGION`.  To avoid cropping the alignment, either set the value of `SUBJECT_TARGET_REGION` to `SUBJECT_FILE` or set `TRIM_SEQS` to `''`.  
+
+`havic` has been tested on HAV (~7.5kb) genomes with preliminary testing also being successful for Measles (~15.9kb) and SARS-CoV-2 (~30kb) genomes.  The upper limit has not been determined.  
 
 ## Release history
 
 Active development.  Pre-release.  
+
 ## Frequently Asked Questions
 
 _Why the name_ `havic`_?_
@@ -311,13 +342,13 @@ _Who is `havic` for?_
 
 _What is `havic` for?_
 
-`havic` is for bioinformatic analysis of Hepatitis A Virus genome sequences.  It takes fasta files as input (QUERIES), maps the QUERIES to a reference (SUBJECT), extracts the alignment from the binary alignment map (bam) file, infers a phylogenetic tree from the alignment, picks infection clusters within the QUERIES using the tree and alignment as evidence.  Theoretically, `havic` can be used on other viral genomes though testing on non-HAV samples has so far been limited to Measles and SARS-CoV-2.
+`havic` is for bioinformatic analysis of Hepatitis A Virus genome sequences.  It takes fasta files as input (`QUERIES`), maps the `QUERIES` to a reference (`SUBJECT`), extracts the alignment from the binary alignment map (bam) file, infers a phylogenetic tree from the alignment, picks infection clusters within the `QUERIES` using the tree and alignment as evidence.  Theoretically, `havic` can be used on other viral genomes though testing on non-HAV samples has so far been limited to Measles and SARS-CoV-2.
 
-_How do you define SUBJECT and QUERY sequences?_
+_How do you define `SUBJECT` and `QUERY` sequences?_
 
 To maintain consistency with already established methods, SUBJECT ([BLAST](https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs&DOC_TYPE=References) nomenclature) is used interchangeably with REFERENCE, REF or reference allele [.vcf standard](https://www.internationalgenome.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-40/).  SUBJECT is the backbone onto which all QUERY sequences will be mapped.  QUERY (BLAST nomenclature) is used interchangeably with ALTERNATE or ALT or alternate allele (.vcf standard).  
 
-_Can havic be used with a custom SUBJECT sequence?_
+_Can havic be used with a custom `SUBJECT` sequence?_
 
 Yes.  The havic pipeline is expected to work for any non-segmented virus genome.
 
@@ -340,3 +371,8 @@ In the 2020 pandemic era, virus genome sequencing is dominated by tiled-PCR-ampl
 _Will havic work on organisms other than viruses?_
 
 Probably.  havic has been designed and tested specifically to work on Hepatitis A Virus (HAV) genomes.  However, `havic` should work on any non-segmented virus genome, and successful test analyses have been performed on Measles and SARS-CoV-2 genomes.  Ultimately it is up to the analyst to decide whether `havic`'s treatment of the data makes biological sense.  
+
+## Glossary
+
+HAV    Hepatitis A Virus
+MSA    Multiple Sequence Alignment

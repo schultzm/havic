@@ -28,19 +28,13 @@ RUN_PREFIX:
 PLOTS:
   Yes # Yes to make plots (slow for large runs), No otherwise.
 
-CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
+MAPPER_SETTINGS:
   executable:
-    ClusterPicker
-  coarse_subtree_support: # divide tree into subtrees at/above this threshold
-    70
-  fine_cluster_support: # branch support minimum value for clusters of tips
-    95
-  distance_fraction: # float please, genetic distance
-    0.01 # (e.g., 1 SNP in 100 bp = 0.01)
-  large_cluster_threshold:
-    15
-  distance_method:
-    valid # options are ambiguity, valid, gap, or abs
+    minimap2 # https://github.com/lh3/minimap2
+  other:
+    --secondary=no -Y
+  k_mer: # select an odd number, between 3 and 27 inclusive
+    -k 5 # 5 has been good for the HAV amplicon seqs, adjust sensibly
 
 IQTREE2_SETTINGS: # http://www.iqtree.org/doc/iqtree-doc.pdf
   executable:
@@ -58,13 +52,19 @@ IQTREE2_SETTINGS: # http://www.iqtree.org/doc/iqtree-doc.pdf
   redo: # recompute everything in iqtree run
     '--redo' # leave empty string ('') if not wanting to redo, else '--redo'
 
-MAPPER_SETTINGS:
+CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
   executable:
-    minimap2 # https://github.com/lh3/minimap2
-  other:
-    --secondary=no -Y
-  k_mer: # select an odd number, between 3 and 27 inclusive
-    -k 5 # 5 has been good for the HAV amplicon seqs, adjust sensibly
+    ClusterPicker
+  coarse_subtree_support: # divide tree into subtrees at/above this threshold
+    70
+  fine_cluster_support: # branch support minimum value for clusters of tips
+    95
+  distance_fraction: # float please, genetic distance
+    0.01 # (e.g., 1 SNP in 100 bp = 0.01)
+  large_cluster_threshold:
+    15
+  distance_method:
+    valid # options are ambiguity, valid, gap, or abs
 
 HIGHLIGHT_TIP:
   - CmvAXJTIqH # Specify tip name to highlight in final plot
