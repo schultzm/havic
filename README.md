@@ -173,18 +173,98 @@ If `Yes`, for `DEFAULT_SUBJECT`, `havic` will prefix the filepaths in `SUBJECT_F
     data/NC_001489.fa # relative or absolute paths to fasta file
     # if DEFAULT_SUBJECT is Yes, path will be prefixed to use pre-packaged data
 
+`havic` will use this fasta sequence as the subject/reference sequence.  If a different reference is required, change the path value.  
+
+##### Subject target region
+
+    SUBJECT_TARGET_REGION: # the target region of the genome to focus on
+    data/havnet_amplicon.fa # in fasta format, relative or absolute paths okay
+    # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
+
+This regions will guide trimming of the alignment.  In this example, the VP1/P2A region is the target region.  Sample names listed in TRIM_SEQS will be trimmed to match the boundaries of this region.  A sequence is used here instead of a bed coordinates file because the exact boundaries of the target region in the final alignment are not always obvious.  After mapping this region to the subject sequence, the boundaries become obvious.  Automatic delineation of this region alleviates the need for the analyst to manually search for and define the boundaries.  
+
+##### Output directory
+
+    OUTDIR: # the parent directory for the results folders
+    havic_test_results/r1 # relative or absolute path to parent result folder
+
+Specify the path to the output directory.  The files listed in the table below will be sent to this directory as the run progresses.  
+
+###### Output files
+
+Stage number | Stage name | File or directory name
+---:|:---|:---
+1 | create_outdir | `havic_test_results/r1`
+2 | compile_input_fasta | `HAV_all_duplicate_seqs.txt`
+2 | compile_input_fasta | `HAV_all_seq_id_replace.tsv`
+2 | compile_input_fasta | `HAV_all_tmpfasta.fa`
+3 | map_input_fasta_to_ref | `HAV_all_map.bam`
+3 | map_input_fasta_to_ref | `HAV_all_map.bam.bai`
+4 | bam2fasta | `HAV_all_map.bam2fasta.R`
+4 | bam2fasta | `HAV_all_map.bam2fasta.Rout`
+4 | bam2fasta | `HAV_all_map.stack.fa`
+5 | get_cleaned_fasta | `HAV_all_map.stack.trimmed.fa`
+6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.bionj`
+6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.ckp.gz`
+6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.contree`
+6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.iqtree`
+6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.log`
+6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.mldist`
+6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.model.gz`
+6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.splits.nex`
+6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.treefile`
+6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.ufboot`
+6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.uniqueseq.phy`
+7 | root_iqtree | `HAV_all_map.stack.trimmed.fa.rooted.treefile`
+8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | `HAV_all_map.stack.trimmed.fa_HAV_all_map.stack.trimmed.fa.rooted_clusterPicks_cluster4_sequenceList.txt`
+8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | `HAV_all_map.stack.trimmed.fa_HAV_all_map.stack.trimmed.fa.rooted_clusterPicks.fas`
+8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | `HAV_all_map.stack.trimmed.fa.rooted_clusterPicks_list.txt`
+8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | `HAV_all_map.stack.trimmed.fa.rooted_clusterPicks_log.txt`
+8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | `HAV_all_map.stack.trimmed.fa.rooted_clusterPicks.nwk`
+8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | `HAV_all_map.stack.trimmed.fa.rooted_clusterPicks.nwk.figTree`
+9 | summarise_cluster_assignments | `HAV_all_map.stack.trimmed.fa.rooted_clusterPicks_summarised.txt`
+10 | plot_results_ggtree | `HAV_all_map.stack.trimmed.fa_SNPcountsOverAlignLength.csv`
+10 | plot_results_ggtree | `HAV_all_map.stack.trimmed.fa_SNPdists.csv`
+10 | plot_results_ggtree | `HAV_all_map.stack.trimmed.fa_SNPdists.pdf`
+10 | plot_results_ggtree | `HAV_all_map.stack.trimmed.fa.rooted.treefile_1percent_divergence_valid_msa.pdf`
+10 | plot_results_ggtree | `HAV_all_map.stack.trimmed.fa.Rplot.R`
+10 | plot_results_ggtree | `HAV_all_map.stack.trimmed.fa.Rplot.Rout`
+11 | pipeline_printout_graph | `pipeline_graph.svg`
+
+##### Setting the location of the tree root
+
+    TREE_ROOT:
+    midpoint # sequence name to root iqtree on, or midpoint for midpoint root
+
+For visual representation only, the tree root is set to orientate the plot in `HAV_all_map.stack.trimmed.fa.rooted.treefile_1percent_divergence_valid_msa.pdf`.  The tree root does not affect cluster definitions.  
+
+##### Set the prefix of output filenames
+
+    RUN_PREFIX:
+    HAV_all_
+
+To facilitate tracking of output files, the user is able to specify a custom prefix for output files.  
+
+##### Draw results plots
+
+    PLOTS:
+    Yes # Yes to make plots (slow for large runs), No otherwise.
+
+This setting controls the drawing of output plots.  The plots are helpful to understand how the multiple sequence alignment affects tree topology, cluster detection and pairwise SNP distances.
+
+![Heatmap](https://github.com/schultzm/havic/blob/docs/havic/data/heatmap_SNPs?raw=true)
+
+![Tree](https://github.com/schultzm/havic/blob/docs/havic/data/tree_MSA_clusters.png?raw=true)
 
 
 ##### Input query files
 
 Input query sequences should be in fasta format with one sequence per sample.  Multiple samples may be included per file, and/or multiple files may be passed to `havic`.  Query sequences within files will be reverse complemented as necessary during their mapping to the subject/reference.  If the query sequence files are named `batch1.fa`, `batch2.fa`, `batch3.fa`,  edit the `QUERY_FILES` section of the `yaml` file as follows:
 
-```{bash}
-QUERY_FILES:
-  - batch1.fa # relative or absolute paths to fasta files
-  - batch2.fa
-  - batch3.fa
-```
+    QUERY_FILES:
+    - batch1.fa # relative or absolute paths to fasta files
+    - batch2.fa
+    - batch3.fa
 
 ##### Highlighting samples of interest
 
@@ -194,49 +274,9 @@ To highlight query sequences in the final plots, list the sequence names under `
 
 To trim input queries to the reference VP1/P2A amplicon, list the sequence name of the query under `TRIM_SEQS`, otherwise ignore this section.  
 
-#### Output files
-
-Stage number | Stage name | File or directory name
----:|:---|:---
-1 | create_outdir | havic_test_results/r1
-2 | compile_input_fasta | HAV_all_duplicate_seqs.txt
-2 | compile_input_fasta | HAV_all_seq_id_replace.tsv
-2 | compile_input_fasta | HAV_all_tmpfasta.fa
-3 | map_input_fasta_to_ref | HAV_all_map.bam
-3 | map_input_fasta_to_ref | HAV_all_map.bam.bai
-4 | bam2fasta | HAV_all_map.bam2fasta.R
-4 | bam2fasta | HAV_all_map.bam2fasta.Rout
-4 | bam2fasta | HAV_all_map.stack.fa
-5 | get_cleaned_fasta | HAV_all_map.stack.trimmed.fa
-6 | run_iqtree | HAV_all_map.stack.trimmed.fa.bionj
-6 | run_iqtree | HAV_all_map.stack.trimmed.fa.ckp.gz
-6 | run_iqtree | HAV_all_map.stack.trimmed.fa.contree
-6 | run_iqtree | HAV_all_map.stack.trimmed.fa.iqtree
-6 | run_iqtree | HAV_all_map.stack.trimmed.fa.log
-6 | run_iqtree | HAV_all_map.stack.trimmed.fa.mldist
-6 | run_iqtree | HAV_all_map.stack.trimmed.fa.model.gz
-6 | run_iqtree | HAV_all_map.stack.trimmed.fa.splits.nex
-6 | run_iqtree | HAV_all_map.stack.trimmed.fa.treefile
-6 | run_iqtree | HAV_all_map.stack.trimmed.fa.ufboot
-6 | run_iqtree | HAV_all_map.stack.trimmed.fa.uniqueseq.phy
-7 | root_iqtree | HAV_all_map.stack.trimmed.fa.rooted.treefile
-8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | HAV_all_map.stack.trimmed.fa_HAV_all_map.stack.trimmed.fa.rooted_clusterPicks_cluster4_sequenceList.txt
-8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | HAV_all_map.stack.trimmed.fa_HAV_all_map.stack.trimmed.fa.rooted_clusterPicks.fas
-8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | HAV_all_map.stack.trimmed.fa.rooted_clusterPicks_list.txt
-8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | HAV_all_map.stack.trimmed.fa.rooted_clusterPicks_log.txt
-8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | HAV_all_map.stack.trimmed.fa.rooted_clusterPicks.nwk
-8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | HAV_all_map.stack.trimmed.fa.rooted_clusterPicks.nwk.figTree
-9 | summarise_cluster_assignments | HAV_all_map.stack.trimmed.fa.rooted_clusterPicks_summarised.txt
-10 | plot_results_ggtree | HAV_all_map.stack.trimmed.fa_SNPcountsOverAlignLength.csv
-10 | plot_results_ggtree | HAV_all_map.stack.trimmed.fa_SNPdists.csv
-10 | plot_results_ggtree | HAV_all_map.stack.trimmed.fa_SNPdists.pdf
-10 | plot_results_ggtree | HAV_all_map.stack.trimmed.fa.rooted.treefile_1percent_divergence_valid_msa.pdf
-10 | plot_results_ggtree | HAV_all_map.stack.trimmed.fa.Rplot.R
-10 | plot_results_ggtree | HAV_all_map.stack.trimmed.fa.Rplot.Rout
-11 | pipeline_printout_graph | pipeline_graph.svg
-
 
 ### Advanced usage
+
 preifx with something != RUN_PREFIX
  During development of `havic`, it was recognised that HAV surveillance will likely move to whole genome sequencing in the near future.  To improve utility of `havic` over the coming years, the software is written to allow the user to pass in any query sequence and any subject sequence.  Prior to phylogenetic analysis, query headers listed under `TRIM_SEQS` will be trimmed to the subject target region given by `SUBJECT_TARGET_REGION`.  Defining the subject target region in this way as opposed to using a bed file of coordinates is a feature to allow the user to not have to know in advance exactly where the target region is.  With changing references, the target region may differ slightly from the expected region, so by allowing the mapper to find the region, the user is relieved the burden of having to find and define the region a priori.  
 
