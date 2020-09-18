@@ -355,9 +355,9 @@ _Can havic be used with a custom_ `SUBJECT` _sequence?_
 
 Yes.  The havic pipeline is expected to work for any non-segmented virus genome.
 
-_Can the the SUBJECT file consist of multiple contigs?_
+_Can the the `SUBJECT` file consist of multiple contigs?_
 
-No.  The SUBJECT sequence needs to be a single consensus sequence from a single sample.  
+No.  The `SUBJECT` sequence needs to be a single consensus sequence from a single sample.  
 
 _Can input_ `QUERY` _samples be comprised of multiple consensus sequences from the same sample?_
 
@@ -377,7 +377,7 @@ Probably.  havic has been designed and tested specifically to work on Hepatitis 
 
 _What is the minimum number of sequences that can be analysed using_ `havic`_?_
 
-The answer is 3.  To obtain context sequences for the query sample/s, go to NCBI's GenBank or RIVM's HAVNET.  It is recommended to use `entrez e-utils` for obtaining large numbers of sequences and associated metadata.
+The answer is 3.  To obtain context sequences for the query sample/s, go to NCBI's GenBank or RIVM's HAVNET.  It is recommended to use [entrez e-utils](https://www.ncbi.nlm.nih.gov/books/NBK179288/) for obtaining large numbers of sequences and associated metadata.
 
 
 ## Glossary
