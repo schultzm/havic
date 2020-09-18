@@ -252,7 +252,7 @@ To facilitate tracking of output files, the user is able to specify a custom pre
 
 This setting controls the drawing of output plots.  The plots are helpful to understand how the multiple sequence alignment affects tree topology, cluster detection and pairwise SNP distances.
 
-![Heatmap](https://github.com/schultzm/havic/blob/docs/havic/data/heatmap_SNPs?raw=true "Pairwise genetic distances and ClusterPicker clusters")
+![Heatmap](https://github.com/schultzm/havic/blob/docs/havic/data/heatmap_SNPs.png?raw=true "Pairwise genetic distances and ClusterPicker clusters")
 
 ![Tree](https://github.com/schultzm/havic/blob/docs/havic/data/tree_MSA_clusters.png?raw=true "Maximum Likelihood tree with bootstrap support, ClusterPicker clusters, and Multiple Sequence Alignment")
 
