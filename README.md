@@ -157,15 +157,24 @@ Lets go through the `yaml` step-by-step.
 
 `havic` manages tasks via [`ruffus`](https://code.google.com/archive/p/ruffus/), and out-of-date stages of the pipeline will be re-run as required.  To start a new run or force overwrite files in the OUTDIR, set `FORCE_OVERWRITE_AND_RE_RUN` to `Yes`.  Otherwise to start off from the last point, set to `No`.  
 
-##### Default Refs and Queries
+##### Default Subject and Queries
 
-    DEFAULT_REFS:
-    Yes # Yes if using havic pre-packaged SUBJECT test data, No otherwise
+    DEFAULT_SUBJECT:
+    Yes # Yes if using havic pre-packaged SUBJECT (i.e., 'reference') sequence and region test data, No otherwise
 
     DEFAULT_QUERIES:
     Yes # Yes if using havic pre-packaged QUERY test data, No otherwise
 
-To use the pre-packaged 
+If `Yes`, for `DEFAULT_SUBJECT`, `havic` will prefix the filepaths in `SUBJECT_FILE` `SUBJECT_TARGET_REGION` with the `havic` install path (using `pkg_resources.resource_filename`) object to search in the installation directory for the pre-packaged data.  If `DEFAULT_SUBJECT` is set to `No`, then the filepaths provided .  If `DEFAULT_QUERY` is set to `No`, then 
+
+##### Subject/Reference sequence
+
+    SUBJECT_FILE: # the "SUBJECT" sequence in BLAST terms, i.e., reference genome
+    data/NC_001489.fa # relative or absolute paths to fasta file
+    # if DEFAULT_SUBJECT is Yes, path will be prefixed to use pre-packaged data
+
+
+
 ##### Input query files
 
 Input query sequences should be in fasta format with one sequence per sample.  Multiple samples may be included per file, and/or multiple files may be passed to `havic`.  Query sequences within files will be reverse complemented as necessary during their mapping to the subject/reference.  If the query sequence files are named `batch1.fa`, `batch2.fa`, `batch3.fa`,  edit the `QUERY_FILES` section of the `yaml` file as follows:
@@ -184,6 +193,47 @@ To highlight query sequences in the final plots, list the sequence names under `
 ##### Trimming sequences to genomic region of interest
 
 To trim input queries to the reference VP1/P2A amplicon, list the sequence name of the query under `TRIM_SEQS`, otherwise ignore this section.  
+
+#### Output files
+
+Number | Stage | Name
+1 | create_outdir | havic_test_results/r1
+2 | compile_input_fasta | HAV_all_duplicate_seqs.txt
+2 | compile_input_fasta | HAV_all_seq_id_replace.tsv
+2 | compile_input_fasta | HAV_all_tmpfasta.fa
+3 | map_input_fasta_to_ref | HAV_all_map.bam
+3 | map_input_fasta_to_ref | HAV_all_map.bam.bai
+4 | bam2fasta | HAV_all_map.bam2fasta.R
+4 | bam2fasta | HAV_all_map.bam2fasta.Rout
+4 | bam2fasta | HAV_all_map.stack.fa
+5 | get_cleaned_fasta | HAV_all_map.stack.trimmed.fa
+6 | run_iqtree | HAV_all_map.stack.trimmed.fa.bionj
+6 | run_iqtree | HAV_all_map.stack.trimmed.fa.ckp.gz
+6 | run_iqtree | HAV_all_map.stack.trimmed.fa.contree
+6 | run_iqtree | HAV_all_map.stack.trimmed.fa.iqtree
+6 | run_iqtree | HAV_all_map.stack.trimmed.fa.log
+6 | run_iqtree | HAV_all_map.stack.trimmed.fa.mldist
+6 | run_iqtree | HAV_all_map.stack.trimmed.fa.model.gz
+6 | run_iqtree | HAV_all_map.stack.trimmed.fa.splits.nex
+6 | run_iqtree | HAV_all_map.stack.trimmed.fa.treefile
+6 | run_iqtree | HAV_all_map.stack.trimmed.fa.ufboot
+6 | run_iqtree | HAV_all_map.stack.trimmed.fa.uniqueseq.phy
+7 | root_iqtree | HAV_all_map.stack.trimmed.fa.rooted.treefile
+8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | HAV_all_map.stack.trimmed.fa_HAV_all_map.stack.trimmed.fa.rooted_clusterPicks_cluster4_sequenceList.txt
+8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | HAV_all_map.stack.trimmed.fa_HAV_all_map.stack.trimmed.fa.rooted_clusterPicks.fas
+8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | HAV_all_map.stack.trimmed.fa.rooted_clusterPicks_list.txt
+8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | HAV_all_map.stack.trimmed.fa.rooted_clusterPicks_log.txt
+8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | HAV_all_map.stack.trimmed.fa.rooted_clusterPicks.nwk
+8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | HAV_all_map.stack.trimmed.fa.rooted_clusterPicks.nwk.figTree
+9 | summarise_cluster_assignments | HAV_all_map.stack.trimmed.fa.rooted_clusterPicks_summarised.txt
+10 | plot_results_ggtree | HAV_all_map.stack.trimmed.fa_SNPcountsOverAlignLength.csv
+10 | plot_results_ggtree | HAV_all_map.stack.trimmed.fa_SNPdists.csv
+10 | plot_results_ggtree | HAV_all_map.stack.trimmed.fa_SNPdists.pdf
+10 | plot_results_ggtree | HAV_all_map.stack.trimmed.fa.rooted.treefile_1percent_divergence_valid_msa.pdf
+10 | plot_results_ggtree | HAV_all_map.stack.trimmed.fa.Rplot.R
+10 | plot_results_ggtree | HAV_all_map.stack.trimmed.fa.Rplot.Rout
+11 | pipeline_printout_graph | pipeline_graph.svg
+
 
 ### Advanced usage
 preifx with something != RUN_PREFIX

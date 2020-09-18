@@ -3,7 +3,7 @@ FORCE_OVERWRITE_AND_RE_RUN:
   Yes # Yes for full re-run, No to start from an interrupted run,
 
 DEFAULT_SUBJECT:
-  Yes # Yes if using havic pre-packaged SUBJECT test data, No otherwise
+  Yes # Yes if using havic pre-packaged SUBJECT (i.e., "reference") sequence and region test data, No otherwise
 
 DEFAULT_QUERIES:
   Yes # Yes if using havic pre-packaged QUERY test data, No otherwise
