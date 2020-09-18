@@ -197,6 +197,7 @@ To trim input queries to the reference VP1/P2A amplicon, list the sequence name 
 #### Output files
 
 Number | Stage | Name
+---|---|---
 1 | create_outdir | havic_test_results/r1
 2 | compile_input_fasta | HAV_all_duplicate_seqs.txt
 2 | compile_input_fasta | HAV_all_seq_id_replace.tsv
