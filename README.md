@@ -11,7 +11,24 @@ Detect **H**epatitis **A** **V**irus **I**nfection **C**lusters from virus conse
 
 ![Pipeline](https://github.com/schultzm/havic/blob/master/havic/data/pipeline_graph.svg?raw=true)
 
-The above pipeline is summarised briefly here.  Firstly an output directory is created to receive the output files from a `havic` run.  Query sequences are collected into a single set, duplicates sequences are discarded (based on the sequence headers in the query fasta files) and 'troublesome' characters in sequence headers are replaced with underscore.  `havic` was originally designed for analysis of the the VP1/P2A amplicon, which is the genomic marker recommended by the Hepatitis A Virus Network ([HAVNET](https://www.rivm.nl/en/havnet)).  The VP1/P2A amplicon target is the product of a nested PCR reaction, and is shown here in the context of the HAV genome:
+The user is free to modify parameters of a `havic` run through modifying a config file.  The above pipeline is summarised briefly here.  
+
+- create output directory to receive results files
+- QC query sequences
+  - collect queries into a single set
+  - discard duplicates (and report them)
+  - replace 'troublesome' characters in sequence headers (replacements reported)
+- map query sequences to reference sequence
+  - reverse complement as required
+- extract alignment from mapping file
+- optionally, trim sequences to target region
+- perform Maximum Likelihood phylogenetic inference on alignment
+- pick infection clusters based on tree and alignment
+- optionally, visualise:
+  - phylogentic tree next to alignment with samples of interest and infection clusters highlighted
+  - a heatmap of genetic distances between samples in alignment with infection clusters highlighted
+
+`havic` was originally designed for analysis of the the VP1/P2A amplicon, which is the genomic marker recommended by the Hepatitis A Virus Network ([HAVNET](https://www.rivm.nl/en/havnet)).  The VP1/P2A 460 bp amplicon target is the product of a nested PCR reaction, and is shown here in the context of the HAV genome:
 
 ![Amplicon](https://github.com/schultzm/havic/blob/master/havic/data/VP1P2A.png?raw=true "The HAV genome with HAVNET amplicon, sourced from RIVM")
 
