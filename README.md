@@ -3,11 +3,11 @@
 [![Github All Releases](https://img.shields.io/github/downloads/schultzm/havic/total.svg)]()  
 [![CircleCI](https://circleci.com/gh/schultzm/havic.svg?style=svg&circle-token=9d17418bb752aa29e07f95b09af106aef7cc6b02)](https://app.circleci.com/pipelines/github/schultzm/havic)
 
-Detect **H**epatitis **A** **V**irus **I**nfection **C**lusters from virus consensus sequences.  
+Detect **H**epatitis **A** **V**irus **I**nfection **C**lusters from virus consensus sequences.  `havic` allows objective, fast and automated detection of infection clusters from clinical virus samples.  
 
 ## Overview
 
-`havic` is a bioinformatics pipeline for detecting infection clusters in Hepatitis A Virus samples from DNA or cDNA sequence data.  The pipeline is written in `python3` and uses `ruffus` to connect a number of open-source software tools to achieve this task.  The user feeds `havic` some query files via a `yaml` config file, waits for the program to run and then checks the output folder for results.  The figure below is a schematic representation of the pipeline.  
+`havic` is a bioinformatics pipeline for detecting infection clusters in clinical Hepatitis A Virus samples from DNA or cDNA sequence data.  The pipeline is written in `python3` and uses `ruffus` to connect a number of open-source software tools to achieve this task.  The user feeds `havic` some query files via a `yaml` config file, waits for the program to run and then checks the output folder for results.  `havic` allows fast and objective detection of infection clusters in clinical virus sample sequences.  The figure below is a schematic representation of the pipeline.  
 
 ![Pipeline](https://github.com/schultzm/havic/blob/master/havic/data/pipeline_graph.svg?raw=true)
 
