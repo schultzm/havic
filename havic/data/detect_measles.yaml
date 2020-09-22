@@ -64,26 +64,7 @@ HIGHLIGHT_TIP:
   - 'Paris.FRA/18.11/D4' # Specify tip name to highlight in final plot
 
 TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
-  - 'Arizona.USA/11.08/2'
-  - 'London.GBR/3.14/2/B3'
-  - 'London.GBR/3.14/3/B3'
-  - 'Roraima.BRA/31.18/D8'
-  - 'Ancona.ITA/45.17/1/D8'
-  - 'Zhejiang.CHN/12.09/1/H1'
-  - 'Shanghai-191'
-  - 'New_Jersey.USA/45.05'
-  - 'Gambia/1993'
-  - 'London.GBR/3.14/B3'
-  - 'London.GBR/4.14/2/B3'
-  - 'T11'
-  - 'Paris.FRA/18.11/D4'
-  - 'Teeside.GBR/16.13/6/D8'
-  - 'Zhejiang.CHN/12.08/1/H1'
-  - 'London.GBR/20.11/2/D4'
-  - 'Derby.GBR/47.12/D8'
-  - 'Swansea.GBR/16.13/5/D8'
-  - '9301V'
-  - 'Swansea.GBR/16.13/2/D8'
+  - ''
 
 
 QUERY_FILES: # also known as QUERY sequences in BLAST terminology
