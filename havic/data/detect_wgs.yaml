@@ -67,34 +67,39 @@ CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
     valid # options are ambiguity, valid, gap, or abs
 
 HIGHLIGHT_TIP:
-  - ''
+  - MH577308.1
+  - MH577309.1
+  - MH577310.1
+  - MH577311.1
+  - MH577312.1
 
 TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
   - ''
 
+
 QUERY_FILES: # also known as QUERY sequences in BLAST terminology
-  - /Users/mschultz/KP879216.fa
-  - /Users/mschultz/KX035096.fa
-  - /Users/mschultz/KX228694.fa
-  - /Users/mschultz/KY003229.fa
-  - /Users/mschultz/MG049743.fa
-  - /Users/mschultz/MG181943.fa
-  - /Users/mschultz/MG546668.fa
-  - /Users/mschultz/MH577308.fa
-  - /Users/mschultz/MH577309.fa
-  - /Users/mschultz/MH577310.fa
-  - /Users/mschultz/MH577311.fa
-  - /Users/mschultz/MH577312.fa
-  - /Users/mschultz/MH577313.fa
-  - /Users/mschultz/MH577314.fa
-  - /Users/mschultz/MK829707.fa
-  - /Users/mschultz/MN062164.fa
-  - /Users/mschultz/MN062165.fa
-  - /Users/mschultz/MN062166.fa
-  - /Users/mschultz/MN062167.fa
-  - /Users/mschultz/MN832785.fa
-  - /Users/mschultz/MN832786.fa
-  - /Users/mschultz/MT181522.fa
-  - /Users/mschultz/NC_001489.fa
-  - /Users/mschultz/NC_028981.fa
+  - data/wgs_hav_seqs/KP879216.fa
+  - data/wgs_hav_seqs/KX035096.fa
+  - data/wgs_hav_seqs/KX228694.fa
+  - data/wgs_hav_seqs/KY003229.fa
+  - data/wgs_hav_seqs/MG049743.fa
+  - data/wgs_hav_seqs/MG181943.fa
+  - data/wgs_hav_seqs/MG546668.fa
+  - data/wgs_hav_seqs/MH577308.fa
+  - data/wgs_hav_seqs/MH577309.fa
+  - data/wgs_hav_seqs/MH577310.fa
+  - data/wgs_hav_seqs/MH577311.fa
+  - data/wgs_hav_seqs/MH577312.fa
+  - data/wgs_hav_seqs/MH577313.fa
+  - data/wgs_hav_seqs/MH577314.fa
+  - data/wgs_hav_seqs/MK829707.fa
+  - data/wgs_hav_seqs/MN062164.fa
+  - data/wgs_hav_seqs/MN062165.fa
+  - data/wgs_hav_seqs/MN062166.fa
+  - data/wgs_hav_seqs/MN062167.fa
+  - data/wgs_hav_seqs/MN832785.fa
+  - data/wgs_hav_seqs/MN832786.fa
+  - data/wgs_hav_seqs/MT181522.fa
+  - data/wgs_hav_seqs/NC_001489.fa
+  - data/wgs_hav_seqs/NC_028981.fa
 ...
