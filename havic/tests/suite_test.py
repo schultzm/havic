@@ -21,4 +21,6 @@ def suite():
     suite.addTest(MergeTestCasePass("pdfs_checker"))
     suite.addTest(MergeTestCasePass("csvs_checker"))
     suite.addTest(MergeTestCasePass("svg_checker"))
+    suite.addTest(MergeTestCasePass("wgs_suite_runner"))
+    suite.addTest(MergeTestCasePass("measles_suite_runner"))
     return suite

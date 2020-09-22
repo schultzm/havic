@@ -17,10 +17,10 @@ SUBJECT_TARGET_REGION: # the amplicon sequence, with primers excluded
   # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
 
 OUTDIR: # the parent directory for the results folders
-  measles_test_results/r1 # relative or absolute path to parent result folder
+  havic_test_results/measles_wgs # relative or absolute path to parent result folder
 
 RUN_PREFIX:
-  measles_nextstrain_
+  measles_wgs_
 
 PLOTS:
   Yes # Yes to make plots (slow for large runs), No otherwise.
@@ -60,7 +60,13 @@ MINIMAP2_SETTINGS:
     5 # 5 has been good for the HAV amplicon seqs
 
 HIGHLIGHT_TIP:
-  - 'Roraima.BRA/31.18/D8'
+  - JN635406.1
+  - JN635408.1
+  - KJ755979.1
+  - KJ755980.1
+  - KT732219.1
+  - KT732220.1
+  - ''
   - 'Paris.FRA/18.11/D4' # Specify tip name to highlight in final plot
 
 TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
@@ -68,5 +74,5 @@ TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
 
 
 QUERY_FILES: # also known as QUERY sequences in BLAST terminology
-  - measles.fasta # relative or absolute paths to fasta files
+  - data/wgs_measles_seqs/measles.fasta # relative or absolute paths to fasta files
 ...
