@@ -28,9 +28,11 @@ The user is free to modify parameters of a `havic` run through modifying a confi
   - phylogentic tree next to alignment with samples of interest and infection clusters highlighted
   - a heatmap of genetic distances between samples in alignment with infection clusters highlighted
 
-`havic` was originally designed for analysis of the the VP1/P2A amplicon, which is the genomic marker recommended by the Hepatitis A Virus Network ([HAVNET](https://www.rivm.nl/en/havnet)).  The VP1/P2A 460 bp amplicon target is the product of a nested PCR reaction, and is shown here in the context of the HAV genome:
+`havic` has been optimised for analysis of the the VP1/P2A amplicon, which is the genomic marker recommended by the Hepatitis A Virus Network ([HAVNET](https://www.rivm.nl/en/havnet)) ![protocol](https://github.com/schultzm/havic/blob/master/havic/data/Typing_protocol_HAVNET_VP1P2A_a1a.pdf).  The VP1/P2A region is shown here in the context of the HAV genome:
 
 ![Amplicon](https://github.com/schultzm/havic/blob/master/havic/data/VP1P2A.png?raw=true "The HAV genome with HAVNET amplicon, sourced from RIVM")
+
+The bed coordinates of the HAVNET VP1/P2A amplicon are 2915 to 3374.  
 
 ## Installation
 
@@ -71,7 +73,7 @@ The results in this example were obtained using the command `havic test`.  Let's
 
 #### Editing the `yaml` file for parsing by `havic detect`
 
-`havic detect` receives instructions from a `yaml` config file via the command `havic detect path/to/yaml.yaml`.  The `test.yaml` file from `havic/havic/data/havic_detect.yaml` is presented below as an example:
+`havic detect` receives instructions from a `yaml` config file via the command `havic detect path/to/yaml.yaml`.  The `test.yaml` file from `havic/havic/data/detect_amplicon.yaml` is presented below as an example:
 
     ---
     FORCE_OVERWRITE_AND_RE_RUN:
@@ -92,13 +94,13 @@ The results in this example were obtained using the command `havic test`.  Let's
     # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
 
     OUTDIR: # the parent directory for the results folders
-    havic_test_results/r1 # relative or absolute path to parent result folder
+    havic_test_results/amplicon # relative or absolute path to parent result folder
 
     TREE_ROOT:
     midpoint # sequence name to root iqtree on, or midpoint for midpoint root
 
     RUN_PREFIX:
-    HAV_all_
+    HAV_amplicon_
 
     PLOTS:
     Yes # Yes to make plots (slow for large runs), No otherwise.
@@ -160,7 +162,7 @@ The results in this example were obtained using the command `havic test`.  Let's
     - '' # to test an empty file name (which would return a folder, not file)
     ...
 
-Before starting a run, `cd` to a working directory (preferably not inside the git cloned folder).  Either copy the above `yaml` to file, or use `wget https://raw.githubusercontent.com/schultzm/havic/master/havic/data/havic_detect.yaml`.  For more information on the `yaml` standard, refer to [https://yaml.org/](https://yaml.org/).  
+Before starting a run, `cd` to a working directory (preferably not inside the git cloned folder).  Either copy the above `yaml` to file, or use `wget https://raw.githubusercontent.com/schultzm/havic/master/havic/data/detect_amplicon.yaml`.  For more information on the `yaml` standard, refer to [https://yaml.org/](https://yaml.org/).  
 
 Lets go through the `yaml` step-by-step.
 
@@ -183,7 +185,7 @@ Lets go through the `yaml` step-by-step.
     DEFAULT_QUERIES:
     Yes # Yes if using havic pre-packaged QUERY test data, No otherwise
 
-If `Yes`, for `DEFAULT_SUBJECT`, `havic` will prefix the filepaths in `SUBJECT_FILE` `SUBJECT_TARGET_REGION` with the `havic` install path (using `pkg_resources.resource_filename`) object to search in the installation directory for the pre-packaged data.  If `DEFAULT_SUBJECT` is set to `No`, then the filepaths provided .  If `DEFAULT_QUERY` is set to `No`, then 
+If `DEFAULT_SUBJECT` is set to `Yes` `havic` will prefix the filepaths in `SUBJECT_FILE` `SUBJECT_TARGET_REGION` with the `havic` install path (using `pkg_resources.resource_filename`) for the pre-packaged data.  The same logic applies for `DEFAULT_QUERY`.  To specify a custom path to `SUBJECT_FILE` and `SUBJECT_TARGET_REGION` set `DEFAULT_SUBJECT` to `No`.  To specify custom `QUERY_FILES`, set `DEFAULT_QUERY` to `No`.  
 
 ##### Subject/Reference sequence
 
@@ -204,7 +206,7 @@ This regions will guide trimming of the alignment.  In this example, the VP1/P2A
 ##### Output directory
 
     OUTDIR: # the parent directory for the results folders
-    havic_test_results/r1 # relative or absolute path to parent result folder
+    havic_test_results/amplicon # relative or absolute path to parent result folder
 
 Specify the path to the output directory.  The files listed in the table below will be sent to this directory as the run progresses.  
 
@@ -212,41 +214,41 @@ Specify the path to the output directory.  The files listed in the table below w
 
 Stage number | Stage name | File or directory name
 ---:|:---|:---
-1 | create_outdir | `havic_test_results/r1`
-2 | compile_input_fasta | `HAV_all_duplicate_seqs.txt`
-2 | compile_input_fasta | `HAV_all_seq_id_replace.tsv`
-2 | compile_input_fasta | `HAV_all_tmpfasta.fa`
-3 | map_input_fasta_to_ref | `HAV_all_map.bam`
-3 | map_input_fasta_to_ref | `HAV_all_map.bam.bai`
-4 | bam2fasta | `HAV_all_map.bam2fasta.R`
-4 | bam2fasta | `HAV_all_map.bam2fasta.Rout`
-4 | bam2fasta | `HAV_all_map.stack.fa`
-5 | get_cleaned_fasta | `HAV_all_map.stack.trimmed.fa`
-6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.bionj`
-6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.ckp.gz`
-6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.contree`
-6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.iqtree`
-6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.log`
-6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.mldist`
-6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.model.gz`
-6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.splits.nex`
-6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.treefile`
-6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.ufboot`
-6 | run_iqtree | `HAV_all_map.stack.trimmed.fa.uniqueseq.phy`
-7 | root_iqtree | `HAV_all_map.stack.trimmed.fa.rooted.treefile`
-8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | `HAV_all_map.stack.trimmed.fa_HAV_all_map.stack.trimmed.fa.rooted_clusterPicks_cluster4_sequenceList.txt`
-8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | `HAV_all_map.stack.trimmed.fa_HAV_all_map.stack.trimmed.fa.rooted_clusterPicks.fas`
-8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | `HAV_all_map.stack.trimmed.fa.rooted_clusterPicks_list.txt`
-8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | `HAV_all_map.stack.trimmed.fa.rooted_clusterPicks_log.txt`
-8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | `HAV_all_map.stack.trimmed.fa.rooted_clusterPicks.nwk`
-8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | `HAV_all_map.stack.trimmed.fa.rooted_clusterPicks.nwk.figTree`
-9 | summarise_cluster_assignments | `HAV_all_map.stack.trimmed.fa.rooted_clusterPicks_summarised.txt`
-10 | plot_results_ggtree | `HAV_all_map.stack.trimmed.fa_SNPcountsOverAlignLength.csv`
-10 | plot_results_ggtree | `HAV_all_map.stack.trimmed.fa_SNPdists.csv`
-10 | plot_results_ggtree | `HAV_all_map.stack.trimmed.fa_SNPdists.pdf`
-10 | plot_results_ggtree | `HAV_all_map.stack.trimmed.fa.rooted.treefile_1percent_divergence_valid_msa.pdf`
-10 | plot_results_ggtree | `HAV_all_map.stack.trimmed.fa.Rplot.R`
-10 | plot_results_ggtree | `HAV_all_map.stack.trimmed.fa.Rplot.Rout`
+1 | create_outdir | `havic_test_results/amplicon`
+2 | compile_input_fasta | `HAV_amplicon_duplicate_seqs.txt`
+2 | compile_input_fasta | `HAV_amplicon_seq_id_replace.tsv`
+2 | compile_input_fasta | `HAV_amplicon_tmpfasta.fa`
+3 | map_input_fasta_to_ref | `HAV_amplicon_map.bam`
+3 | map_input_fasta_to_ref | `HAV_amplicon_map.bam.bai`
+4 | bam2fasta | `HAV_amplicon_map.bam2fasta.R`
+4 | bam2fasta | `HAV_amplicon_map.bam2fasta.Rout`
+4 | bam2fasta | `HAV_amplicon_map.stack.fa`
+5 | get_cleaned_fasta | `HAV_amplicon_map.stack.trimmed.fa`
+6 | run_iqtree | `HAV_amplicon_map.stack.trimmed.fa.bionj`
+6 | run_iqtree | `HAV_amplicon_map.stack.trimmed.fa.ckp.gz`
+6 | run_iqtree | `HAV_amplicon_map.stack.trimmed.fa.contree`
+6 | run_iqtree | `HAV_amplicon_map.stack.trimmed.fa.iqtree`
+6 | run_iqtree | `HAV_amplicon_map.stack.trimmed.fa.log`
+6 | run_iqtree | `HAV_amplicon_map.stack.trimmed.fa.mldist`
+6 | run_iqtree | `HAV_amplicon_map.stack.trimmed.fa.model.gz`
+6 | run_iqtree | `HAV_amplicon_map.stack.trimmed.fa.splits.nex`
+6 | run_iqtree | `HAV_amplicon_map.stack.trimmed.fa.treefile`
+6 | run_iqtree | `HAV_amplicon_map.stack.trimmed.fa.ufboot`
+6 | run_iqtree | `HAV_amplicon_map.stack.trimmed.fa.uniqueseq.phy`
+7 | root_iqtree | `HAV_amplicon_map.stack.trimmed.fa.rooted.treefile`
+8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | `HAV_amplicon_map.stack.trimmed.fa_HAV_amplicon_map.stack.trimmed.fa.rooted_clusterPicks_cluster4_sequenceList.txt`
+8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | `HAV_amplicon_map.stack.trimmed.fa_HAV_amplicon_map.stack.trimmed.fa.rooted_clusterPicks.fas`
+8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | `HAV_amplicon_map.stack.trimmed.fa.rooted_clusterPicks_list.txt`
+8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | `HAV_amplicon_map.stack.trimmed.fa.rooted_clusterPicks_log.txt`
+8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | `HAV_amplicon_map.stack.trimmed.fa.rooted_clusterPicks.nwk`
+8 | clusterpick_from_rooted_iqtree_and_cleaned_fasta | `HAV_amplicon_map.stack.trimmed.fa.rooted_clusterPicks.nwk.figTree`
+9 | summarise_cluster_assignments | `HAV_amplicon_map.stack.trimmed.fa.rooted_clusterPicks_summarised.txt`
+10 | plot_results_ggtree | `HAV_amplicon_map.stack.trimmed.fa_SNPcountsOverAlignLength.csv`
+10 | plot_results_ggtree | `HAV_amplicon_map.stack.trimmed.fa_SNPdists.csv`
+10 | plot_results_ggtree | `HAV_amplicon_map.stack.trimmed.fa_SNPdists.pdf`
+10 | plot_results_ggtree | `HAV_amplicon_map.stack.trimmed.fa.rooted.treefile_1percent_divergence_valid_msa.pdf`
+10 | plot_results_ggtree | `HAV_amplicon_map.stack.trimmed.fa.Rplot.R`
+10 | plot_results_ggtree | `HAV_amplicon_map.stack.trimmed.fa.Rplot.Rout`
 11 | pipeline_printout_graph | `pipeline_graph.svg`
 
 ##### Setting the location of the tree root
@@ -254,12 +256,12 @@ Stage number | Stage name | File or directory name
     TREE_ROOT:
     midpoint # sequence name to root iqtree on, or midpoint for midpoint root
 
-For visual representation only, the tree root is set to orientate the plot in `HAV_all_map.stack.trimmed.fa.rooted.treefile_1percent_divergence_valid_msa.pdf`.  The tree root does not affect cluster definitions.  
+For visual representation only, the tree root is set to orientate the plot in `HAV_amplicon_map.stack.trimmed.fa.rooted.treefile_1percent_divergence_valid_msa.pdf`.  The tree root does not affect cluster definitions.  
 
 ##### Set the prefix of output filenames
 
     RUN_PREFIX:
-    HAV_all_
+    HAV_amplicon_
 
 To facilitate tracking of output files, the user is able to specify a custom prefix for output files.  
 

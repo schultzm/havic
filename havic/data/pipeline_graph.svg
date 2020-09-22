@@ -26,7 +26,7 @@
 <polyline fill="none" stroke="#006000" points="661.36,-592 264.64,-592 "/>
 <polyline fill="none" stroke="#006000" points="661.36,-592 661.36,-548 "/>
 <polyline fill="none" stroke="#006000" points="661.36,-592 665.36,-596 "/>
-<text text-anchor="middle" x="465" y="-576" font-family="Times,serif" font-size="20.00" fill="#006000">mkdir(&#39;havic_test_results/r1&#39;) </text>
+<text text-anchor="middle" x="465" y="-576" font-family="Times,serif" font-size="20.00" fill="#006000">mkdir(&#39;havic_test_results/amplicon&#39;) </text>
 <text text-anchor="middle" x="465" y="-556" font-family="Times,serif" font-size="20.00" fill="#006000">before havic.utils.pipeline_runner.create_outdir </text>
 </g>
 <!-- t0 -->

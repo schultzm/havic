@@ -1,6 +1,8 @@
 # Pipe dregs
 havic_test_results
 havic_test_results/*
+hav_wgs_test_results/*
+hav_wgs_test_results
 .ruffus_history.sqlite
 pipeline_flowchart.drawio
 

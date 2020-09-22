@@ -1,5 +1,5 @@
 ---
-title: 'havic: detect Hepatitis A Virus Infection Clusters in clinical sample sequences'
+title: 'havic: detection of Hepatitis A Virus Infection Clusters from clinical cDNA sequences'
 tags:
   - Python3
   - Python
@@ -69,15 +69,19 @@ csl: harvard-the-university-of-melbourne.csl
 
 # Introduction
 
-Hepatitis A is a viral liver disease associated with high morbidity.  Though the mortality rate is low, infections are costly and painful oftentimes requiring hospitalisation in the acute phase of infection.  Tens of millions of people are infected with Hepatitis A Virus (HAV) each year [@RN406].  The virus is transmitted via the faecal-oral pathway, either directly from person-to-person or through contaminated food and water [@RN398].  HAV has its highest prevalence in low-income countries; however, sporadic outbreaks also occur in high-income countries [@RN406].  
+Hepatitis A is a viral liver disease associated with high morbidity.  Though the mortality rate is low, infections are costly and painful oftentimes resulting in hospitalisation during the acute phase of infection.  Tens of millions of people are infected with Hepatitis A Virus (HAV) each year [@RN406].  
+
+The virus is transmitted via the faecal-oral pathway, either directly from person-to-person or through contaminated food and water [@RN398].  HAV has its highest prevalence in low-income countries; however, sporadic outbreaks also occur in high-income countries [@RN406].  Molecular epidemiology of virus outbreak strains using DNA sequencing and phylogenomics is essential for public health interventions aimed at attenuating outbreaks.  
 
 HAV is a non-enveloped Hepatovirus in the family Picornaviridae.  The genome is a positive-sense single-stranded ribonucleic acid (RNA) approximately 7.5 kilobases (kb) in length [@RN375].  Genetic diversity of HAV is well characterised, with one serotype and seven genotypes (I-VII); of the latter, four (I, II, III and VII) infect humans, and these can be further divided into six subtypes (IA, IB, II, IIIA, IIIB, VII) [@RN404, @RN403].  
 
-Molecular epidemiology of virus outbreak strains using DNA sequencing and phylogenomics is essential for public health interventions aimed at attenuating outbreaks.  
+The gold standard HAV genotyping protocol [@RN316] recommends sequencing of a short 460 nucleotide (nt) amplicon spanning the junction of the VP1 and P2A regions.  Sequencing is typically performed using the Sanger method with a consensus target sequence inferred from a stack of one or more sub-sequences.  The consensus sequence may not always co-locate with the target region and some nucleotides may be missing, called ambiguously or low quality.  
+
+Variation in laboratory methods 
+
 
 # Statement of need
 
-The gold standard HAV genotyping protocol [@RN316] recommends sequencing of a short 460 nucleotide (nt) amplicon spanning the junction of the VP1 and P2A regions.  Sequencing is typically performed using the Sanger method with a consensus sequence of the target inferred from a stack of one or more sequences.  The consensus sequence may not always co-locate with the target region and some nucleotides may be missing, called ambiguously or low quality.  
 
 The alignment of partial HAV genome sequences with the ultimate aim of detecting outbreak clusters is often troublesome.  Frame-shift mutations, incorrect orientation to the reference, and difficulty locating the true open reading frame means molecular epidemiology of HAV has hitherto been performed using the closed-source HAVNET genotyping service, NCBI BLAST [@RN172] on a case-by-case basis.  There is a need for tools that allow open-source, high-throughput, objective identification of outbreak infection clusters.
 

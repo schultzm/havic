@@ -17,9 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 __name__ = "havic"
 __parent_dir__ = "havic"
-__havic_yaml__ = "data/havic_detect.yaml"
-__version__ = "0.3.6"
-__version_date__ = "Fri 18th Sep, 2020"
+__havic_yaml__ = "data/detect_amplicon.yaml"
+__havic_wgs_yaml__ = "data/detect_wgs.yaml"
+__version__ = "0.3.7"
+__version_date__ = "Tue 22nd Sep, 2020"
 __description__ = "Detect Hepatitis A Virus Infection Clusters (HAVIC)"
 __author__ = "Mark B Schultz"
 __author_email__ = "dr.mark.schultz@gmail.com"

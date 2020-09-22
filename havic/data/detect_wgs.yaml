@@ -17,13 +17,13 @@ SUBJECT_TARGET_REGION: # the target region of the genome to focus on
   # if DEFAULT_SUBJECT is Yes, path will be prefixed to use pre-packaged data
 
 OUTDIR: # the parent directory for the results folders
-  havic_test_results/r1 # relative or absolute path to parent result folder
+  havic_test_results/wgs # relative or absolute path to parent result folder
 
 TREE_ROOT:
   midpoint # sequence name to root iqtree on, or midpoint for midpoint root
 
 RUN_PREFIX:
-  HAV_all_
+  HAV_wgs_
 
 PLOTS:
   Yes # Yes to make plots (slow for large runs), No otherwise.
@@ -32,7 +32,7 @@ MAPPER_SETTINGS:
   executable:
     minimap2 # https://github.com/lh3/minimap2
   other:
-    --secondary=no -Y
+    -c --cs -x asm20 --secondary=no -Y
   k_mer: # select an odd number, between 3 and 27 inclusive
     -k 5 # 5 has been good for the HAV amplicon seqs, adjust sensibly
 
@@ -67,20 +67,34 @@ CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
     valid # options are ambiguity, valid, gap, or abs
 
 HIGHLIGHT_TIP:
-  - CmvAXJTIqH # Specify tip name to highlight in final plot
-  - CCHkiFhcxG # Specify tip name to highlight in final plot
-  - PAvYXhYkLM # Specify tip name to highlight in final plot
+  - ''
 
 TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
-  - AY644337_55443_seq_1 # these are sequences in the QUERY_FILES
-  - RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty
-  - nDNLdjtgha#HashInSeqName
-  - '' # give it nothing
-  - xyxyx # give it a non-name
+  - ''
 
 QUERY_FILES: # also known as QUERY sequences in BLAST terminology
-  - data/example1.fa # relative or absolute paths to fasta files
-  - data/example2.fa
-  - xyz # to test a dud file name
-  - '' # to test an empty file name (which would return a folder, not file)
+  - /Users/mschultz/KP879216.fa
+  - /Users/mschultz/KX035096.fa
+  - /Users/mschultz/KX228694.fa
+  - /Users/mschultz/KY003229.fa
+  - /Users/mschultz/MG049743.fa
+  - /Users/mschultz/MG181943.fa
+  - /Users/mschultz/MG546668.fa
+  - /Users/mschultz/MH577308.fa
+  - /Users/mschultz/MH577309.fa
+  - /Users/mschultz/MH577310.fa
+  - /Users/mschultz/MH577311.fa
+  - /Users/mschultz/MH577312.fa
+  - /Users/mschultz/MH577313.fa
+  - /Users/mschultz/MH577314.fa
+  - /Users/mschultz/MK829707.fa
+  - /Users/mschultz/MN062164.fa
+  - /Users/mschultz/MN062165.fa
+  - /Users/mschultz/MN062166.fa
+  - /Users/mschultz/MN062167.fa
+  - /Users/mschultz/MN832785.fa
+  - /Users/mschultz/MN832786.fa
+  - /Users/mschultz/MT181522.fa
+  - /Users/mschultz/NC_001489.fa
+  - /Users/mschultz/NC_028981.fa
 ...
