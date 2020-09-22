@@ -6,21 +6,37 @@ Unit Test suite builder.
 """
 
 import unittest
-from ..tests.havic_test import MergeTestCasePass
+from ..tests.havic_test import (HavAmpliconTestCase,
+                               HavWgsTestCase, 
+                               MeaslesAmpliconTestCase)
 
 
 def suite():
     """
-    This is the test suite.
+    This is the hav amplicon test suite.
     """
-    suite = unittest.TestSuite()
-    suite.addTest(MergeTestCasePass("versioner"))
-    suite.addTest(MergeTestCasePass("yamler"))
-    suite.addTest(MergeTestCasePass("dependency_checker"))
-    suite.addTest(MergeTestCasePass("suite_runner"))
-    suite.addTest(MergeTestCasePass("pdfs_checker"))
-    suite.addTest(MergeTestCasePass("csvs_checker"))
-    suite.addTest(MergeTestCasePass("svg_checker"))
-    suite.addTest(MergeTestCasePass("wgs_suite_runner"))
-    suite.addTest(MergeTestCasePass("measles_suite_runner"))
-    return suite
+    suite_ = unittest.TestSuite()
+    suite_.addTest(HavAmpliconTestCase("versioner"))
+    suite_.addTest(HavAmpliconTestCase("yamler"))
+    suite_.addTest(HavAmpliconTestCase("dependency_checker"))
+    suite_.addTest(HavAmpliconTestCase("suite_runner"))
+    suite_.addTest(HavAmpliconTestCase("csvs_checker"))
+    suite_.addTest(HavAmpliconTestCase("svg_checker"))
+
+    return suite_
+
+def suite2():
+    """
+    This is the hav wgs test suite.
+    """
+    suite_ = unittest.TestSuite()
+    suite_.addTest(HavWgsTestCase("wgs_suite_runner"))
+    return suite_
+
+def suite3():
+    """
+    This is the measles amplicon test suite.
+    """
+    suite_ = unittest.TestSuite()
+    suite_.addTest(MeaslesAmpliconTestCase("measles_suite_runner"))
+    return suite_

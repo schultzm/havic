@@ -89,7 +89,7 @@ class Pipeline:
         """
         self.yaml_in = yaml_in  # a dict object
         for key, value in yaml_in.items():
-            print(key, value)
+            print(f"{key}: {value}")
         self.query_files = list(
             filter(
                 None,
@@ -190,6 +190,7 @@ class Pipeline:
         self.target_region = SeqIO.read(
             open(absolute_path(yaml_in["SUBJECT_TARGET_REGION"], yaml_in["DEFAULT_SUBJECT"]), "r"), "fasta"
         )
+        self.root = correct_characters(self.yaml_in["TREE_ROOT"])
 
     def _compile_input_fasta(self):
         # 1 Compile the fasta files to single file
@@ -221,8 +222,9 @@ class Pipeline:
                 out_h.write("\n".join(dups))
         else:
             print("Zero duplicate sequences were found.")
-        if self.yaml_in["TREE_ROOT"] != 'midpoint' and correct_characters(self.yaml_in["TREE_ROOT"]) not in [record.id for record in quality_controlled_seqs]:
-            sys.exit('Unable to determine user-choice for tree rooting. In the run.yaml file, specify a name for the outgroup as a sequence name that is in one of the query files or use \'midpoint\' to midpoint root the tree.')
+        if self.root != 'midpoint' and self.root not in [record.id for record in quality_controlled_seqs]:
+            lbreak = "\n"
+            sys.exit(f"Incorrect specification of tree root (Hint: must be either 'midpoint' or sample from input fasta, but was {self.root}.  Choices are:{lbreak}{lbreak.join([record.id for record in quality_controlled_seqs])}")
         else:
             SeqIO.write(quality_controlled_seqs, self.outfiles["tmp_fasta"], "fasta")
 
@@ -303,7 +305,7 @@ class Pipeline:
         """
         from ete3 import Tree
         tree = Tree(self.outfiles["treefile"], format=0)
-        root_ = self.yaml_in["TREE_ROOT"]
+        root_ = self.root
         root = None
         if root_ == 'midpoint':
             root = tree.get_midpoint_outgroup()
@@ -499,8 +501,6 @@ class Pipeline:
             if self.yaml_in["FORCE_OVERWRITE_AND_RE_RUN"]:
                 for fname in Path(self.outdir).glob(f"{self.yaml_in['RUN_PREFIX']}*"):
                     Path.unlink(fname)
-                # else:
-                #     pass
                 pipeline_run(forcedtorun_tasks=create_outdir, history_file=temp_sqlite)
                 shutil.copyfile(temp_sqlite, perm_sqlite)
             else:

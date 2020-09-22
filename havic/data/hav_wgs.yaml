@@ -9,11 +9,11 @@ DEFAULT_QUERIES:
   Yes # Yes if using havic pre-packaged QUERY test data, No otherwise
 
 SUBJECT_FILE: # the "SUBJECT" sequence in BLAST terms, i.e., reference genome
-  data/NC_001489.fa # relative or absolute paths to fasta file
+  data/wgs_hav_seqs/NC_001489.fa # relative or absolute paths to fasta file
   # if DEFAULT_SUBJECT is Yes, path will be prefixed to use pre-packaged data
 
 SUBJECT_TARGET_REGION: # the target region of the genome to focus on
-  data/havnet_amplicon.fa # in fasta format, relative or absolute paths okay
+  data/wgs_hav_seqs/NC_001489.fa # in fasta format, relative or absolute paths okay
   # if DEFAULT_SUBJECT is Yes, path will be prefixed to use pre-packaged data
 
 OUTDIR: # the parent directory for the results folders

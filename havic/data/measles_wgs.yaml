@@ -2,22 +2,25 @@
 FORCE_OVERWRITE_AND_RE_RUN:
   Yes # Yes for full re-run, No to start from an interrupted run,
 
-DEFAULT_REFS:
-  No # Yes if using havic pre-packaged SUBJECT test data, No otherwise
+DEFAULT_SUBJECT:
+  Yes # Yes if using havic pre-packaged SUBJECT test data, No otherwise
 
 DEFAULT_QUERIES:
-  No # Yes if using havic pre-packaged QUERY test data, No otherwise
+  Yes # Yes if using havic pre-packaged QUERY test data, No otherwise
 
 SUBJECT_FILE: # the "SUBJECT" sequence in BLAST terms, i.e., reference genome
-  measles_reference.fa # relative or absolute paths to fasta file
+  data/wgs_measles_seqs/NC_001498.fa # relative or absolute paths to fasta file
   # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
 
 SUBJECT_TARGET_REGION: # the amplicon sequence, with primers excluded
-  NC_001498_ngene_amplicon.fa # in fasta format, relative or absolute paths okay
+  data/wgs_measles_seqs/NC_001498_ngene_amplicon.fa # in fasta format, relative or absolute paths okay
   # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
 
 OUTDIR: # the parent directory for the results folders
   havic_test_results/measles_wgs # relative or absolute path to parent result folder
+
+TREE_ROOT:
+  midpoint # NC_001498.1 # sequence name to root iqtree on, or midpoint for midpoint root
 
 RUN_PREFIX:
   measles_wgs_
@@ -55,9 +58,13 @@ IQTREE2_SETTINGS:
   redo: # recompute everything in iqtree run
     '--redo' # leave empty string ('') if not wanting to redo, else '--redo'
 
-MINIMAP2_SETTINGS:
+MAPPER_SETTINGS:
+  executable:
+    minimap2 # https://github.com/lh3/minimap2
+  other:
+    -c --cs -x asm20 --secondary=no -Y
   k_mer: # select an odd number, between 3 and 27 inclusive
-    5 # 5 has been good for the HAV amplicon seqs
+    -k 5 # adjust sensibly
 
 HIGHLIGHT_TIP:
   - JN635406.1
@@ -70,9 +77,30 @@ HIGHLIGHT_TIP:
   - 'Paris.FRA/18.11/D4' # Specify tip name to highlight in final plot
 
 TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
-  - ''
-
+  - AB481088.1
+  - NC_001498.1
+  # - AB012949.1
+  # - EF565859.1
+  # - FJ416067.1
+  # - JN635406.1
+  # - JN635408.1
+  # - KJ755979.1
+  # - KJ755980.1
+  # - KT732219.1
+  # - KT732220.1
+  # - KT732221.1
+  # - KT732223.1
+  # - KT732226.1
+  # - KT732241.1
+  # - KT732251.1
+  # - KT732253.1
+  # - KT732255.1
+  # - MF449469.1
+  # - MH173047.1
+  # - MK161348.1
 
 QUERY_FILES: # also known as QUERY sequences in BLAST terminology
   - data/wgs_measles_seqs/measles.fasta # relative or absolute paths to fasta files
+  - data/wgs_measles_seqs/NC_001498.fa # include the reference in the final plot
+  - data/wgs_measles_seqs/NC_001498_ngene_amplicon.fa # include the amplicon as positive control
 ...

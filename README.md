@@ -7,7 +7,7 @@ Detect **H**epatitis **A** **V**irus **I**nfection **C**lusters from virus conse
 
 ## Overview
 
-`havic` is a bioinformatics pipeline for detecting infection clusters in clinical Hepatitis A Virus samples from DNA or cDNA sequence data.  The pipeline is written in `python3` and uses `ruffus` to connect a number of open-source software tools to achieve this task.  The user feeds `havic` some query files via a `yaml` config file, waits for the program to run and then checks the output folder for results.  `havic` allows fast and objective detection of infection clusters in clinical virus sample sequences.  The figure below is a schematic representation of the pipeline.  
+`havic` is a bioinformatics pipeline for detecting infection clusters in clinical Hepatitis A Virus (HAV) samples from DNA or cDNA sequence data.  The pipeline is written in `python3` and uses `ruffus` to connect a number of open-source software tools to achieve this task.  The user feeds `havic` some query files via a `yaml` config file, waits for the program to run and then checks the output folder for results.  `havic` allows fast and objective detection of infection clusters in clinical virus sample sequences.  The figure below is a schematic representation of the pipeline.  
 
 ![Pipeline](https://github.com/schultzm/havic/blob/master/havic/data/pipeline_graph.svg?raw=true)
 
@@ -42,7 +42,7 @@ Installation of `havic` requires [Miniconda](https://docs.conda.io/en/latest/min
     cd havic
     . install.sh
 
-The installation process will take up to 30 minutes with verbose output printed to screen during the install.  If the installation fails, read the screen output to determine the error via traceback.  Submit installation issues to github.  Installation has been tested via continuous integration on CircleCI and tested inside a conda environment.  
+The installation process will take up to 30 minutes with verbose output printed to screen during the install.  If the installation fails, read the screen output to determine the error via traceback.  Submit installation issues to github.  Installation has been tested via continuous integration on CircleCI and tested inside a conda environment.  At installation time, a test suite is run that analyses pre-packaged data for HAV amplicon data, HAV whole genome sequence (WGS) data, and measles WGS data.  
 
 ## Usage
 
@@ -73,7 +73,7 @@ The results in this example were obtained using the command `havic test`.  Let's
 
 #### Editing the `yaml` file for parsing by `havic detect`
 
-`havic detect` receives instructions from a `yaml` config file via the command `havic detect path/to/yaml.yaml`.  The `test.yaml` file from `havic/havic/data/detect_amplicon.yaml` is presented below as an example:
+`havic detect` receives instructions from a `yaml` config file via the command `havic detect path/to/yaml.yaml`.  The `test.yaml` file from `havic/havic/data/hav_amplicon.yaml` is presented below as an example:
 
     ---
     FORCE_OVERWRITE_AND_RE_RUN:
@@ -162,7 +162,7 @@ The results in this example were obtained using the command `havic test`.  Let's
     - '' # to test an empty file name (which would return a folder, not file)
     ...
 
-Before starting a run, `cd` to a working directory (preferably not inside the git cloned folder).  Either copy the above `yaml` to file, or use `wget https://raw.githubusercontent.com/schultzm/havic/master/havic/data/detect_amplicon.yaml`.  For more information on the `yaml` standard, refer to [https://yaml.org/](https://yaml.org/).  
+Before starting a run, `cd` to a working directory (preferably not inside the git cloned folder).  Either copy the above `yaml` to file, or use `wget https://raw.githubusercontent.com/schultzm/havic/master/havic/data/hav_amplicon.yaml`.  For more information on the `yaml` standard, refer to [https://yaml.org/](https://yaml.org/).  
 
 Lets go through the `yaml` step-by-step.
 
@@ -410,3 +410,4 @@ NCBI | National Center for Biotechnology Information
 RIVM | Rijksinstituut voor Volksgezondheid en Milieu
 PCR | Polymerase Chain Reaction
 cDNA | complementary DNA
+WGS | Whole genome sequence/ing

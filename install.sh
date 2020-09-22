@@ -15,4 +15,6 @@ BiocManager::install('Biostrings')
 BiocManager::install('Rsamtools')
 BiocManager::install('ggtree')
 BiocManager::install('tidyverse')" | R --no-save
-havic test
+havic test hav_amplicon
+havic test hav_wgs
+havic test measles_wgs

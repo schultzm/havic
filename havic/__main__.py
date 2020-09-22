@@ -29,6 +29,13 @@ def main():
     )
     subparser_args1 = argparse.ArgumentParser(add_help=False)
     subparser_args1.add_argument("yaml_path", help="""Path to yaml config.""")
+    subparser_args2 = argparse.ArgumentParser(add_help=False)
+    subparser_args2.add_argument("test_suite", choices=["hav_amplicon",
+                                          "hav_wgs",
+                                          "measles_wgs"],
+                                help="""The test suite to run.""")#,
+                                # dest="testsuite")
+
     subparser_modules = parser.add_subparsers(
         title="Sub-commands help", help="", metavar="", dest="subparser_name"
     )
@@ -46,6 +53,7 @@ def main():
     )
     subparser_modules.add_parser(
         "test",
+        parents=[subparser_args2],
         help="Run havic test using pre-packaged example data.",
         description="Run havic test using pre-packaged example data.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -57,10 +65,15 @@ def main():
 
     if args.subparser_name == "test":
         import unittest
-        from .tests.suite_test import suite
+        from .tests.suite_test import suite, suite2, suite3
 
         runner = unittest.TextTestRunner(verbosity=2)
-        runner.run(suite())
+        if args.test_suite == "hav_amplicon":
+            runner.run(suite())
+        elif args.test_suite == "hav_wgs":
+            runner.run(suite2())
+        else:
+            runner.run(suite3()) # the measles_wgs
 
     elif args.subparser_name == "detect":
         import yaml
@@ -69,8 +82,6 @@ def main():
         from .utils.pipeline_runner import Pipeline
 
         detection_pipeline = Pipeline(yaml_in)
-        # for key, value in detection_pipeline.__dict__.items():
-        #     print(f"{key}: {value}\n")
         detection_pipeline._run()
         get_execution_time(yaml_in["OUTDIR"])
 
