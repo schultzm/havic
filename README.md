@@ -348,6 +348,10 @@ During development of `havic`, it was recognised that HAV surveillance will move
 
 To include the subject sequence in the final alignment, just add the path to the subject file to the list in the `QUERY_FILES` block.
 
+#### Overcome biases in results
+
+As `havic` implements ML phylogenetic inference (via `IQ-Tree2`), there is a chance of arriving on a local optimum; hence, **the analysis should be run multiple times (>3) to more completely explore tree space**.  Epidemiological conclusions should be based on the consensus of multiple runs and patient metadata (e.g., contact tracing, travel history).  
+
 ## Release history
 
 Pre-release.  
@@ -406,6 +410,7 @@ Acronym | Expansion
 HAV | Hepatitis A Virus
 MSA | Multiple Sequence Alignment
 HAVNET | Hepatitis A Virus Network
+ML | Maximum Likelihood
 NCBI | National Center for Biotechnology Information
 RIVM | Rijksinstituut voor Volksgezondheid en Milieu
 PCR | Polymerase Chain Reaction

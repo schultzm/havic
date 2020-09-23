@@ -82,20 +82,11 @@ Hepatovirus A belongs to the family Picornaviridae.  The genome is a positive-se
 
 The gold standard HAV genotyping protocol [see HAVNET @RN316] has been to sequence a short 460 nucleotide (nt) amplicon spanning the junction of the VP1 and P2A regions.  With this method, sequencing is typically performed using the Sanger method with a consensus target sequence inferred from a stack of one or more overlapping sub-sequences.  In recent years, however, laboratory methods have applied variations to the HAVNET protocol [e.g., see @RN408] and whole genome sequencing will likely become the new standard [e.g., see @RN407].  
 
-Variations in laboratory methods mean a consensus sequence may not always co-locate with the preferred genome target, especially when sequences are collected from databases compiled over years from many laboratories [e.g., see @RN411] [add plot here].  Additionally, artefactual nucleotide variation (e.g., low quality, indels, unwitting alignment of reverse and forward complement sequences) may be present.  Pairwise sequence comparisons to infer relatedness of samples is inadequate to acknowledge these uncertainties but pairwise genetic distance based inferences are often the mode [e.g., @RN407].  Further, Comparisons Hence, there is a need for tools capable of handling this variation which additionally 
+Variations in laboratory methods mean a consensus sequence may not always co-locate within the same genome target, especially when sequences are collected from databases compiled over many years from myriad laboratories [e.g., see @RN411] [add plot here].  Additionally, artefactual nucleotide variation (e.g., low quality, false indels, incompatible orientation) may be present.  Pairwise sequence comparisons to infer relatedness of samples from genetic distance is often the mode for recovering epidemiological links [e.g., @RN407 and see @RN410]; however, crude distance based methods are outdated.  Hence, there is a need for bioinformatic tools that can cope with these challenges.
 
-Hence, there is a  or  .   tend to be made For HAV infection cluster detection, this variation presents as  
+`havic` was written by bionformaticists from a public health laboratory who were tasked with the routine analysis of HAV sequence data for epidemiological purposes.  The software aims to provide actionable results to epidemiologists with the least amount of fuss despite the inherent imperfections in HAV sequence data.  
 
-
-# Statement of need
-
-
-The alignment of partial HAV genome sequences with the ultimate aim of detecting outbreak clusters is often troublesome.  Frame-shift mutations, incorrect orientation to the reference, and difficulty locating the true open reading frame means molecular epidemiology of HAV has hitherto been performed using the closed-source HAVNET genotyping service, NCBI BLAST [@RN172] on a case-by-case basis.  There is a need for tools that allow open-source, high-throughput, objective identification of outbreak infection clusters.
-
-# havic
-
-`havic` was written out of the need 
 
 # Validation data
 
-[@RN407, @RN408]
+Example data is packaged with the software.  The user can run the tests by doing `havic test <test_suite>`, where `<test_suite>` can be `hav_amplicon`, `hav_wgs` or `measles_wgs`.  was collected [@RN407, @RN408]
