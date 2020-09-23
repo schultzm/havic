@@ -37,6 +37,9 @@ authors:
   - Lilly Yuen
     orcid: 0000-0003-2934-0167
     affiliation: 2
+  - Leon Caly
+    orcid: 0000-0003-2846-6729
+    affiliation: 2
   - name: Kristy Horan
     orcid: 0000-0003-3960-1519
     affiliation: 1
@@ -71,13 +74,15 @@ csl: harvard-the-university-of-melbourne.csl
 
 Hepatitis A is a viral liver disease associated with high morbidity.  Though the mortality rate is low, infections are costly and painful oftentimes resulting in hospitalisation during the acute phase of infection.  Tens of millions of people are infected with Hepatitis A Virus (HAV) each year [@RN406].  
 
-The virus is transmitted via the faecal-oral pathway, either directly from person-to-person or through contaminated food and water [@RN398].  HAV has its highest prevalence in low-income countries; however, sporadic outbreaks also occur in high-income countries [@RN406].  Molecular epidemiology of virus outbreak strains using DNA sequencing and phylogenomics is essential for public health interventions aimed at attenuating outbreaks.  
+HAV is transmitted via the faecal-oral pathway, either directly from person-to-person or through contaminated food and water [@RN398].  The virus has its highest prevalence in low-income countries; however, sporadic outbreaks occur also in high-income countries [@RN406].  Molecular epidemiological methods including the sharing and databasing of outbreak genome sequence data are essential for public health interventions aimed at attenuating outbreaks [@RN407, @RN410].  
 
-HAV is a non-enveloped Hepatovirus in the family Picornaviridae.  The genome is a positive-sense single-stranded ribonucleic acid (RNA) approximately 7.5 kilobases (kb) in length [@RN375].  Genetic diversity of HAV is well characterised, with one serotype and seven genotypes (I-VII); of the latter, four (I, II, III and VII) infect humans, and these can be further divided into six subtypes (IA, IB, II, IIIA, IIIB, VII) [@RN404, @RN403].  
+Hepatovirus A belongs to the family Picornaviridae.  The genome is a positive-sense single-stranded ribonucleic acid (RNA) approximately 7.5 kilobases (kb) in length [@RN375].  Genetic diversity of HAV is well characterised, with one serotype and seven genotypes (I-VII); of the latter, four (I, II, III and VII) infect humans, and these can be further divided into six subtypes (IA, IB, II, IIIA, IIIB, VII) [@RN404, @RN403].  
 
-The gold standard HAV genotyping protocol [@RN316] recommends sequencing of a short 460 nucleotide (nt) amplicon spanning the junction of the VP1 and P2A regions.  Sequencing is typically performed using the Sanger method with a consensus target sequence inferred from a stack of one or more sub-sequences.  The consensus sequence may not always co-locate with the target region and some nucleotides may be missing, called ambiguously or low quality.  
+The gold standard HAV genotyping protocol [see HAVNET @RN316] has been to sequence a short 460 nucleotide (nt) amplicon spanning the junction of the VP1 and P2A regions.  With this method, sequencing is typically performed using the Sanger method with a consensus target sequence inferred from a stack of one or more overlapping sub-sequences.  In recent years, however, laboratory methods have applied variations to the HAVNET protocol [e.g., see @RN408] and whole genome sequencing will likely become the new standard [e.g., see @RN407].  
 
-Variation in laboratory methods 
+Variations in laboratory methods mean a sample consensus sequence may not always co-locate with the preferred target.  Additionally, artefactual nucleotide variation (e.g., low quality, indels, unwitting alignment of reverse and forward complement sequences) may be present.  Pairwise sequence comparisons to infer relatedness of samples is inadequatele to acknowledge these uncertainties; however, pairwise genetic distance based inferences are often the mode [e.g., @RN407].  
+
+Hence, there is a  or  .   tend to be made For HAV infection cluster detection, this variation presents as  
 
 
 # Statement of need
@@ -88,3 +93,7 @@ The alignment of partial HAV genome sequences with the ultimate aim of detecting
 # havic
 
 `havic` was written out of the need 
+
+# Validation data
+
+[@RN407, @RN408]

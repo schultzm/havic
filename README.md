@@ -42,7 +42,7 @@ Installation of `havic` requires [Miniconda](https://docs.conda.io/en/latest/min
     cd havic
     . install.sh
 
-The installation process will take up to 30 minutes with verbose output printed to screen during the install.  If the installation fails, read the screen output to determine the error via traceback.  Submit installation issues to github.  Installation has been tested via continuous integration on CircleCI and tested inside a conda environment.  At installation time, a test suite is run that analyses pre-packaged data for HAV amplicon data, HAV whole genome sequence (WGS) data, and measles WGS data.  
+The installation process will take up to 30 minutes with verbose output printed to screen during the install.  If the installation fails, read the screen output to determine the error via traceback.  Submit installation issues to github.  Installation has been tested via continuous integration on CircleCI and tested inside a conda environment.  At installation time, a test suite is run.  The suite analyses pre-packaged HAV amplicon data, HAV whole genome sequence (WGS) data and measles WGS data.  
 
 ## Usage
 

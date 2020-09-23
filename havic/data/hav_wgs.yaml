@@ -67,11 +67,17 @@ CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
     valid # options are ambiguity, valid, gap, or abs
 
 HIGHLIGHT_TIP:
-  - MH577308.1
-  - MH577309.1
-  - MH577310.1
-  - MH577311.1
+  - MN062167.1
+  - MN062166.1
+  - MN062165.1
+  - MN062164.1
+  - MH577314.1
+  - MH577313.1
   - MH577312.1
+  - MH577311.1
+  - MH577310.1
+  - MH577309.1
+  - MH577308.1
 
 TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
   - ''
@@ -85,21 +91,23 @@ QUERY_FILES: # also known as QUERY sequences in BLAST terminology
   - data/wgs_hav_seqs/MG049743.fa
   - data/wgs_hav_seqs/MG181943.fa
   - data/wgs_hav_seqs/MG546668.fa
-  - data/wgs_hav_seqs/MH577308.fa
-  - data/wgs_hav_seqs/MH577309.fa
-  - data/wgs_hav_seqs/MH577310.fa
-  - data/wgs_hav_seqs/MH577311.fa
-  - data/wgs_hav_seqs/MH577312.fa
-  - data/wgs_hav_seqs/MH577313.fa
-  - data/wgs_hav_seqs/MH577314.fa
+  - data/wgs_hav_seqs/MN062167.fa # PMCID:PMC6649344 ::: SubName: USA/2018/V18S02170|Homo sapiens|USA|serum|2018|IIIA strain; Cluster 2A17USA128
+  - data/wgs_hav_seqs/MN062166.fa # PMCID:PMC6649344 ::: SubName: USA/2018/V18S01071|Homo sapiens|USA|serum|2018|IA strain; A17COCluster
+  - data/wgs_hav_seqs/MN062165.fa # PMCID:PMC6649344 ::: SubName: USA/2018/V18S02010|Homo sapiens|USA|serum|2018|IA strain; Cluster 2A17CO16
+  - data/wgs_hav_seqs/MN062164.fa # PMCID:PMC6649344 ::: SubName: USA/2017/V17S07261|Homo sapiens|USA|serum|2017|IA strain; Cluster A17UT11
+  - data/wgs_hav_seqs/MH577314.fa # PMCID:PMC6649344 ::: SubName: USA/2018/V18S00348|Homo sapiens|USA|serum|2018|outbreak strain; A16MIcluster 2
+  - data/wgs_hav_seqs/MH577313.fa # PMCID:PMC6649344 ::: SubName: USA/2017/V17S06806|Homo sapiens|USA|serum|2017|outbreak strain; A16MIcluster 1
+  - data/wgs_hav_seqs/MH577312.fa # PMCID:PMC6649344 ::: SubName: USA/2017/V17S07512|Homo sapiens|USA|serum|2017|outbreak strain; A17CA300
+  - data/wgs_hav_seqs/MH577311.fa # PMCID:PMC6649344 ::: SubName: USA/2018/V18S00294|Homo sapiens|USA|serum|2018|outbreak strain; cluster C
+  - data/wgs_hav_seqs/MH577310.fa # PMCID:PMC6649344 ::: SubName: USA/2017/V17S07250|Homo sapiens|USA|serum|2017|outbreak strain; cluster A
+  - data/wgs_hav_seqs/MH577309.fa # PMCID:PMC6649344 ::: SubName: USA/2017/V17S07364|Homo sapiens|USA|serum|2017|outbreak strain; cluster D
+  - data/wgs_hav_seqs/MH577308.fa # PMCID:PMC6649344 ::: SubName: USA/2017/V17S07429|Homo sapiens|USA|serum|2017|outbreak strain; cluster B
   - data/wgs_hav_seqs/MK829707.fa
-  - data/wgs_hav_seqs/MN062164.fa
-  - data/wgs_hav_seqs/MN062165.fa
-  - data/wgs_hav_seqs/MN062166.fa
-  - data/wgs_hav_seqs/MN062167.fa
   - data/wgs_hav_seqs/MN832785.fa
   - data/wgs_hav_seqs/MN832786.fa
   - data/wgs_hav_seqs/MT181522.fa
   - data/wgs_hav_seqs/NC_001489.fa
   - data/wgs_hav_seqs/NC_028981.fa
+  - data/wgs_hav_seqs/M14707.fa # IB reference strain (HM175)
+  - data/wgs_hav_seqs/AB020564.fa # subtype IA, see https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6649344/#SD1 for further details
 ...
