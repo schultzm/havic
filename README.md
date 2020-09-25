@@ -16,8 +16,10 @@ The user is free to modify parameters of a `havic` run through modifying a confi
 - create output directory to receive results files
 - QC query sequences
   - collect queries into a single set
-  - discard duplicates (and report them)
-  - replace 'troublesome' characters in sequence headers (replacements reported)
+  - discard duplicate sequences based on seqIDs
+    - seqIDs are sequence headers up until the first space character
+    - duplicate seqID are reported to file
+  - replace 'troublesome' characters in sequence headers (character replacements reported to file)
 - map query sequences to reference sequence
   - reverse complement as required
 - extract alignment from mapping file

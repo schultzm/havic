@@ -73,6 +73,7 @@ def correct_characters(input_string):
         input_string.replace("_(reversed)", "")
         .replace("(", "")
         .replace(")", "")
+        .replace(":", "")
         .rstrip(),
     )
     return output_string
@@ -88,6 +89,7 @@ class Pipeline:
             yaml_in (dict): A dictionary object parsed from a yaml input file.
         """
         self.yaml_in = yaml_in  # a dict object
+        # yaml_in["TRIM_SEQS"] = [item for sublist in yaml_in["TRIM_SEQS"] for item in sublist]
         for key, value in yaml_in.items():
             print(f"{key}: {value}")
         self.query_files = list(

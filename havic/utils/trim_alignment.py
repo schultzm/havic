@@ -29,9 +29,7 @@ class Trimmed_alignment(MultipleSeqAlignment):
 
     def _get_refseq_boundary(self):
         """
-        Get the coords of the ref sequence excluding the 5' and 3' gap padding.
-
-        >>> xyz
+        Get the coords of the target region
         """
         start_pos = None
         end_pos = None

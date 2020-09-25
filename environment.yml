@@ -16,6 +16,18 @@ dependencies:
   - pre-commit
   - flake8
   - samtools
+  - bioconductor-genomicalignments
+  - r-rcpp
+  - r-magick
+  - r-phytools
+  - r-pheatmap
+  - r-colorspace
+#  - r-BiocManager
+  - bioconductor-genomicalignments
+  - bioconductor-biostrings
+  - bioconductor-rsamtools
+  - bioconductor-ggtree
+  - bioconductor-tidyverse
   - pip
   - pip:
     - -e . # developer mode install of havic
