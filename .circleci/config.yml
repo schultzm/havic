@@ -13,6 +13,7 @@ jobs:
           conda init bash
           source ~/.bashrc
           conda activate havic_env
+          conda list
           havic test hav_amplicon
           havic test hav_wgs
           havic test measles_wgs

@@ -18,7 +18,7 @@ def suite():
     suite_ = unittest.TestSuite()
     suite_.addTest(HavAmpliconTestCase("versioner"))
     suite_.addTest(HavAmpliconTestCase("yamler"))
-    suite_.addTest(HavAmpliconTestCase("dependency_checker"))
+    # suite_.addTest(HavAmpliconTestCase("dependency_checker"))
     suite_.addTest(HavAmpliconTestCase("suite_runner"))
     suite_.addTest(HavAmpliconTestCase("csvs_checker"))
     suite_.addTest(HavAmpliconTestCase("svg_checker"))
