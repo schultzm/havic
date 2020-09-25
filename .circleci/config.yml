@@ -10,6 +10,7 @@ jobs:
       - checkout
       - run: |
           conda env create -f environment.yml
+          conda init
           conda activate havic_env
           havic test hav_amplicon
           havic test hav_wgs
