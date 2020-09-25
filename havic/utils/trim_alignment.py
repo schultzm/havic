@@ -16,7 +16,7 @@ import sys
 class Trimmed_alignment(MultipleSeqAlignment):
     """Trim a BioPython MSA object.
 
-    Given an alignment, trim the 5' and 3' gap-only regions.
+    Given an alignment, trim the 5' and 3' regions.
     """
 
     def __init__(self, alignment, trimguide, gap_char, trim_seqs):
@@ -27,7 +27,7 @@ class Trimmed_alignment(MultipleSeqAlignment):
         self.boundary = None
         self.trim_seqs = trim_seqs
 
-    def _get_refseq_boundary(self):
+    def get_refseq_boundary(self):
         """
         Get the coords of the target region
         """
@@ -56,18 +56,15 @@ class Trimmed_alignment(MultipleSeqAlignment):
             if seq.id in self.trim_seqs:
                 sequence = MutableSeq(str(seq.seq))
                 # print(help(sequence))
-                sequence[0:self.boundary[0]] = self.gap_char * \
-                    (self.boundary[0] - 0)
+                sequence[0:self.boundary[0]] = self.gap_char * (self.boundary[0] - 0)
                 # print(len(sequence))
                 # print(self.boundary)
-                sequence[self.boundary[1]:] = self.gap_char * \
-                    (len(sequence) - self.boundary[1])
+                sequence[self.boundary[1]:] = self.gap_char * (len(sequence) - self.boundary[1])
                 seq.seq = sequence
             if set(seq.seq) == set({self.gap_char}):
                 print(f"{seq.id} contains only gaps after trimming. "
                       f"Removing {seq.id} from alignment.",
                       file=sys.stderr)
-                pass
             else:
                 temp_aln.append(seq)
         self.alignment = temp_aln

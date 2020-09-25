@@ -52,7 +52,7 @@ if(matrixplots){
     }
     print(as.data.frame(plt$data))
     str(plt$data)
-    offst <- max(dist.nodes(tree))/5
+    offst <- max(dist.nodes(tree))/4
     # if(offst <= 0){
     #     offst <- 0.1
     # }

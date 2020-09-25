@@ -73,7 +73,7 @@ def correct_characters(input_string):
         input_string.replace("_(reversed)", "")
         .replace("(", "")
         .replace(")", "")
-        .replace(":", "")
+        .replace(":", "_")
         .rstrip(),
     )
     return output_string
@@ -103,6 +103,7 @@ class Pipeline:
         )
         if not self.query_files:
             sys.exit("Unable to continue without input query_files.")
+        self.trim_requests = {correct_characters(i): i for i in yaml_in["TRIM_SEQS"]} # this allows printing of unfound TRIM_SEQS
         self.trim_seqs = list(set(filter(None, [correct_characters(i) for i in yaml_in["TRIM_SEQS"]])))
         self.subject = absolute_path(yaml_in["SUBJECT_FILE"], yaml_in["DEFAULT_SUBJECT"])
         self.refseq = SeqIO.read(self.subject, "fasta")
@@ -136,15 +137,6 @@ class Pipeline:
                 self.outdir,
                 f"{repstr}map.stack.trimmed.fa.rooted_clusterPicks.nwk.figTree",
             ),
-            # "clusterpicked_tree_bkp": make_path(
-            #     self.outdir,
-            #     f"{repstr}map.stack"
-            #     f".trimmed.fa.div_"
-            #     f"{yaml_in['CLUSTER_PICKER_SETTINGS']['distance_fraction']}"
-            #     f"distancefraction"
-            #     f".rooted_clusterPicks"
-            #     f".nwk.figTree",
-            # ),
             "cluster_assignments": make_path(
                 self.outdir,
                 f"{repstr}map.stack.trimmed.fa.rooted_clusterPicks_log.txt",
@@ -192,7 +184,10 @@ class Pipeline:
         self.target_region = SeqIO.read(
             open(absolute_path(yaml_in["SUBJECT_TARGET_REGION"], yaml_in["DEFAULT_SUBJECT"]), "r"), "fasta"
         )
+        self.target_region.id = correct_characters(self.target_region.id)
+        self.target_region.seq = self.target_region.seq.ungap("-")
         self.root = correct_characters(self.yaml_in["TREE_ROOT"])
+        self.replacedheaders = None
 
     def _compile_input_fasta(self):
         # 1 Compile the fasta files to single file
@@ -209,10 +204,12 @@ class Pipeline:
                 keyval_ids[str(input_id)] = str(record.id)
                 # 1.02 Remove duplicates.
                 if record.id not in [record.id for record in quality_controlled_seqs]:
+                    record.seq = record.seq.ungap("-")
                     quality_controlled_seqs.append(record)
                 else:
                     dups.append(str(record.id))
         if keyval_ids:
+            self.replacedheaders = keyval_ids
             with open(self.outfiles["seq_header_replacements"], "w") as out_h:
                 out_h.write("INPUT_SEQ_HEADER\tOUTPUT_SEQ_HEADER\n")
                 for key, val in keyval_ids.items():
@@ -272,7 +269,7 @@ class Pipeline:
         os.system(f"R CMD BATCH {self.outfiles['bam2fasta']} {self.outfiles['bam2fasta_Rout']}")
 
     def _get_clean_fasta_alignment(self):
-        """Trim the alignment to desired length.  Give it a haircut.
+        """Give the alignment a haircut.
 
         Returns:
             MSA: The Biopython Multiple Sequence Alignment object
@@ -282,21 +279,23 @@ class Pipeline:
         alignment = AlignIO.read(
             open(self.outfiles["fasta_from_bam"], "r"), "fasta")
         from ..utils.trim_alignment import Trimmed_alignment
-            # self.trim_seqs = ""
         aln_trim = Trimmed_alignment(
             alignment, self.target_region.id, "-", self.trim_seqs
         )
+
+        notfound = set(self.trim_seqs) - set([seq.id for seq in alignment])
+        if notfound: # report trim requests in yaml_in['TRIM_SEQS'] that could not be found and trimmed
+            for nf in notfound:
+                print(f"Unable to find and trim {self.trim_requests[nf]}")
+
         if len(aln_trim.alignment) < 3:
             sys.exit('Not enough sequences to perform analysis.  Exiting now.\n')
-        if self.trim_seqs:
-            aln_trim._get_refseq_boundary()
-            aln_trim.trim_seqs_to_ref()
-            # 4.1.1 Depad the alignment.
+        aln_trim.get_refseq_boundary()
+        aln_trim.trim_seqs_to_ref()
         aln_trim.depad_alignment()
         AlignIO.write(
             aln_trim.alignment, self.outfiles["fasta_from_bam_trimmed"], "fasta"
         )
-        # else:
         return aln_trim.alignment
 
     def _run_iqtree(self):
@@ -325,11 +324,6 @@ class Pipeline:
         :return: None
         """
         os.system(self.clusterpick_cmd)
-
-    # def _bkp_clusterpickedtree(self):
-    #     shutil.copyfile(
-    #         self.outfiles["clusterpicked_tree"], self.outfiles["clusterpicked_tree_bkp"]
-    #     )
 
     def _summarise_cluster_assignments(self):
         cmd = f"grep ClusterNumber {self.outfiles['cluster_assignments']} -n"
@@ -408,19 +402,6 @@ class Pipeline:
         :return: None
         """
 
-        # os.system(f"nextflow run {rf(__parent_dir__, __nextflow_nf__)}")
-        # Pipeline starts here without Ruffus
-        # For development and testing.
-        # os.mkdir(self.outdir)
-        # self._compile_input_fasta()
-        # self._map_input_fasta_to_ref()
-        # self._bam2fasta()
-        # self._get_clean_fasta_alignment()
-        # self._run_iqtree()
-        # self.root_iqtree()
-        # self._clusterpick()
-        # self._plot_results()
-
         # Pipeline starts here with Ruffus
         @mkdir(self.outdir)
         def create_outdir():
@@ -478,13 +459,6 @@ class Pipeline:
         def summarise_cluster_assignments(infile, outfile):
             self._summarise_cluster_assignments()
 
-        # @follows(clusterpick_from_rooted_iqtree_and_cleaned_fasta)
-        # @files(
-        #     self.outfiles["clusterpicked_tree"], self.outfiles["clusterpicked_tree_bkp"]
-        # )
-        # def backup_clusterpicked_figtree(infile, outfile):
-        #     self._bkp_clusterpickedtree()
-
         @follows(clusterpick_from_rooted_iqtree_and_cleaned_fasta)
         @files(
             [self.outfiles["fasta_from_bam_trimmed"], self.outfiles["rooted_treefile"]],
@@ -515,46 +489,6 @@ class Pipeline:
 
             # Print out the pipeline graph
             pipeprintgraph(make_path(self.outdir, "pipeline_graph.svg"), "svg")
-
-    #
-    # def pipeline_of_pipelines(self):
-    #     """
-    #     Run the pipeline repeatedly.
-    #     :return: None
-    #     """
-    #
-    #     @originate(self.outdir)
-    #     def run(self.outdir):
-    #         self._run()
-    #
-    #     def run():
-    #         self._run()
-    #
-    #     def run():
-    #         self._run()
-    #
-    #     def run():
-    #         self._run()
-    #
-    #     def run():
-    #         self._run()
-    #
-    #     def run():
-    #         self._run()
-    #
-    #     def run():
-    #         self._run()
-    #
-    #     def run():
-    #         self._run()
-    #
-    #     def run():
-    #         self._run()
-    #
-    #     def run():
-    #         self._run()
-    #
-    #     pipeline_run()
 
 
 if __name__ == "__main__":
