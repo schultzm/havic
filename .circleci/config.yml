@@ -8,9 +8,9 @@ jobs:
     working_directory: ~/havic
     steps:
       - checkout
-      # - run: |
-      #     . install.sh
-      conda env create -f environment.yml
+      - run: |
+          conda env create -f environment.yml
+    # . install.sh
 
       - run: |
           havic test hav_amplicon
