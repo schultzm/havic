@@ -78,23 +78,24 @@ csl: harvard-the-university-of-melbourne.csl
 
 # Introduction
 
-Tens of millions of people are infected with Hepatitis A Virus (HAV) each year [@RN406].  Though mortality is low morbidity is high resulting in large economic burden due to frequent hospitalisation of cases during the acute phase of infection.  HAV is transmitted via the faecal-oral pathway, directly from person-to-person or through contaminated food and water [@RN398].  The virus has its highest prevalence in low-income countries; however, sporadic outbreaks do occur in high-income countries [@RN406] typically arriving via return travellers and import on frozen foods [@RN410].  
+Tens of millions of people are infected with Hepatitis A Virus (HAV) each year [@RN406].  Though mortality is low morbidity is high, resulting in large economic burden due to frequent hospitalisation of cases during the acute phase of infection.  HAV is transmitted via the faecal-oral pathway directly from person-to-person or through contaminated food and water [@RN398].  The virus has its highest prevalence in low-income countries; however, sporadic outbreaks do occur in high-income countries [@RN406] typically arriving via return travellers and import on frozen foods [@RN410].  
 
-Molecular epidemiology using DNA sequencing and comparative genomics is now considered an essential public health measure to characterise virus outbreaks in real-time [@RN407, @RN410].  For HAV, the gold standard protocol involves genotyping of samples by sequencing a 460 bp cDNA amplicon of the VP1/P2A junction and then comparing this sequence to a database containing a global representation of HAV strains [see HAVNET @RN316].  Using cDNA sequencing genetic diversity of HAV has been well characterised, with one known serotype and seven genotypes (I-VII) and four genotypes (I, II, III and VII).  Six subtypes (IA, IB, II, IIIA, IIIB, VII) are known to infect humans [@RN404, @RN403].  
+Molecular epidemiology using DNA sequencing and comparative genomics is now considered an essential public health measure to characterise virus outbreaks in real-time [@RN407, @RN410, ].  For HAV, the gold standard genotyping protocol involves sequencing a 460 bp cDNA amplicon of the VP1/P2A junction and comparing this sequence to a global database of HAV strains [see HAVNET @RN316 and NCBI].  Using sequence data, genetic diversity of HAV has been well characterised with one known serotype and seven genotypes (I-VII).  Four of these genotypes (I, II, III and VII), comprising six subtypes (IA, IB, II, IIIA, IIIB, VII), are known to infect humans [@RN404, @RN403].  
 
-Though the HAVNET protocol is widely adopted, variations to the protocol [e.g., see @RN408] are common and whole genome sequencing is becoming the new standard [e.g., see @RN407].  
+Though the HAVNET protocol is widely adopted, variations to the protocol are commonplace [e.g., see @RN408 and @RN407].  Public databases are compiled over many years from myriad laboratories [e.g., see @RN411].  Artefactual nucleotide variation (e.g., low quality, false indels, incompatible orientation) is present.  The pool of available consensus sequences does not co-locate within a single genome target.  Distance based pairwise sequence comparisons used to infer relatedness of samples is sensitive to these variations but comparison of large numbers of sequences is often required.  In this article, we describe `havic`, a software tool written to cope with these challenges.  
 
-Variations in laboratory methods mean a consensus sequence may not always co-locate within the same genome target, especially when sequences are collected from databases compiled over many years from myriad laboratories [e.g., see @RN411] [add plot here].  Additionally, artefactual nucleotide variation (e.g., low quality, false indels, incompatible orientation) may be present.  Pairwise sequence comparisons to infer relatedness of samples from genetic distance is often the mode for recovering epidemiological links ; however, crude distance based methods are outdated.  Hence, there is a need for bioinformatic tools that can cope with these challenges.
-by comparing sequences of  cDNA sequence of HAV clinical samples to a database of sequences.    Typically, this `havic`, is written for exactly this purpose.  The software has been tested over a number of years and iterations, and during routine use in front-line public health epidemiology, a number of needs have s involved in contact tracing and case history investigations.  
+# Statement of utility
 
-# Statement of need
+`havic` has been developed over a number of years with feedback and feature requests from public health laboratory epidemiolgists during routine surveillance of HAV outbreaks in Australia.  The software aims to provide actionable results to epidemiologists with the least amount of analyst intervention despite inherent imperfections in HAV sequence databases.  As the HAV genome comprises a single segment, being a positive-sense single-stranded ribonucleic acid (RNA), of only 7.5 kilobases (kb) [@RN375], analyses can be completed quickly even on a desktop computer.
 
-Hepatovirus A belongs to the family Picornaviridae.  The genome is a positive-sense single-stranded ribonucleic acid (RNA) approximately 7.5 kilobases (kb) in length [@RN375].  
+
+
+Hepatovirus A belongs to the family Picornaviridae.  
 
 The gold standard genotyping protocol for HAV cases  has been to sequence a short 460 nucleotide (nt) amplicon spanning the VP1 and P2A junction.  Sequencing is typically performed using the Sanger method forming a consensus target sequence from a stack of one or more overlapping sub-sequences.  Pairwise comparisons are then made to public databases on NCBI or HAVNET to infer relatedness of samples and strain origins [e.g., see @RN407 and @RN410].    
 
 
-`havic` was written by bionformaticists from a public health laboratory who were tasked with the routine analysis of HAV sequence data for epidemiological purposes.  The software aims to provide actionable results to epidemiologists with the least amount of fuss despite the inherent imperfections in HAV sequence data.  
+`havic` was written by bionformaticists from a public health laboratory who were tasked with the routine analysis of HAV sequence data for epidemiological purposes.  
 
 
 # Validation data
