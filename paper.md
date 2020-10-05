@@ -86,17 +86,9 @@ Though the HAVNET protocol is widely adopted, variations to the protocol are com
 
 # Statement of utility
 
-`havic` has been developed over a number of years with feedback and feature requests from public health laboratory epidemiolgists during routine surveillance of HAV outbreaks in Australia.  The software aims to provide actionable results to epidemiologists with the least amount of analyst intervention despite inherent imperfections in HAV sequence databases.  As the HAV genome comprises a single segment, being a positive-sense single-stranded ribonucleic acid (RNA), of only 7.5 kilobases (kb) [@RN375], analyses can be completed quickly even on a desktop computer.
+`havic` has been developed over a number of years with feedback and feature requests from public health laboratory epidemiolgists during routine surveillance of HAV outbreaks in Australia.  The software aims to provide actionable results to epidemiologists with the least amount of analyst intervention despite inherent imperfections in HAV sequence databases.  As the HAV genome comprises a single segment, being a positive-sense single-stranded ribonucleic acid (RNA) of only 7.5 kilobases (kb) [@RN375], analyses can be completed quickly on a desktop computer.  
 
-
-
-Hepatovirus A belongs to the family Picornaviridae.  
-
-The gold standard genotyping protocol for HAV cases  has been to sequence a short 460 nucleotide (nt) amplicon spanning the VP1 and P2A junction.  Sequencing is typically performed using the Sanger method forming a consensus target sequence from a stack of one or more overlapping sub-sequences.  Pairwise comparisons are then made to public databases on NCBI or HAVNET to infer relatedness of samples and strain origins [e.g., see @RN407 and @RN410].    
-
-
-`havic` was written by bionformaticists from a public health laboratory who were tasked with the routine analysis of HAV sequence data for epidemiological purposes.  
-
+The software pipeline is written in python3, implementing a number of R packages, with the pipeline control managed using Rufus.  Run configurations are defined using a yaml-formatted text file.  Installation is via `conda`.  
 
 # Validation data
 
