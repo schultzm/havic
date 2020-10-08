@@ -17,3 +17,4 @@ jobs:
           havic test hav_amplicon
           havic test hav_wgs
           havic test measles_wgs
+          havic test hiv_amplicon
