@@ -1,0 +1,119 @@
+---
+FORCE_OVERWRITE_AND_RE_RUN:
+  Yes # Yes for full re-run, No to start from an interrupted run,
+
+DEFAULT_SUBJECT:
+  Yes # Yes if using havic pre-packaged SUBJECT (i.e., "reference") sequence and region test data, No otherwise
+
+DEFAULT_QUERIES:
+  Yes # Yes if using havic pre-packaged QUERY test data, No otherwise
+
+SUBJECT_FILE: # the "SUBJECT" sequence in BLAST terms, i.e., reference genome
+  data/hiv_amplicon/D10112.fa # relative or absolute paths to fasta file
+  # if DEFAULT_SUBJECT is Yes, path will be prefixed to use pre-packaged data
+
+SUBJECT_TARGET_REGION: # the target region of the genome to focus on
+  data/hiv_amplicon/D10112_amplicon.fa # in fasta format, relative or absolute paths okay
+  # if DEFAULT_SUBJECT is Yes, path will be prefixed to use pre-packaged data
+
+OUTDIR: # the parent directory for the results folders
+  havic_test_results/hiv_amplicon # relative or absolute path to parent result folder
+
+TREE_ROOT:
+  B.GB.CAM1.D10112_1983 # sequence name to root iqtree on, or midpoint for midpoint root
+
+RUN_PREFIX:
+  HIV_amplicon_
+
+PLOTS:
+  Yes # Yes to make plots (slow for large runs), No otherwise.
+
+MAPPER_SETTINGS:
+  executable:
+    minimap2 # https://github.com/lh3/minimap2
+  other:
+    -c --cs -x asm20 --secondary=no -Y
+  k_mer: # select an odd number, between 3 and 27 inclusive
+    -k 5 # 5 has been good for the HAV amplicon seqs, adjust sensibly
+
+IQTREE2_SETTINGS: # http://www.iqtree.org/doc/iqtree-doc.pdf
+  executable:
+    iqtree # command to call iqtree2
+  threads: # threads
+    '-T AUTO -ntmax 24' # automatically determine the best threading parameter
+  model_finder: # model-finder
+    '-m MFP' # extended model find with FreeRate heterogeneity + tree inference
+  state_frequency:
+    '+FO' # Optimized sgate frequencies by maximum-likelihood
+  ultrafast_bootstrap:
+    '--ufboot 1000' # use of aLRT will cause ClusterPicker to fall over
+  protect_violations: #to protect against severe model violations
+    '--bnni'
+  redo: # recompute everything in iqtree run
+    '--redo' # leave empty string ('') if not wanting to redo, else '--redo'
+
+CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
+  executable:
+    ClusterPicker
+  coarse_subtree_support: # divide tree into subtrees at/above this threshold
+    90
+  fine_cluster_support: # branch support minimum value for clusters of tips
+    90
+  distance_fraction: # float please, genetic distance
+    0.045 # (e.g., 1 SNP in 100 bp = 0.01)
+  large_cluster_threshold:
+    5
+  distance_method:
+    ambiguity # options are ambiguity, valid, gap, or abs
+
+HIGHLIGHT_TIP:
+  - B.CY.CY267.JF683808_2009 # Clust124_ in https://github.com/emmahodcroft/cluster-picker-and-cluster-matcher/blob/master/docs/ClusterTutorial/HIV/CPoutput/EU3031/EU3031.treeforCPT_clusterPicks_log.txt
+  - B.CY.CY216.JF683765_2007 # Clust124_ 
+  - B.CY.CY246.JF683791_2009 # Clust124_ 
+  - B.GB.clA_s7_n_y03.EU817066_2003 # Clust124_ 
+  - B.GB.100222.JN100794_2006 # Clust124_ 
+  - B.GB.clA_s19_n_y03.EU817057_2003 # Clust124_ 
+  - B.GB.clA_s5_n_y05.EU817064_2005 # Clust124_ 
+  - B.GB.clA_s3_n_y01.EU817062_2001 # Clust124_ 
+  - B.GB.clA_s8_n_y04.EU817067_2004 # Clust124_ 
+  - B.GB.clA_s4_n_y05.EU817063_2005 # Clust124_ 
+  - B.GB.clA_s11_n_y98.EU817049_1998 # Clust124_ 
+  - B.GB.clA_s12_n_y03.EU817050_2003 # Clust124_ 
+  - B.GB.clA_s22_n_y04.EU817061_2004 # Clust124_ 
+  - B.GB.clA_s10_n_y04.EU817048_2004 # Clust124_ 
+  - B.GB.clA_s21_n_y05.EU817060_2005 # Clust124_ 
+  - B.GB.clA_s18_n_y05.EU817056_2005 # Clust124_ 
+  - B.GB.clA_s1_n_y05.EU817047_2005 # Clust124_ 
+  - B.GB.clA_s13_n_y05.EU817051_2005 # Clust124_ 
+  - B.GB.clA_s9_n_y05.EU817068_2005 # Clust124_ 
+  - B.GB.clA_s17_n_y05.EU817055_2005 # Clust124_ 
+  - B.GB.clA_s6_n_y05.EU817065_2005 # Clust124_ 
+  - B.GB.clA_s14_n_y05.EU817052_2005 # Clust124_ 
+  - B.GB.clA_s16_n_y04.EU817054_2004 # Clust124_ 
+  - B.GB.clA_s2_n_y05.EU817058_2005 # Clust124_ 
+  - B.GB.clA_s20_n_y01.EU817059_2001 # Clust124_ 
+  - B.GB.89578.JN101677_2006 # Clust195_ in https://github.com/emmahodcroft/cluster-picker-and-cluster-matcher/blob/master/docs/ClusterTutorial/HIV/CPoutput/EU3031/EU3031.treeforCPT_clusterPicks_log.txt
+  - B.GB.clB_s30_n_y05.EU817076_2005 # Clust195_
+  - B.GB.67840.JN101388_2000 # Clust195_
+  - B.GB.clB_s34_n_y03.EU817080_2003 # Clust195_
+  - B.GB.89742.JN101197_2004 # Clust195_
+  - B.GB.clB_s32_n_y04.EU817078_2004 # Clust195_
+  - B.GB.67620.JN101107_2004 # Clust195_
+  - B.GB.clB_s27_n_y05.EU817073_2005 # Clust195_
+  - B.GB.clB_s29_n_y04.EU817075_2004 # Clust195_
+  - B.GB.clB_s23_e_y05.EU817069_2005 # Clust195_
+  - B.GB.92595.JN101090_2006 # Clust195_
+  - B.GB.clB_s24_n_y05.EU817070_2005 # Clust195_
+  - B.GB.clB_s31_n_y05.EU817077_2005 # Clust195_
+  - B.GB.clB_s26_n_y02.EU817072_2002 # Clust195_
+  - B.GB.94935.JN100995_2003 # Clust195_
+  - B.GB.clB_s35_n_y01.EU817081_2001 # Clust195_
+  - B.GB.clB_s33_n_y00.EU817079_2000 # Clust195_
+
+TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
+  - ''
+
+
+QUERY_FILES: # also known as QUERY sequences in BLAST terminology
+  - data/hiv_amplicon/EU3031_subset.fas # data sourced from https://github.com/emmahodcroft/cluster-picker-and-cluster-matcher.git
+...

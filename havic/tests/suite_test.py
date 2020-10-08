@@ -8,7 +8,8 @@ Unit Test suite builder.
 import unittest
 from ..tests.havic_test import (HavAmpliconTestCase,
                                HavWgsTestCase, 
-                               MeaslesAmpliconTestCase)
+                               MeaslesAmpliconTestCase,
+                               HivAmpliconTestCase)
 
 
 def suite():
@@ -39,4 +40,12 @@ def suite3():
     """
     suite_ = unittest.TestSuite()
     suite_.addTest(MeaslesAmpliconTestCase("measles_suite_runner"))
+    return suite_
+
+def suite4():
+    """
+    This is the hiv amplicon test suite.
+    """
+    suite_ = unittest.TestSuite()
+    suite_.addTest(HivAmpliconTestCase("hiv_suite_runner"))
     return suite_

@@ -17,6 +17,7 @@ from .. import (__parent_dir__,
                 __havic_yaml__,
                 __havic_wgs_yaml__,
                 __measles_wgs_yaml__,
+                __hiv_amplicon_yaml__,
                 __version__)
 from ..utils.pipeline_runner import Pipeline
 # from ..utils.check_dependency import Dependency
@@ -97,3 +98,15 @@ class MeaslesAmpliconTestCase(unittest.TestCase):
         """
         self.detection_pipeline_measles._run()
         self.assertTrue(len(list(Path(self.detection_pipeline_measles.outdir).glob("*.pdf"))) >= 2)
+
+class HivAmpliconTestCase(unittest.TestCase):
+    def setUp(self):
+        self.hivyaml = yaml.load(open(rf(__parent_dir__, __hiv_amplicon_yaml__)), Loader=yaml.FullLoader)
+        self.detection_pipeline_hiv = Pipeline(self.hivyaml)
+
+    def hiv_suite_runner(self):
+        """
+        Run the pipeline using the hiv amplicon ClusterPicker demo data.
+        """
+        self.detection_pipeline_hiv._run()
+        self.assertTrue(len(list(Path(self.detection_pipeline_hiv.outdir).glob("*.pdf"))) >= 2)
