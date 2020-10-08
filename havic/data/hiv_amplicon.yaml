@@ -17,7 +17,7 @@ SUBJECT_TARGET_REGION: # the target region of the genome to focus on
   # if DEFAULT_SUBJECT is Yes, path will be prefixed to use pre-packaged data
 
 OUTDIR: # the parent directory for the results folders
-  havic_test_results/hiv_amplicon # relative or absolute path to parent result folder
+  havic_test_results/hiv_amplicon_ambiguity # relative or absolute path to parent result folder
 
 TREE_ROOT:
   B.GB.CAM1.D10112_1983 # sequence name to root iqtree on, or midpoint for midpoint root
