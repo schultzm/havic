@@ -7,7 +7,8 @@ Unit Test suite builder.
 
 import unittest
 from ..tests.havic_test import (HavAmpliconTestCase,
-                               HavWgsTestCase, 
+                               HavWgsTestCase,
+                               HavPmcTestCase,
                                MeaslesAmpliconTestCase,
                                HivAmpliconTestCase)
 
@@ -48,4 +49,12 @@ def suite4():
     """
     suite_ = unittest.TestSuite()
     suite_.addTest(HivAmpliconTestCase("hiv_suite_runner"))
+    return suite_
+
+def suite5():
+    """
+    This is the hav amplicon test suite using data from publication PMC7259881.
+    """
+    suite_ = unittest.TestSuite()
+    suite_.addTest(HavPmcTestCase("pmc_suite_runner"))
     return suite_

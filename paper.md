@@ -8,9 +8,15 @@ tags:
   - ruffus
   - mapping
   - consensus
-  - molecular epidemiology
+  - epidemiology
+  - genomic
+  - molecular
+  - amplicon
+  - HAVNET
+  - HAV
   - outbreaks
   - phylogenomics
+
 authors:
   - name: Mark B. Schultz^[Corresponding author]
     orcid: 0000-0002-7689-6531
@@ -28,9 +34,11 @@ authors:
     affiliation: 3
     orcid: NA
   - name: Joy Gregory
+    affiliation: 3
+    orcid: NA
   - name: Danita Hennessy
-
-
+    affiliation: 3
+    orcid: NA
   - name: Linda T. Viberg
     orcid: 0000-0002-4174-1142
     affiliation: 1
@@ -100,6 +108,8 @@ Though the HAVNET protocol is widely adopted, variations to the protocol are com
 `havic` has been developed over a number of years with feedback and feature requests from public health laboratory epidemiolgists during its routine use in HAV outbreak surveillance.  The software aims to provide actionable results to epidemiologists with the least amount of analyst interaction despite inherent imperfections in HAV sequencing data.  As the HAV genome comprises a single segment, being a positive-sense single-stranded ribonucleic acid (RNA) of only 7.5 kilobases (kb) [@RN375], analyses can be completed relatively easily, even on a low-powered desktop computer.  
 
 The software pipeline is written in python3, implementing a number of R packages, with pipeline control managed via Rufus.  Run configurations are defined using a yaml-formatted text file.  Installation is performed using `conda`.  
+
+The yaml file can be ciruclated with each run to allow replication.  Previous analyses are difficult to replicate without this innformation (e.g. italy paper, clusterpicker demo).  Q30 error rate is 1/1000 or 0.1 in 100 bases, translating to a distance of 0.001.  
 
 # Testing and validation
 

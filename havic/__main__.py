@@ -32,6 +32,7 @@ def main():
     subparser_args2 = argparse.ArgumentParser(add_help=False)
     subparser_args2.add_argument("test_suite", choices=["hav_amplicon",
                                           "hav_wgs",
+                                          "hav_pmc",
                                           "measles_wgs",
                                           "hiv_amplicon"],
                                 help="""The test suite to run.""")#,
@@ -66,13 +67,15 @@ def main():
 
     if args.subparser_name == "test":
         import unittest
-        from .tests.suite_test import suite, suite2, suite3, suite4
+        from .tests.suite_test import suite, suite2, suite3, suite4, suite5
 
         runner = unittest.TextTestRunner(verbosity=2)
         if args.test_suite == "hav_amplicon":
             runner.run(suite())
         elif args.test_suite == "hav_wgs":
             runner.run(suite2())
+        elif args.test_suite == "hav_pmc":
+            runner.run(suite5())
         elif args.test_suite == "measles_wgs":
             runner.run(suite3())
         else:

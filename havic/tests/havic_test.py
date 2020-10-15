@@ -16,12 +16,11 @@ import sys
 from .. import (__parent_dir__,
                 __havic_yaml__,
                 __havic_wgs_yaml__,
+                __havic_PMC7259881__,
                 __measles_wgs_yaml__,
                 __hiv_amplicon_yaml__,
                 __version__)
 from ..utils.pipeline_runner import Pipeline
-# from ..utils.check_dependency import Dependency
-from ..data.dependencies import SOFTWAREZ, R_LIBS
 
 
 class HavAmpliconTestCase(unittest.TestCase):
@@ -32,21 +31,6 @@ class HavAmpliconTestCase(unittest.TestCase):
     def yamler(self):
         """Check yaml loader."""
         self.assertEqual(self.yaml["SUBJECT_FILE"], "data/NC_001489.fa")
-
-    # def dependency_checker(self):
-    #     """Check software dependencies."""
-    #     df_list = []
-    #     for software in SOFTWAREZ:
-    #         df_list.append(Dependency(software, "software").check())
-    #     for rlib in R_LIBS:
-    #         df_list.append(Dependency(rlib, "rmodule").check())
-    #     df = pd.concat(df_list)
-    #     df.columns = ["type", "status"]
-    #     print("\n", df, "\n")
-    #     status_set = df.status.unique().tolist()
-    #     if "not found" in status_set:
-    #         sys.exit("Fix software dependencies.  Exiting.")
-    #     self.assertFalse("not found" in status_set)
 
     def versioner(self):
         """
@@ -86,7 +70,6 @@ class HavWgsTestCase(unittest.TestCase):
         self.detection_pipeline_wgs._run()
         self.assertTrue(len(list(Path(self.detection_pipeline_wgs.outdir).glob("*.pdf"))) >= 2)
 
-
 class MeaslesAmpliconTestCase(unittest.TestCase):
     def setUp(self):
         self.measlesyaml = yaml.load(open(rf(__parent_dir__, __measles_wgs_yaml__)), Loader=yaml.FullLoader)
@@ -110,3 +93,15 @@ class HivAmpliconTestCase(unittest.TestCase):
         """
         self.detection_pipeline_hiv._run()
         self.assertTrue(len(list(Path(self.detection_pipeline_hiv.outdir).glob("*.pdf"))) >= 2)
+
+class HavPmcTestCase(unittest.TestCase):
+    def setUp(self):
+        self.PMC7259881yaml = yaml.load(open(rf(__parent_dir__, __havic_PMC7259881__)), Loader=yaml.FullLoader)
+        self.detection_pipeline_PMC7259881 = Pipeline(self.PMC7259881yaml)
+
+    def pmc_suite_runner(self):
+        """
+        Run the pipeline using the data from publication PMC7259881.
+        """
+        self.detection_pipeline_PMC7259881._run()
+        self.assertTrue(len(list(Path(self.detection_pipeline_PMC7259881.outdir).glob("*.pdf"))) >= 2)

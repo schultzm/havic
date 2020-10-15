@@ -1,0 +1,131 @@
+---
+FORCE_OVERWRITE_AND_RE_RUN:
+  Yes # Yes for full re-run, No to start from an interrupted run,
+
+DEFAULT_SUBJECT:
+  Yes # Yes if using havic pre-packaged SUBJECT (i.e., "reference") sequence and region test data, No otherwise
+
+DEFAULT_QUERIES:
+  Yes # Yes if using havic pre-packaged QUERY test data, No otherwise
+
+SUBJECT_FILE: # the "SUBJECT" sequence in BLAST terms, i.e., reference genome
+  data/NC_001489.fa # relative or absolute paths to fasta file
+  # if DEFAULT_SUBJECT is Yes, path will be prefixed to use pre-packaged data
+
+SUBJECT_TARGET_REGION: # the target region of the genome to focus on
+  data/havnet_amplicon.fa # in fasta format, relative or absolute paths okay
+  # if DEFAULT_SUBJECT is Yes, path will be prefixed to use pre-packaged data
+
+OUTDIR: # the parent directory for the results folders
+  havic_test_results/hav_PMC7259881 # relative or absolute path to parent result folder
+
+TREE_ROOT:
+  midpoint # sequence name to root iqtree on, or midpoint for midpoint root
+
+RUN_PREFIX:
+  HAV_amplicon_PMC7259881_
+
+PLOTS:
+  Yes # Yes to make plots (slow for large runs), No otherwise.
+
+MAPPER_SETTINGS:
+  executable:
+    minimap2 # https://github.com/lh3/minimap2
+  other:
+    -c --cs --secondary=no -Y -x asm20
+  k_mer: # select an odd number, between 3 and 27 inclusive
+    -k 5 # 5 has been good for the HAV amplicon seqs, adjust sensibly
+
+IQTREE2_SETTINGS: # http://www.iqtree.org/doc/iqtree-doc.pdf
+  executable:
+    iqtree # command to call iqtree2
+  threads: # threads
+    '-T AUTO -ntmax 24' # automatically determine the best threading parameter
+  model_finder: # model-finder
+    '-m MFP' # extended model find with FreeRate heterogeneity + tree inference
+  state_frequency:
+    '+FO' # Optimized sgate frequencies by maximum-likelihood
+  ultrafast_bootstrap:
+    '--ufboot 1000' # use of aLRT will cause ClusterPicker to fall over
+  protect_violations: #to protect against severe model violations
+    '--bnni'
+  redo: # recompute everything in iqtree run
+    '--redo' # leave empty string ('') if not wanting to redo, else '--redo'
+
+CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
+  executable:
+    ClusterPicker
+  coarse_subtree_support: # divide tree into subtrees at/above this threshold
+    70
+  fine_cluster_support: # branch support minimum value for clusters of tips
+    80
+  distance_fraction: # float please, genetic distance
+    0.01 # (e.g., 1 SNP in 100 bp = 0.01)
+  large_cluster_threshold:
+    15
+  distance_method:
+    valid # options are ambiguity, valid, gap, or abs
+
+HIGHLIGHT_TIP:
+  - 'Pt_660_2017' # RIVM-HAV16-090
+  - 'Pt_783_2018' # RIVM-HAV16-090
+  - 'Pt_734_2017' # RIVM-HAV16-090
+  - 'Pt_744_2017' # RIVM-HAV16-090
+  - 'Pt_777_2018' # RIVM-HAV16-090
+  - 'Pt_664_2017' # RIVM-HAV16-090
+
+  - 'Pt_668_2017' # VRD_521_2016
+  - 'Pt_63_2016' # VRD_521_2016
+  - 'Pt_723_2017' # VRD_521_2016
+  - 'Pt_230_2017' # VRD_521_2016
+  - 'Pt_725_2017' # VRD_521_2016
+  - 'Pt_85_2016' # VRD_521_2016
+  - 'Pt_722_2017' # VRD_521_2016
+  - 'Pt_165_2017' # VRD_521_2016
+  - 'Pt_396_2017' # VRD_521_2016
+
+
+TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
+- Pt_14_2013
+- Pt_147_2016
+- Pt_165_2017
+- Pt_21_2014
+- Pt_37_2015
+- Pt_230_2017
+- Pt_232_2017
+- Pt_27_2015
+- Pt_31_2015
+- Pt_36_2015
+- Pt_37_2015
+- Pt_39_2015
+- Pt_396_2017
+- Pt_42_2016
+- Pt_43_2016
+- Pt_54_2016
+- Pt_59_2016
+- Pt_63_2016
+- Pt_61_2016
+- Pt_660_2017
+- Pt_664_2017
+- Pt_668_2017
+- Pt_713_2017
+- Pt_722_2017
+- Pt_723_2017
+- Pt_725_2017
+- Pt_734_2017
+- Pt_744_2017
+- Pt_752_2018
+- Pt_754_2018
+- Pt_777_2018
+- Pt_779_2018
+- Pt_783_2018
+- Pt_803_2018
+- Pt_85_2016
+- Pt_9_2013
+- Pt_90_2016
+- Pt_97_2016
+- Pt_99_2016
+
+QUERY_FILES: # also known as QUERY sequences in BLAST terminology
+  - data/hav_amplicon_PMC7259881/PMC7259881_IB_og.fa
+...
