@@ -8,9 +8,10 @@ Input:
     MultipleSeqAlignment
 """
 
+import sys
+from re import search#, finditer
 from Bio.Align import MultipleSeqAlignment
 from Bio.Seq import MutableSeq
-import sys
 
 
 class Trimmed_alignment(MultipleSeqAlignment):
@@ -24,47 +25,42 @@ class Trimmed_alignment(MultipleSeqAlignment):
         self.alignment = alignment
         self.trimguide = trimguide # trim to this reference guide sequence
         self.gap_char = gap_char
-        self.boundary = None
+        self.boundary = [0, self.alignment.get_alignment_length()]
         self.trim_seqs = trim_seqs
 
     def get_refseq_boundary(self):
         """
-        Get the coords of the target region
+        Get the boundary of the anchor position of the guide sequence.
         """
-        start_pos = None
-        end_pos = None
         for seq in self.alignment:
-            if seq.id == self.trimguide:
-                from re import finditer
-                for match in finditer(f"{self.gap_char}[A-Z]",
-                                      str(seq.seq).upper()):
-                    start_pos = (match.span())
-                for match in finditer(f"{self.gap_char}[A-Z]",
-                                      str(seq.seq).upper()[::-1]):
-                    end_pos = (len(str(seq.seq).upper()) - match.end(),
-                               -match.start())
-                    # end_pos = (match.span(), match.group())
-                self.boundary = [start_pos[0] + 1, end_pos[0] + 1]
-                break
+            if seq.id == self.trimguide: # this is the id of seq used to anchor
+                start_pos = search(f"^{self.gap_char}+", str(seq.seq))
+                if start_pos:
+                    start_pos = start_pos.span()[1]
+                end_pos = search(f"{self.gap_char}+$", str(seq.seq))
+                if end_pos:
+                    self.boundary[-1] = end_pos.span()[0]
 
     def trim_seqs_to_ref(self):
         """
         Trim the requested sequences to the reference length in the alignment.
         """
         temp_aln = MultipleSeqAlignment([])
+        # if self.trim_seqs:
         for seq in self.alignment:
-            if seq.id in self.trim_seqs:
+            if seq.id in self.trim_seqs and self.trim_seqs:
                 sequence = MutableSeq(str(seq.seq))
-                # print(help(sequence))
-                sequence[0:self.boundary[0]] = self.gap_char * (self.boundary[0] - 0)
-                # print(len(sequence))
-                # print(self.boundary)
-                sequence[self.boundary[1]:] = self.gap_char * (len(sequence) - self.boundary[1])
+                if self.boundary[0] > 0:
+                    sequence[0:self.boundary[0]] = self.gap_char * (self.boundary[0] - 0)
+                if self.boundary[1] < len(sequence):
+                    sequence[self.boundary[1]:] = self.gap_char * (len(sequence) - self.boundary[1])
                 seq.seq = sequence
-            if set(seq.seq) == set({self.gap_char}):
-                print(f"{seq.id} contains only gaps after trimming. "
-                      f"Removing {seq.id} from alignment.",
-                      file=sys.stderr)
+                if set(seq.seq) == set({self.gap_char}):
+                    print(f"{seq.id} contains only gaps after trimming. "
+                        f"Removing {seq.id} from alignment.",
+                        file=sys.stderr)
+                else:
+                    temp_aln.append(seq)
             else:
                 temp_aln.append(seq)
         self.alignment = temp_aln

@@ -32,7 +32,7 @@ MAPPER_SETTINGS:
   executable:
     minimap2 # https://github.com/lh3/minimap2
   other:
-    -c --cs -x asm20 --secondary=no -Y
+    -c --cs --secondary=no -Y
   k_mer: # select an odd number, between 3 and 27 inclusive
     -k 5 # 5 has been good for the HAV amplicon seqs, adjust sensibly
 
@@ -67,16 +67,16 @@ CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
     valid # options are ambiguity, valid, gap, or abs
 
 HIGHLIGHT_TIP:
-  - CmvAXJTIqH # Specify tip name to highlight in final plot
-  - CCHkiFhcxG # Specify tip name to highlight in final plot
-  - PAvYXhYkLM # Specify tip name to highlight in final plot
+  - 'CmvAXJTIqH' # Specify tip name to highlight in final plot
+  - 'CCHkiFhcxG' # Specify tip name to highlight in final plot
+  - 'PAvYXhYkLM' # Specify tip name to highlight in final plot
 
 TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
-  - AY644337_55443_seq_1 # these are sequences in the QUERY_FILES
-  - RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty
-  - nDNLdjtgha#HashInSeqName
+  - 'AY644337_55443_seq_1'
+  - 'RIVM_HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty'
+  - 'nDNLdjtgha#HashInSeqName'
   - '' # give it nothing
-  - xyxyx # give it a non-name
+  - 'xyxyx' # give it a non-name
 
 QUERY_FILES: # also known as QUERY sequences in BLAST terminology
   - data/example1.fa # relative or absolute paths to fasta files

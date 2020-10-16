@@ -13,9 +13,8 @@ jobs:
           conda init bash
           source ~/.bashrc
           conda activate havic_env
-          conda list
-          havic test hav_amplicon
-          havic test hav_wgs
-          havic test hav_pmc
-          havic test measles_wgs
-          havic test hiv_amplicon
+          arr=(hav_amplicon hav_wgs hav_pmc measles_wgs hiv_amplicon)
+          for i in ${arr[@]}
+            do
+              havic test ${i}
+            done

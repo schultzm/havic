@@ -36,11 +36,11 @@ setup(
     classifiers=["Development Status :: 3 - Alpha",
                  "License :: OSI Approved :: GNU Affero General " +
                  "Public License v3 or later (AGPLv3+)",
-                 "Programming Language :: Python :: 3.8",
+                #  "Programming Language :: Python :: 3.9.0",
                  "Topic :: Scientific/Engineering :: Bio-Informatics",
                  "Topic :: Scientific/Engineering :: Medical Science Apps.",
                  "Intended Audience :: Science/Research"],
-    keywords=["Hepatitis",
+    keywords=["Hepatitis A Virus",
               "transmission",
               "cluster"],
     download_url=havic.__install__,
@@ -58,6 +58,6 @@ setup(
                       "ruffus>=2.6.2",
                       "biopython>=1.78",
                       "pandas>=1.0.5",
-                      "PyYAML>=5.3.1",
-                      "rpy2>=3.3.5"],
+                      "PyYAML>=5.3.1"],
+                    #   "rpy2>=3.3.5"],
 )
