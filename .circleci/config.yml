@@ -10,7 +10,11 @@ jobs:
       - checkout
       - run: |
           conda update -n base conda
-          conda env create --force --file environment.yml
+          conda install mamba
+          conda activate base
+          mamba env create --force --file environment.yml
+          conda deactivate
+          conda activate havic_env
           conda init bash
           source ~/.bashrc
           conda activate havic_env
