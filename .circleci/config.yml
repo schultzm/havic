@@ -9,7 +9,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          conda env create -f environment.yml
+          conda env create --force --file environment.yml
           conda init bash
           source ~/.bashrc
           conda activate havic_env
