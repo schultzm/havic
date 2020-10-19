@@ -9,6 +9,7 @@ jobs:
     steps:
       - checkout
       - run: |
+          conda update -n base conda
           conda env create --force --file environment.yml
           conda init bash
           source ~/.bashrc
