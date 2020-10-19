@@ -16,5 +16,6 @@ dependencies:
   - pre-commit
   - flake8
   - samtools
+  - pip
   - pip:
     - -e . # developer mode install of havic
