@@ -5,7 +5,7 @@ hav_wgs_test_results/*
 hav_wgs_test_results
 .ruffus_history.sqlite
 pipeline_flowchart.drawio
-
+condaenv*
 # R dregs
 .RData
 **/.RData
