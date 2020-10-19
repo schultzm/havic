@@ -36,7 +36,7 @@ class Trimmed_alignment(MultipleSeqAlignment):
             if seq.id == self.trimguide: # this is the id of seq used to anchor
                 start_pos = search(f"^{self.gap_char}+", str(seq.seq))
                 if start_pos:
-                    start_pos = start_pos.span()[1]
+                    self.boundary[0] = start_pos.span()[1]
                 end_pos = search(f"{self.gap_char}+$", str(seq.seq))
                 if end_pos:
                     self.boundary[-1] = end_pos.span()[0]
@@ -46,7 +46,6 @@ class Trimmed_alignment(MultipleSeqAlignment):
         Trim the requested sequences to the reference length in the alignment.
         """
         temp_aln = MultipleSeqAlignment([])
-        # if self.trim_seqs:
         for seq in self.alignment:
             if seq.id in self.trim_seqs and self.trim_seqs:
                 sequence = MutableSeq(str(seq.seq))
