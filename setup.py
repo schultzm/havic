@@ -36,7 +36,7 @@ setup(
     classifiers=["Development Status :: 3 - Alpha",
                  "License :: OSI Approved :: GNU Affero General " +
                  "Public License v3 or later (AGPLv3+)",
-                 "Programming Language :: Python :: 3.8",
+                 "Programming Language :: Python :: 3.9",
                  "Topic :: Scientific/Engineering :: Bio-Informatics",
                  "Topic :: Scientific/Engineering :: Medical Science Apps.",
                  "Intended Audience :: Science/Research"],
@@ -54,10 +54,10 @@ setup(
                        "*.png",
                        "*.svg",
                        "*.tsv"]},
-    install_requires=["ete3==3.1.1",
-                      "ruffus==2.6.2",
+    install_requires=["ete3==3.1.2",
+                      "ruffus==2.8.4",
                       "biopython==1.78",
-                      "pandas==1.0.5",
+                      "pandas==1.1.3",
                       "PyYAML==5.3.1"],
                     #   "rpy2>=3.3.5"],
 )
