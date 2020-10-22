@@ -11,7 +11,6 @@ import unittest
 from pkg_resources import resource_filename as rf
 from pathlib import Path
 import yaml
-# import pandas as pd
 import sys
 from .. import (__parent_dir__,
                 __havic_yaml__,
