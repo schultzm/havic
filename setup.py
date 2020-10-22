@@ -54,15 +54,16 @@ setup(
                        "*.png",
                        "*.svg",
                        "*.tsv"]},
-    install_requires=["numpy==1.19.2",
-                      "python-dateutil==2.8.1",
-                      "certifi==2020.6.20",
-                      "pytz==2020.1",
-                      "six==1.15.0",
+    install_requires=[
+        # "numpy==1.19.2",
+                    #   "python-dateutil==2.8.1",
+                    #   "certifi==2020.6.20",
+                    #   "pytz==2020.1",
+                    #   "six==1.15.0",
                       "ete3==3.1.2",
                       "ruffus==2.8.4",
                       "biopython==1.78",
-                      "pandas==1.1.3",
+                    #   "pandas==1.1.3",
                       "PyYAML==5.3.1"
                       ],
 )

@@ -12,7 +12,7 @@ import re
 import sys
 import os
 from pathlib import Path
-import pandas as pd
+# import pandas as pd
 import shutil
 from subprocess import Popen, PIPE
 import shlex
@@ -141,12 +141,12 @@ class Pipeline:
                 self.outdir,
                 f"{repstr}map.stack.trimmed.fa.rooted_clusterPicks_log.txt",
             ),
-            "clusters_assigned": make_path(
-                self.outdir,
-                f"{repstr}map.stack.trimmed"
-                f".fa.rooted_clusterPicks_summarised"
-                f".txt",
-            ),
+            # "clusters_assigned": make_path(
+            #     self.outdir,
+            #     f"{repstr}map.stack.trimmed"
+            #     f".fa.rooted_clusterPicks_summarised"
+            #     f".txt",
+            # ),
             "treeplotr": make_path(
                 self.outdir, f"{repstr}map.stack.trimmed.fa.Rplot.R"
             ),
@@ -325,25 +325,25 @@ class Pipeline:
         """
         os.system(self.clusterpick_cmd)
 
-    def _summarise_cluster_assignments(self):
-        cmd = f"grep ClusterNumber {self.outfiles['cluster_assignments']} -n"
-        proc = Popen(shlex.split(cmd), stdout=PIPE)
-        line_number = int(proc.communicate()[0].decode("UTF-8").split(":")[0])
-        df = pd.read_table(
-            self.outfiles["cluster_assignments"], skiprows=line_number - 1, header=0
-        )
-        with open(self.outfiles["clusters_assigned"], "w") as output_handle:
-            output_handle.write("Isolate\tClusterNumber\n")
-            for i in df.index.values:
-                if isinstance(df.loc[i, "TipNames"], str):
-                    tips = [
-                        j.replace("[", "").replace("]", "").strip()
-                        for j in df.loc[i, "TipNames"].split(",")
-                    ]
-                    for tip in tips:
-                        output_handle.write(
-                            f"{tip}\tCluster_{df.loc[i, 'ClusterNumber']}\n"
-                        )
+    # def _summarise_cluster_assignments(self):
+    #     cmd = f"grep ClusterNumber {self.outfiles['cluster_assignments']} -n"
+    #     proc = Popen(shlex.split(cmd), stdout=PIPE)
+    #     line_number = int(proc.communicate()[0].decode("UTF-8").split(":")[0])
+    #     df = pd.read_table(
+    #         self.outfiles["cluster_assignments"], skiprows=line_number - 1, header=0
+    #     )
+    #     with open(self.outfiles["clusters_assigned"], "w") as output_handle:
+    #         output_handle.write("Isolate\tClusterNumber\n")
+    #         for i in df.index.values:
+    #             if isinstance(df.loc[i, "TipNames"], str):
+    #                 tips = [
+    #                     j.replace("[", "").replace("]", "").strip()
+    #                     for j in df.loc[i, "TipNames"].split(",")
+    #                 ]
+    #                 for tip in tips:
+    #                     output_handle.write(
+    #                         f"{tip}\tCluster_{df.loc[i, 'ClusterNumber']}\n"
+    #                     )
 
     def _plot_results(self):
         """
@@ -454,10 +454,10 @@ class Pipeline:
         def clusterpick_from_rooted_iqtree_and_cleaned_fasta(infile, outfile):
             self._clusterpick()
 
-        @follows(clusterpick_from_rooted_iqtree_and_cleaned_fasta)
-        @files(self.outfiles["cluster_assignments"], self.outfiles["clusters_assigned"])
-        def summarise_cluster_assignments(infile, outfile):
-            self._summarise_cluster_assignments()
+        # @follows(clusterpick_from_rooted_iqtree_and_cleaned_fasta)
+        # @files(self.outfiles["cluster_assignments"], self.outfiles["clusters_assigned"])
+        # def summarise_cluster_assignments(infile, outfile):
+        #     self._summarise_cluster_assignments()
 
         @follows(clusterpick_from_rooted_iqtree_and_cleaned_fasta)
         @files(
