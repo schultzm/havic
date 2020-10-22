@@ -7,7 +7,7 @@ git pull
 export PATH=${PATH}:/bin:/usr/bin:/sbin:/usr/sbin
 conda clean --all
 conda update conda
-conda install mamba
+conda install -c conda-forge mamba
 mamba create -n havic_env python==3.9.0 r-base==4.0.3
 conda activate havic_env
 mamba env update --file environment.yml --prune
