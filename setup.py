@@ -54,8 +54,6 @@ setup(
                        "*.png",
                        "*.svg",
                        "*.tsv"]},
-    install_requires=["ete3==3.1.2",
-                      "ruffus==2.8.4",
-                      "biopython==1.78",
-                      "PyYAML==5.3.1"],
+    install_requires=[#see environment.yml for python deps file
+    ],
 )
