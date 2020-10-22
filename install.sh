@@ -1,31 +1,19 @@
-# install miniconda - see https://docs.conda.io/en/latest/miniconda.html
-# if there are troubles here, don't mix brew and conda PATH - tseemann
-# conda init
-# source ~/.bashrc
-# conda env create -f environment.yml
-# conda activate havic_env
-# echo "install.packages('Rcpp', repos='https://cloud.r-project.org')
-# install.packages('magick', repos='https://cloud.r-project.org')
-# install.packages('phytools',repos='https://cloud.r-project.org', type='source')
-# install.packages('pheatmap', repos='https://cloud.r-project.org')
-# install.packages('BiocManager', repos='https://cloud.r-project.org')
-# install.packages('colorspace', repos='https://cloud.r-project.org')
-# BiocManager::install('GenomicAlignments')
-# BiocManager::install('Biostrings')
-# BiocManager::install('Rsamtools')
-# BiocManager::install('ggtree')
-# BiocManager::install('tidyverse')" | R --no-save
-# havic test hav_amplicon
-# havic test hav_wgs
-# havic test measles_wgs
+#!/bin/bash
 
-conda env create -f environment.yml
+# install miniconda - see https://docs.conda.io/en/latest/miniconda.html
 conda init bash
 source ~/.bashrc
+git pull
+export PATH=${PATH}:/bin:/usr/bin:/sbin:/usr/sbin
+conda clean --all
+conda update conda
+conda install mamba
+mamba create -n havic_env python==3.9.0 r-base==4.0.3
 conda activate havic_env
-conda list
-havic test hav_amplicon
-havic test hav_wgs
-havic test measles_wgs
-havic test hiv_amplicon
-
+mamba env update --file environment.yml --prune
+havic version
+arr=(hav_amplicon hav_wgs hav_pmc measles_wgs hiv_amplicon)
+for i in ${arr[@]}
+  do
+    echo havic test ${i}
+  done
