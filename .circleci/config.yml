@@ -2,7 +2,6 @@ version: 2.1
 
 jobs:
   build:
-    resource_class: large
     docker:
       - image: continuumio/miniconda3
 
