@@ -5,14 +5,12 @@ channels:
   - nodefaults
 
 dependencies:
-  - python==3.9.0
   - minimap2==2.17
   - graphviz==2.42.3
   - iqtree==2.0.3
   - imagemagick==7.0.10_28
   - clusterpicker==1.2.5
   - samtools==1.11
-  - r-base
   - r-rcpp
   - r-magick
   - r-phytools
