@@ -5,7 +5,7 @@ conda init bash
 source ~/.bashrc
 export PATH=${PATH}:/bin:/usr/bin:/sbin:/usr/sbin
 conda update conda
-conda create -f environment.yml
+conda env create -f environment.yml
 # conda create -n havic_env -c conda-forge python==3.9.0 r-base==4.0.3
 conda activate havic_env
 # conda env update --file environment.yml --prune
