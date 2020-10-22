@@ -3,7 +3,6 @@
 # install miniconda - see https://docs.conda.io/en/latest/miniconda.html
 conda init bash
 source ~/.bashrc
-git pull
 export PATH=${PATH}:/bin:/usr/bin:/sbin:/usr/sbin
 conda clean --all
 conda update conda
