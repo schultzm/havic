@@ -354,6 +354,18 @@ To include the subject sequence in the final alignment, just add the path to the
 
 As `havic` implements ML phylogenetic inference (via `IQ-Tree2`), there is a chance of arriving on a local optimum; hence, **the analysis should be run multiple times (>3) to more completely explore tree space**.  Epidemiological conclusions should be based on the consensus of multiple runs and patient metadata (e.g., contact tracing, travel history).  
 
+## Limitations
+
+Insertions in alleles relative to the reference will be deleted in the alternative allele during output to alignment.  For example, if the `REF` has `ACCCCCCCCT` and the `ALT` has `ACCCCCCCCCCT`, the final alignment will be:
+
+    >REF
+    ACCCCCCCCT
+    >ALT
+    ACCCCCCCCT
+
+Note, the deletion above in `ALT` of `CC`.  4644M1I8M1D3M7I287M1D10760M
+
+
 ## Release history
 
 Pre-release.  

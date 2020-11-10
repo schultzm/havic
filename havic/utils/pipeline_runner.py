@@ -167,12 +167,7 @@ class Pipeline:
         self.iqtree_cmd = str(
             f"{yaml_in['IQTREE2_SETTINGS']['executable']} "
             f"-s {self.outfiles['fasta_from_bam_trimmed']} "
-            f"{yaml_in['IQTREE2_SETTINGS']['threads']} "
-            f"{yaml_in['IQTREE2_SETTINGS']['model_finder']}"
-            f"{yaml_in['IQTREE2_SETTINGS']['state_frequency']} "
-            f"{yaml_in['IQTREE2_SETTINGS']['ultrafast_bootstrap']} "
-            f"{yaml_in['IQTREE2_SETTINGS']['protect_violations']} "
-            f"{yaml_in['IQTREE2_SETTINGS']['redo']}"
+            f"{yaml_in['IQTREE2_SETTINGS']['other']}"
         )
         self.target_region = SeqIO.read(
             open(absolute_path(yaml_in["SUBJECT_TARGET_REGION"], yaml_in["DEFAULT_SUBJECT"]), "r"), "fasta"
