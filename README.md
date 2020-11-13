@@ -1,3 +1,10 @@
+---
+title: havic user manual
+date: 21 September 2020
+bibliography: paper.bib
+csl: harvard-the-university-of-melbourne.csl
+---
+
 # havic
 
 [![Github All Releases](https://img.shields.io/github/downloads/schultzm/havic/total.svg)]()  
@@ -79,136 +86,128 @@ The results in this example were obtained using the command `havic test`.  Let's
 
     ---
     FORCE_OVERWRITE_AND_RE_RUN:
-    Yes # Yes for full re-run, No to start from an interrupted run,
+      Yes # Yes for full re-run, No to start from an interrupted run,
 
     DEFAULT_REFS:
-    Yes # Yes if using havic pre-packaged SUBJECT test data, No otherwise
+      Yes # Yes if using havic pre-packaged SUBJECT test data, No otherwise
 
     DEFAULT_QUERIES:
-    Yes # Yes if using havic pre-packaged QUERY test data, No otherwise
+      Yes # Yes if using havic pre-packaged QUERY test data, No otherwise
 
     SUBJECT_FILE: # the "SUBJECT" sequence in BLAST terms, i.e., reference genome
-    data/NC_001489.fa # relative or absolute paths to fasta file
-    # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
+      data/NC_001489.fa # relative or absolute paths to fasta file
+      # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
 
     SUBJECT_TARGET_REGION: # the target region of the genome to focus on
-    data/havnet_amplicon.fa # in fasta format, relative or absolute paths okay
-    # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
+      data/havnet_amplicon.fa # in fasta format, relative or absolute paths okay
+      # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
 
     OUTDIR: # the parent directory for the results folders
-    havic_test_results/amplicon # relative or absolute path to parent result folder
+      havic_test_results/amplicon # relative or absolute path to parent result folder
 
     TREE_ROOT:
-    midpoint # sequence name to root iqtree on, or midpoint for midpoint root
+      midpoint # sequence name to root iqtree on, or midpoint for midpoint root
 
     RUN_PREFIX:
-    HAV_amplicon_
+      HAV_amplicon_
 
     PLOTS:
-    Yes # Yes to make plots (slow for large runs), No otherwise.
+      Yes # Yes to make plots (slow for large runs), No otherwise.
 
     MAPPER_SETTINGS:
-    executable:
+      executable:
         minimap2 # https://github.com/lh3/minimap2
-    other:
+      other:
         --secondary=no -Y
-    k_mer: # select an odd number, between 3 and 27 inclusive
+      k_mer: # select an odd number, between 3 and 27 inclusive
         -k 5 # 5 has been good for the HAV amplicon seqs, adjust sensibly
 
     IQTREE2_SETTINGS: # http://www.iqtree.org/doc/iqtree-doc.pdf
-    executable:
+      executable:
         iqtree # command to call iqtree2
-    threads: # threads
-        '-T AUTO -ntmax 24' # automatically determine the best threading parameter
-    model_finder: # model-finder
-        '-m MFP' # extended model find with FreeRate heterogeneity + tree inference
-    state_frequency:
-        '+FO' # Optimized sgate frequencies by maximum-likelihood
-    ultrafast_bootstrap:
-        '--ufboot 1000' # use of aLRT will cause ClusterPicker to fall over
-    protect_violations: #to protect against severe model violations
-        '--bnni'
-    redo: # recompute everything in iqtree run
-        '--redo' # leave empty string ('') if not wanting to redo, else '--redo'
+      other:
+        '-T AUTO -m MFP+FO --ufboot 1000 -pers 0.2 -nstop 500'
 
     CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
-    executable:
+      executable:
         ClusterPicker
-    coarse_subtree_support: # divide tree into subtrees at/above this threshold
+      coarse_subtree_support: # divide tree into subtrees at/above this threshold
         70
-    fine_cluster_support: # branch support minimum value for clusters of tips
+      fine_cluster_support: # branch support minimum value for clusters of tips
         95
-    distance_fraction: # float please, genetic distance
+      distance_fraction: # float please, genetic distance
         0.01 # (e.g., 1 SNP in 100 bp = 0.01)
-    large_cluster_threshold:
+      large_cluster_threshold:
         15
-    distance_method:
+      distance_method:
         valid # options are ambiguity, valid, gap, or abs
 
     HIGHLIGHT_TIP:
-    - CmvAXJTIqH # Specify tip name to highlight in final plot
-    - CCHkiFhcxG # Specify tip name to highlight in final plot
-    - PAvYXhYkLM # Specify tip name to highlight in final plot
+      - CmvAXJTIqH # Specify tip name to highlight in final plot
+      - CCHkiFhcxG # Specify tip name to highlight in final plot
+      - PAvYXhYkLM # Specify tip name to highlight in final plot
 
     TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
-    - AY644337_55443_seq_1 # these are sequences in the QUERY_FILES
-    - RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty
-    - nDNLdjtgha#HashInSeqName
-    - '' # give it nothing
-    - xyzyx # give it a non-name
+      - AY644337_55443_seq_1 # these are sequences in the QUERY_FILES
+      - RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty
+      - nDNLdjtgha#HashInSeqName
+      - '' # give it nothing
+      - xyzyx # give it a non-name
 
     QUERY_FILES:
-    - data/example1.fa # relative or absolute paths to fasta files
-    - data/example2.fa
-    - xyz # to test a dud file name
-    - '' # to test an empty file name (which would return a folder, not file)
+      - data/example1.fa # relative or absolute paths to fasta files
+      - data/example2.fa
+      - xyz # to test a dud file name
+      - '' # to test an empty file name (which would return a folder, not file)
     ...
 
 Before starting a run, `cd` to a working directory (preferably not inside the git cloned folder).  Either copy the above `yaml` to file, or use `wget https://raw.githubusercontent.com/schultzm/havic/master/havic/data/hav_amplicon.yaml`.  For more information on the `yaml` standard, refer to [https://yaml.org/](https://yaml.org/).  
 
 Lets go through the `yaml` step-by-step.
 
-##### Opening and closing fields, nesting
+##### Opening and closing fields, nesting, special characters
 
-`yaml` code blocks open and close with `---` and `...`, respectively.  Ensure your file includes these lines.  Indents are two spaces to increase a nesting level.  
+- `yaml` code blocks open and close with `---` and `...`, respectively.  Ensure your file includes these lines.  
+- Indents are two spaces, use a carriage return followed by an increas of two spaces to increase a nesting level.  
+- Special characters or numbers in tip names or folders can be correctly parsed by enclosing values in single-quotes to allow string interpretation of values.
 
 ##### Force overwrite and re-run
 
     FORCE_OVERWRITE_AND_RE_RUN:
-    Yes
+      Yes
 
 `havic` manages tasks via [`ruffus`](https://code.google.com/archive/p/ruffus/), and out-of-date stages of the pipeline will be re-run as required.  To start a new run or force overwrite files in the OUTDIR, set `FORCE_OVERWRITE_AND_RE_RUN` to `Yes`.  Otherwise to start off from the last point, set to `No`.  
 
 ##### Default Subject and Queries
 
     DEFAULT_SUBJECT:
-    Yes # Yes if using havic pre-packaged SUBJECT (i.e., 'reference') sequence and region test data, No otherwise
+      Yes # Yes if using havic pre-packaged SUBJECT (i.e., 'reference') sequence and region test data, No otherwise
 
     DEFAULT_QUERIES:
-    Yes # Yes if using havic pre-packaged QUERY test data, No otherwise
+      Yes # Yes if using havic pre-packaged QUERY test data, No otherwise
 
 If `DEFAULT_SUBJECT` is set to `Yes` `havic` will prefix the filepaths in `SUBJECT_FILE` `SUBJECT_TARGET_REGION` with the `havic` install path (using `pkg_resources.resource_filename`) for the pre-packaged data.  The same logic applies for `DEFAULT_QUERY`.  To specify a custom path to `SUBJECT_FILE` and `SUBJECT_TARGET_REGION` set `DEFAULT_SUBJECT` to `No`.  To specify custom `QUERY_FILES`, set `DEFAULT_QUERY` to `No`.  
 
 ##### Subject/Reference sequence
 
     SUBJECT_FILE: # the "SUBJECT" sequence in BLAST terms, i.e., reference genome
-    data/NC_001489.fa # relative or absolute paths to fasta file
-    # if DEFAULT_SUBJECT is Yes, path will be prefixed to use pre-packaged data
+      data/NC_001489.fa # relative or absolute paths to fasta file
+      # if DEFAULT_SUBJECT is Yes, path will be prefixed to use pre-packaged data
 
 `havic` will use this fasta sequence as the subject/reference sequence.  If a different reference is required, change the path value.  The subject sequence may only be a single consensus sequence.
 
 ##### Subject target region
 
     SUBJECT_TARGET_REGION: # the target region of the genome to focus on
-    data/havnet_amplicon.fa # in fasta format, relative or absolute paths okay
-    # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
+      data/havnet_amplicon.fa # in fasta format, relative or absolute paths okay
+      # if DEFAULT_REFS is Yes, path will be prefixed to use pre-packaged data
 
 This regions will guide trimming of the alignment.  In this example, the VP1/P2A region is the target region.  Sample names listed in TRIM_SEQS will be trimmed to match the boundaries of this region.  A sequence is used here instead of a bed coordinates file because the exact boundaries of the target region in the final alignment are not always obvious.  After mapping this region to the subject sequence, the boundaries become obvious.  Automatic delineation of this region alleviates the need for the analyst to manually search for and define the boundaries.  
 
 ##### Output directory
 
     OUTDIR: # the parent directory for the results folders
-    havic_test_results/amplicon # relative or absolute path to parent result folder
+      havic_test_results/amplicon # relative or absolute path to parent result folder
 
 Specify the path to the output directory.  The files listed in the table below will be sent to this directory as the run progresses.  
 
@@ -256,21 +255,21 @@ Stage number | Stage name | File or directory name
 ##### Setting the location of the tree root
 
     TREE_ROOT:
-    midpoint # sequence name to root iqtree on, or midpoint for midpoint root
+      midpoint # sequence name to root iqtree on, or midpoint for midpoint root
 
 For visual representation only, the tree root is set to orientate the plot in `HAV_amplicon_map.stack.trimmed.fa.rooted.treefile_1percent_divergence_valid_msa.pdf`.  The tree root does not affect cluster definitions.  
 
 ##### Set the prefix of output filenames
 
     RUN_PREFIX:
-    HAV_amplicon_
+      HAV_amplicon_
 
 To facilitate tracking of output files, the user is able to specify a custom prefix for output files.  
 
 ##### Draw results plots
 
     PLOTS:
-    Yes # Yes to make plots (slow for large runs), No otherwise.
+      Yes # Yes to make plots (slow for large runs), No otherwise.
 
 This setting controls the drawing of output plots.  The plots (shown below) are helpful to understand how the multiple sequence alignment affects tree topology, cluster detection and pairwise SNP distances.
 
@@ -283,13 +282,13 @@ This setting controls the drawing of output plots.  The plots (shown below) are 
 Input query sequences should be in fasta format with one sequence per sample.  Multiple samples may be included per file, and/or multiple files may be passed to `havic`.  Query sequences within files will be reverse complemented as necessary during their mapping to the subject/reference.  If the query sequence files are named `batch1.fa`, `batch2.fa`, `batch3.fa`,  edit the `QUERY_FILES` section of the `yaml` file as follows:
 
     QUERY_FILES:
-    - batch1.fa # relative or absolute paths to fasta files
-    - batch2.fa
-    - batch3.fa
+      - batch1.fa # relative or absolute paths to fasta files
+      - batch2.fa
+      - batch3.fa
 
 ##### Highlighting samples of interest
 
-To highlight query sequences in the final plots, list the sequence names under `HIGHLIGHT_TIP` in the `yaml`, otherwise ignore this section.  
+To highlight query sequences in the final plots, list the sequence names under `HIGHLIGHT_TIP` in the `yaml`, otherwise ignore this section.
 
 ##### Trimming sequences to genomic region of interest
 
@@ -303,14 +302,14 @@ To trim input queries to the reference VP1/P2A amplicon, list the sequence name 
 
     CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
 
-Use these variables to set parameters for `Minimap2`, `IQ-tree2` and `ClusterPicker`.  For further information, refer to the user manuals for each software in the above links.  
+Use these variables to set parameters for `Minimap2`, `IQ-Tree2` and `ClusterPicker`.  For further information, refer to the user manuals for each software in the above links.  
 
 ##### Highlight tips
 
     HIGHLIGHT_TIP:
-    - CmvAXJTIqH # Specify tip name to highlight in final plot
-    - CCHkiFhcxG # Specify tip name to highlight in final plot
-    - PAvYXhYkLM # Specify tip name to highlight in final plot
+      - CmvAXJTIqH # Specify tip name to highlight in final plot
+      - CCHkiFhcxG # Specify tip name to highlight in final plot
+      - PAvYXhYkLM # Specify tip name to highlight in final plot
 
 Samples listed under HIGHLIGHT_TIP will be annotated in the final tree plot with a red dot, as shown below.  
 
@@ -320,11 +319,11 @@ Samples listed under HIGHLIGHT_TIP will be annotated in the final tree plot with
 ##### Trim sequences to SUBJECT_TARGET_REGION
 
     TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
-    - AY644337_55443_seq_1 # these are sequences in the QUERY_FILES
-    - RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty
-    - nDNLdjtgha#HashInSeqName
+      - AY644337_55443_seq_1 # these are sequences in the QUERY_FILES
+      - RIVM-HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty
+      - nDNLdjtgha#HashInSeqName
 
-Sometimes query sequences are whole genome, off target, or longer than the target regions.  By supplying those sequence names here, `havic` will trim the aligned sequence to the SUBJECT_TARGET_REGION.  This list may be long, which is why it is placed toward the end of the `yaml` file.   
+Sometimes query sequences are whole genome, off target, or longer than the target regions.  By supplying those sequence names here, `havic` will trim the aligned sequence to the SUBJECT_TARGET_REGION.  This list may be long, which is why it is placed toward the end of the `yaml` file.  
 
 ##### Query sequences
 
@@ -337,6 +336,63 @@ Sometimes query sequences are whole genome, off target, or longer than the targe
 Provide relative or absolute paths to files containing query sequences.  Each sample may only consist of a single sequence.  Each file may contain one or more samples.  Multiple files may be input to `havic` via this option.  
 
 ### Tips and tricks
+
+#### Filter samples to subtype and analyse by subtype
+
+HAV sub-genotypes (or 'subtypes') infecting humans are IA, IB, IIA, IIB, IIIA and IIIB.  Typically, the genetic divergence between the subtypes is around 0.076 (i.e., 7.6 nucleotides in 100 nucleotides are different).  For large datasets ('large' is subjective), it might be desirable to perform analyses by subtype.  The analyst could logon to HAVNET, type the samples using HAVNET's BLAST platform and proceed from there; however, this process would require signing a data-access agreement and being accepted into the HAVNET portal by RIVM (which can take some days, access not guaranteed).  Alternatively, `havic` can be used to type the samples.  Here we describe the process for a single, novel VP1/P2A query sequence in the context of thousands of sequences obtained from NCBI GenBank.
+
+##### Run in fast mode to determine the subset
+
+A run in fast mode might look like:
+
+    IQTREE2_SETTINGS: # http://www.iqtree.org/doc/iqtree-doc.pdf
+      executable:
+        iqtree
+      other:
+        '-T 4 -m GTR+I+G --fast -bnni -alrt 2000'
+
+    CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
+      executable:
+        ClusterPicker
+      coarse_subtree_support: # divide tree into subtrees at/above this threshold
+        70
+      fine_cluster_support: # branch support minimum value for clusters of tips
+        80 # as we are using -alrt in iqtree, use a value of 80 here instead of 95 as we would for --ufboot values
+      distance_fraction: # float please, genetic distance
+        0.076 # genetic distance between subtypes is roughly equal to this
+      large_cluster_threshold:
+        15
+      distance_method:
+        valid # options are ambiguity, valid, gap, or abs
+
+Let's take a look at the `--fast` iqtree command `-T 3 -m GTR+I+G --fast -bnni -alrt 2000`, which is explained more thoroughly in the IQTree2 User Manual.  Briefly, we can save time by not `AUTO` selecting the threading strategy and not `AUTO` searching for the best fit model.  That is, Working with a short amplicon of 460 bp, we can safely choose three threads (`-T 3`).  As we have pre-emptively opted for the highly-parameterised GTR+I+G model, we need to use `-bnni` to compensate for potential model violations.  In `--fast` mode, we will also need to use an alternative to the `--ufboot` branch support method, so have implemented the `-alrt` single branch test.  
+
+Our aim for the fast analysis is to find clades that approximately correspond to HAV subtype, and then pick the subtype clade that contains our novel query sequence.  Given that we have used `-alrt` as a proxy for branch support, in `ClusterPicker` we use a `fine_cluster_support` of 80 to find the well supported clades.  
+
+After running in fast mode above, the clades containing the samples of interest can be extracted from the tree (e.g., using FigTree, open the `<RUN_PREFIX>map.stack.trimmed.fa.rooted_clusterPicks.nwk.figTree`, select taxa, copy and paste to text editor, remove `Clust[n]_` from the sample name and match to original files).  Note, sample names are santised by `havic` to remove problematic characters from fasta headers.  Get the unsanitised names for the samples from the file `<RUN_PREFIX>seq_id_replace.tsv`.  At this stage, it is also a good idea to check the 
+
+grep -f IAig_IBog.txt 20201110/r2_IA/r2_IA_seq_id_replace.tsv
+
+Then a re-run in slow mode might look like:
+
+    IQTREE2_SETTINGS: # http://www.iqtree.org/doc/iqtree-doc.pdf
+      executable:
+        iqtree # command to call iqtree2
+      other: # threads
+        '-T AUTO -m MFP+FO --ufboot 1000 -pers 0.2 -nstop 500'
+
+    CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
+      executable:
+        ClusterPicker
+      coarse_subtree_support: # divide tree into subtrees at/above this threshold
+        70
+      fine_cluster_support: # branch support minimum value for clusters of tips
+        95
+      distance_fraction: # float please, genetic distance
+        0.01 # (e.g., 1 SNP in 100 bp = 0.01)
+      large_cluster_threshold:
+        15
+
 
 #### Re-run from specified stage
 
