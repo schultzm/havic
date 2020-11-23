@@ -37,11 +37,11 @@ The user is free to modify parameters of a `havic` run through modifying a confi
   - phylogentic tree next to alignment with samples of interest and infection clusters highlighted
   - a heatmap of genetic distances between samples in alignment with infection clusters highlighted
 
-`havic` has been optimised for analysis of the the VP1/P2A amplicon, which is the genomic marker recommended by the Hepatitis A Virus Network ([HAVNET](https://www.rivm.nl/en/havnet)) ![protocol](https://github.com/schultzm/havic/blob/master/havic/data/Typing_protocol_HAVNET_VP1P2A_a1a.pdf).  The VP1/P2A region is shown here in the context of the HAV genome:
+`havic` has been optimised for analysis of the the VP1/P2A amplicon, which is the genomic marker recommended by the Hepatitis A Virus Network ([HAVNet](https://www.rivm.nl/en/havnet)) ![protocol](https://github.com/schultzm/havic/blob/master/havic/data/Typing_protocol_HAVNET_VP1P2A_a1a.pdf).  The VP1/P2A region is shown here in the context of the HAV genome:
 
-![Amplicon](https://github.com/schultzm/havic/blob/master/havic/data/VP1P2A.png?raw=true "The HAV genome with HAVNET amplicon, sourced from RIVM")
+![Amplicon](https://github.com/schultzm/havic/blob/master/havic/data/VP1P2A.png?raw=true "The HAV genome with HAVNet amplicon, sourced from RIVM")
 
-The bed coordinates of the HAVNET VP1/P2A amplicon are 2915 to 3374.  
+The bed coordinates of the HAVNet VP1/P2A amplicon are 2915 to 3374.  
 
 ## Installation
 
@@ -118,7 +118,7 @@ The results in this example were obtained using the command `havic test`.  Let's
       executable:
         minimap2 # https://github.com/lh3/minimap2
       other:
-        --secondary=no -Y
+        -c --cs --secondary=no
       k_mer: # select an odd number, between 3 and 27 inclusive
         -k 5 # 5 has been good for the HAV amplicon seqs, adjust sensibly
 
@@ -161,7 +161,7 @@ The results in this example were obtained using the command `havic test`.  Let's
       - '' # to test an empty file name (which would return a folder, not file)
     ...
 
-Before starting a run, `cd` to a working directory (preferably not inside the git cloned folder).  Either copy the above `yaml` to file, or use `wget https://raw.githubusercontent.com/schultzm/havic/master/havic/data/hav_amplicon.yaml`.  For more information on the `yaml` standard, refer to [https://yaml.org/](https://yaml.org/).  
+Before starting a run, `cd` to a working directory (preferably not inside the git cloned folder).  Either copy the above `yaml` file, or use `wget https://raw.githubusercontent.com/schultzm/havic/master/havic/data/hav_amplicon.yaml`.  For more information on the `yaml` standard, refer to [https://yaml.org/](https://yaml.org/).  
 
 Lets go through the `yaml` step-by-step.
 
@@ -339,11 +339,11 @@ Provide relative or absolute paths to files containing query sequences.  Each sa
 
 #### Filter samples to subtype and analyse by subtype
 
-HAV sub-genotypes (or 'subtypes') infecting humans are IA, IB, IIA, IIB, IIIA and IIIB.  Typically, the genetic divergence between the subtypes is around 0.076 (i.e., 7.6 nucleotides in 100 nucleotides are different).  For large datasets ('large' is subjective), it might be desirable to perform analyses by subtype.  The analyst could logon to HAVNET, type the samples using HAVNET's BLAST platform and proceed from there; however, this process would require signing a data-access agreement and being accepted into the HAVNET portal by RIVM (which can take some days, access not guaranteed).  Alternatively, `havic` can be used to type the samples.  Here we describe the process for a single, novel VP1/P2A query sequence in the context of thousands of sequences obtained from NCBI GenBank.
+For larger datasets, when runtimes are prohibitive, it is preferable to perform analyses by subtype.  HAV sub-genotypes (or 'subtypes') infecting humans are IA, IB, IIA, IIB, IIIA and IIIB.  Typically, the minimum genetic divergence between the subtypes is around 0.076 (i.e., more than 7.6 nucleotides in 100 nucleotides are different between subtypes in pairwise comparisons).  `havic` can be used to approximately type samples.  Here we describe the process to subset data for analysis of a single VP1/P2A query sequence in the context of thousands of VP1/2A sequences obtained from NCBI GenBank.
 
 ##### Run in fast mode to determine the subset
 
-A run in fast mode might look like:
+First we need to run the analysis in fast mode to obtain the subtype for the query sequence.  Within the `havic` pipeline, this will require tweaking the settings for `IQTree` and, consequently, `ClusterPicker`.  A run in fast mode might look like:
 
     IQTREE2_SETTINGS: # http://www.iqtree.org/doc/iqtree-doc.pdf
       executable:
@@ -365,28 +365,30 @@ A run in fast mode might look like:
       distance_method:
         valid # options are ambiguity, valid, gap, or abs
 
-Let's take a look at the `--fast` iqtree command `-T 3 -m GTR+I+G --fast -bnni -alrt 2000`, which is explained more thoroughly in the IQTree2 User Manual.  Briefly, we can save time by not `AUTO` selecting the threading strategy and not `AUTO` searching for the best fit model.  That is, Working with a short amplicon of 460 bp, we can safely choose three threads (`-T 3`).  As we have pre-emptively opted for the highly-parameterised GTR+I+G model, we need to use `-bnni` to compensate for potential model violations.  In `--fast` mode, we will also need to use an alternative to the `--ufboot` branch support method, so have implemented the `-alrt` single branch test.  
+The `--fast` iqtree command `-T 3 -m GTR+I+G --fast -bnni -alrt 2000` is explained more thoroughly in the IQTree2 User Manual.  Briefly, compute time is reduced by _not_ `AUTO` searching for the best threading strategy and _not_ `AUTO` searching for the best fit model.  Working with a short amplicon of 460 bp, we can safely choose three threads (`-T 3`). Pre-emptively, opting for the highly-parameterised GTR+I+G model, `-bnni` is used to compensate for any severe model violations.  In `--fast` mode, we also need to use an alternative to the `--ufboot` branch support method, so we have implemented the `-alrt` single branch test.  
 
-Our aim for the fast analysis is to find clades that approximately correspond to HAV subtype, and then pick the subtype clade that contains our novel query sequence.  Given that we have used `-alrt` as a proxy for branch support, in `ClusterPicker` we use a `fine_cluster_support` of 80 to find the well supported clades.  
+To reiterate, our aim for the fast analysis is to find clades that approximately correspond to HAV subtype, and then pick the subtype/clade that contains our novel query sequence.  Given that we have used `-alrt` as a proxy for branch support we need to lower our acceptance threshold for branch support.  That is, in `ClusterPicker` we set `fine_cluster_support` to 80 (as opposed to 95 for `UFBoot`)to find the well supported clades (please refer to IQTree manual for further advice on this), and we increase the genetic divergence to 0.076 or 7.6% to cluster the subtypes.  
 
-After running in fast mode above, the clades containing the samples of interest can be extracted from the tree (e.g., using FigTree, open the `<RUN_PREFIX>map.stack.trimmed.fa.rooted_clusterPicks.nwk.figTree`, select taxa, copy and paste to text editor, remove `Clust[n]_` from the sample name and match to original files).  Note, sample names are santised by `havic` to remove problematic characters from fasta headers.  Get the unsanitised names for the samples from the file `<RUN_PREFIX>seq_id_replace.tsv`.  At this stage, it is also a good idea to check the 
+To subset the dataset, after running `havic` in fast mode, open the output file `<RUN_PREFIX>map.stack.trimmed.fa.rooted_clusterPicks.nwk.figTree` in `FigTree`.  Search for the sample of interest.  Select the appropriate subset to give context to the sample of interest.  Note, sample names are santised by `havic` to remove problematic characters from fasta headers.  Original sample names are in `<RUN_PREFIX>seq_id_replace.tsv`.  Use the list of original sample names to subset the input data and modify the `yaml` file accordingly.
 
-grep -f IAig_IBog.txt 20201110/r2_IA/r2_IA_seq_id_replace.tsv
+##### Re-run the analysis in slow mode using the subset data
 
-Then a re-run in slow mode might look like:
+After selecting the subset of interest, re-run the analysis in 'slow' mode at least three times.  
+
+A re-run in slow mode might look like:
 
     IQTREE2_SETTINGS: # http://www.iqtree.org/doc/iqtree-doc.pdf
       executable:
         iqtree # command to call iqtree2
       other: # threads
-        '-T AUTO -m MFP+FO --ufboot 1000 -pers 0.2 -nstop 500'
+        '-T AUTO -m MFP+FO --ufboot 1000 -pers 0.2 -nstop 200'
 
     CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
       executable:
         ClusterPicker
       coarse_subtree_support: # divide tree into subtrees at/above this threshold
         70
-      fine_cluster_support: # branch support minimum value for clusters of tips
+      fine_cluster_support: # UPFboot minimum value for clusters of tips
         95
       distance_fraction: # float please, genetic distance
         0.01 # (e.g., 1 SNP in 100 bp = 0.01)
@@ -470,8 +472,7 @@ Probably.  havic has been designed and tested specifically to work on Hepatitis 
 
 _What is the minimum number of sequences that can be analysed using_ `havic`_?_
 
-The answer is 3.  To obtain context sequences for the query sample/s, go to NCBI's GenBank or RIVM's HAVNET.  It is recommended to use [entrez e-utils](https://www.ncbi.nlm.nih.gov/books/NBK179288/) for obtaining large numbers of sequences and associated metadata.
-
+The answer is 3.  To obtain context sequences for the query sample/s, go to NCBI's GenBank or RIVM's HAVNet.  It is recommended to use [entrez e-utils](https://www.ncbi.nlm.nih.gov/books/NBK179288/) for obtaining large numbers of sequences and associated metadata.
 
 ## Glossary
 
@@ -479,7 +480,7 @@ Acronym | Expansion
 ---|---
 HAV | Hepatitis A Virus
 MSA | Multiple Sequence Alignment
-HAVNET | Hepatitis A Virus Network
+HAVNet | Hepatitis A Virus Network
 ML | Maximum Likelihood
 NCBI | National Center for Biotechnology Information
 RIVM | Rijksinstituut voor Volksgezondheid en Milieu

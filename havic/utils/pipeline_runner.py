@@ -196,7 +196,7 @@ class Pipeline:
                     quality_controlled_seqs.append(record)
                 else:
                     dups.append(str(record.id))
-        if keyval_ids:
+        if keyval_ids: #this will print all the seqids, even if not corrected
             self.replacedheaders = keyval_ids
             with open(self.outfiles["seq_header_replacements"], "w") as out_h:
                 out_h.write("INPUT_SEQ_HEADER\tOUTPUT_SEQ_HEADER\n")

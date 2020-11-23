@@ -40,7 +40,7 @@ IQTREE2_SETTINGS: # http://www.iqtree.org/doc/iqtree-doc.pdf
   executable:
     iqtree # command to call iqtree2
   other: # threads
-    '-T AUTO -ntmax 24 -m TEST+FO --fast -bnni -alrt 2000' 
+    '-T AUTO -ntmax 24 -m MFP+FO --ufboot 2000' 
 
 CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
   executable:
@@ -48,8 +48,8 @@ CLUSTER_PICKER_SETTINGS: # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4228337/
   coarse_subtree_support: # divide tree into subtrees at/above this threshold
     70
   fine_cluster_support: # branch support minimum value for clusters of tips
-    80 # using alrt, above 80 is good.  see iqtree2 manual
-  distance_fraction: # float please, genetic distance
+    95 # using alrt, above 80 is good, for ufboot >=95 is good.  see iqtree2 manual
+  distance_fraction: # float proportion, genetic distance
     0.01 # (e.g., 1 SNP in 100 bp = 0.01)
   large_cluster_threshold:
     15
@@ -65,8 +65,8 @@ TRIM_SEQS: # these sequences will be trimmed to length of SUBJECT_AMPLICON
   - 'AY644337_55443_seq_1'
   - 'RIVM_HAV171_64913_seq_2_MapsOutsideTrimRegionSoEmpty'
   - 'nDNLdjtgha#HashInSeqName'
-  - '' # give it nothing
-  - 'xyxyx' # give it a non-name
+  - '' # test with nothing
+  - 'xyxyx' # test with non-name
 
 QUERY_FILES: # also known as QUERY sequences in BLAST terminology
   - data/example1.fa # relative or absolute paths to fasta files

@@ -170,9 +170,9 @@ FEATURES             Location/Qualifiers
      misc_binding    2832..2857
                      /note="Outer_forward_HAV6.1Codehop"
      misc_feature    2873..3376
-                     /note="HAVNET PCR product"
+                     /note="HAVNet PCR product"
      misc_binding    2886..2914
-                     /note="Forward_HAVNET_nestedPrimer "
+                     /note="Forward_HAVNet_nestedPrimer "
                      /id="Forward Nested primer "
      misc_feature    2915..3374
                      /note="PCR product (actual) within nested primers"
@@ -185,7 +185,7 @@ FEATURES             Location/Qualifiers
                      assembly signal 2A"
                      /protein_id="NP_740553.1"
      misc_binding    complement(3375..3403)
-                     /note="HAVNET_inner_r2_HAV11Codehop"
+                     /note="HAVNet_inner_r2_HAV11Codehop"
      misc_binding    complement(3417..3445)
                      /note="HAV10Codehop_outer_r1"
      mat_peptide     3675..3995
