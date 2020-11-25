@@ -1,8 +1,8 @@
 ---
-title: 'havic: a software tool for detection of Hepatitis A Virus Infection Clusters from clinical cDNA sequences'
+title: "havic: a software tool for detection of Hepatitis A Virus Infection Clusters from clinical cDNA sequences"
 tags:
-  - Python3
-  - Python
+  - python3
+  - python
   - bioinformatics
   - pipeline
   - ruffus
@@ -87,13 +87,20 @@ affiliations:
     index: 3
     address: 50 Lonsdale Street, Melbourne, Victoria, Australia, 3000
 date: 25 November 2020
-bibliography: ./paper.bib
-csl: ./harvard-the-university-of-melbourne.csl
+output:
+  pdf_document:
+    citation_package: natbib
+    latex_engine: pdflatex
+bibliography: [paper.bibtex]
+csl: harvard-the-university-of-melbourne.csl
+pandoc_args: ["--filter=pandoc-citeproc"]
+export_on_save:
+  pandoc: true
 ---
 
 # Introduction
 
-Globally, Hepatitis A Virus (HAV) infects tens of millions of people each year [@RN406].  Though mortality is low, morbidity is high resulting in large economic burden due to frequent hospitalisation of cases during the acute phase of infection.  Transmission of HAV occurs via the faecal-oral pathway, either directly from person-to-person or indirectly through contaminated food and water [@RN398].  HAV has its highest prevalence in low-income countries; however, sporadic outbreaks do occur in high-income countries [@RN406], typically arriving via return travellers and import on frozen foods [e.g., see @RN410; @RN414].  Lifelong immunity to the virus arises after vaccination or infection [@RN416].  
+Globally, Hepatitis A Virus (HAV) infects tens of millions of people each year [@RN406].  Though mortality is low, morbidity is high resulting in large economic burden due to frequent hospitalisation of cases during the acute phase of infection.  Transmission of HAV occurs via the faecal-oral pathway, either directly from person-to-person or indirectly through contaminated food and water [@RN398].  HAV has its highest prevalence in low-income countries; however, sporadic outbreaks do occur in high-income countries [@RN406], typically arriving via return travellers and import on frozen foods [e.g., see @RN410; @RN414].  Lifelong immunity to the virus arises after vaccination or infection [@RN416]. [@] 
 
 Molecular epidemiology using DNA sequencing and comparative genomics is now considered an essential public health measure to characterise virus outbreaks in real-time [@RN407; @RN410; @RN415].  For HAV, whole genome sequencing is not yet the normal practice for outbreak surveillance.  Instead, the gold-standard approach [i.e., the 'HAVNet' protocol @RN316] involves the sequencing of a 460 bp cDNA amplicon spanning the VP1/P2A junction.  After sequencing, the amplicon is compared to global databases to make inferences of genotype and to recover putative epidemiological links [@RN316].  With tiled amplicon approaches to viral sequencing now becoming more common [e.g., @RN417], there is a need for software tools that can handle amplicon, whole genome or partial genome sequences.  
 
