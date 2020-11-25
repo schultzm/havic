@@ -43,6 +43,8 @@ authors:
   - name: Susan A. Ballard
     orcid: 0000-0002-0096-9474
     affiliation: 1
+  - name: Sara Zufan
+    affiliation: 1
   - name: Norelle L Sherry
     orcid: 0000-0002-7789-8360
     affiliation: 1
