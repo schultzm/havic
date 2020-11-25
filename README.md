@@ -286,10 +286,6 @@ Input query sequences should be in fasta format with one sequence per sample.  M
       - batch2.fa
       - batch3.fa
 
-##### Highlighting samples of interest
-
-To highlight query sequences in the final plots, list the sequence names under `HIGHLIGHT_TIP` in the `yaml`, otherwise ignore this section.
-
 ##### Trimming sequences to genomic region of interest
 
 To trim input queries to the reference VP1/P2A amplicon, list the sequence name of the query under `TRIM_SEQS`, otherwise ignore this section.  
@@ -304,7 +300,10 @@ To trim input queries to the reference VP1/P2A amplicon, list the sequence name 
 
 Use these variables to set parameters for `Minimap2`, `IQ-Tree2` and `ClusterPicker`.  For further information, refer to the user manuals for each software in the above links.  
 
-##### Highlight tips
+##### Highlighting samples of interest
+
+To highlight query sequences in the final plots, list the sequence names under `HIGHLIGHT_TIP` in the `yaml`, otherwise ignore this section.
+
 
     HIGHLIGHT_TIP:
       - CmvAXJTIqH # Specify tip name to highlight in final plot

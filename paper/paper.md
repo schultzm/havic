@@ -93,6 +93,11 @@ affiliations:
 date: 25 November 2020
 bibliography: paper.bib
 csl: harvard-the-university-of-melbourne.csl
+
+output: pdf_document
+pandoc_args: ["--toc", "--toc-depth=3", "--filter=pandoc-citeproc"]
+export_on_save:
+  pandoc: true
 ---
 
 # Introduction
@@ -129,11 +134,9 @@ And the alignment may be plotted next to the phylogenetic tree, with the tree ti
 Samples listed under HIGHLIGHT_TIP will be annotated in the final tree plot with a red dot, as shown below.  
 
 ![Tree](https://github.com/schultzm/havic/blob/master/havic/data/highlight_tip.png?raw=true "Tip CmvAXJTIqH highlighted as requested under HIGHLIGHT_TIP")
-![Tree](https://github.com/schultzm/havic/blob/master/havic/data/highlight_tips.png?raw=true "Tips CCHkiFhcxG and PAvYXhYkLM highlighted as requested under HIGHLIGHT_TIP")
+
 
 # Acknowledgements
-
-
 
 # References
 
