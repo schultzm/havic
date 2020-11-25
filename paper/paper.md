@@ -16,7 +16,7 @@ tags:
   - outbreaks
   - phylogenomics
 authors:
-  - name: Mark B. Schultz
+  - name: Mark B. Schultz^[Corresponding author]
     orcid: 0000-0002-7689-6531
     affiliation: 1
   - name: Karolina Mercoulia
