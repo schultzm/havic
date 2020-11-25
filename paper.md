@@ -123,8 +123,13 @@ Example data are pre-packaged with `havic`.  Tests are performed by running `hav
 
 The results of havic are output to a single folder with the option to summarise the results as images.  Pairwise nucleotide differences may be summarised as a ![Heatmap](https://github.com/schultzm/havic/blob/master/havic/data/_heatmap_SNPs.png?raw=true "Pairwise genetic distances and ClusterPicker clusters")
 
-And the alignment may be plotted next to the phylogenetic tree, with the tree tips coloured by infection cluster and highlighted to show samples of interest (e.g., the query samples).  
+And the alignment may be plotted next to the phylogenetic tree, with the tree tips coloured by infection cluster.  
 ![Tree](https://github.com/schultzm/havic/blob/master/havic/data/tree_MSA_clusters.png?raw=true "Maximum Likelihood tree with bootstrap support, ClusterPicker clusters, and Multiple Sequence Alignment")
+
+Samples listed under HIGHLIGHT_TIP will be annotated in the final tree plot with a red dot, as shown below.  
+
+![Tree](https://github.com/schultzm/havic/blob/master/havic/data/highlight_tip.png?raw=true "Tip CmvAXJTIqH highlighted as requested under HIGHLIGHT_TIP")
+![Tree](https://github.com/schultzm/havic/blob/master/havic/data/highlight_tips.png?raw=true "Tips CCHkiFhcxG and PAvYXhYkLM highlighted as requested under HIGHLIGHT_TIP")
 
 # Acknowledgements
 
