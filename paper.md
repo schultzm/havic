@@ -119,10 +119,15 @@ Briefly outlining the steps in our pipeline, `havic` reads DNA sequences in fast
 
 Example data are pre-packaged with `havic`.  Tests are performed by running `havic test <test_suite>`, where `<test_suite>` is any of `hav_amplicon`, `hav_wgs`.  Two additional test suites – `measles_wgs` and 'hiv_amplicon' – are included for exploration of edge-cases and for future work that will aim to allow iterations of the software to be used for outbreak surveillance in other viruses.  Considering the error rate of Q30 Sanger sequences is 1/1000 bases or 0.001, and based on advice from epidemiolgists working in this space (who have been able to independently validate `havic`-detected clusters using contact tracing metadata over a number of years), we have settled on an optimal maximal within infection cluster divergence of 0.01 for our test analyses.  With branch supports estimated using `UFBoot` in `IQ-Tree2`, we performed our tests using branch supports of great than or equal to 95%.
 
-# Figures
+# Visualisation tools
 
+The results of havic are output to a single folder with the option to summarise the results as images.  Pairwise nucleotide differences may be summarised as a ![Heatmap](https://github.com/schultzm/havic/blob/master/havic/data/_heatmap_SNPs.png?raw=true "Pairwise genetic distances and ClusterPicker clusters")
+
+And the alignment may be plotted next to the phylogenetic tree, with the tree tips coloured by infection cluster and highlighted to show samples of interest (e.g., the query samples).  
+![Tree](https://github.com/schultzm/havic/blob/master/havic/data/tree_MSA_clusters.png?raw=true "Maximum Likelihood tree with bootstrap support, ClusterPicker clusters, and Multiple Sequence Alignment")
 
 # Acknowledgements
+
 
 
 # References
