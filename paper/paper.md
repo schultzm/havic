@@ -16,14 +16,13 @@ tags:
   - HAV
   - outbreaks
   - phylogenomics
-
 authors:
   - name: Mark B. Schultz^[Corresponding author]
     orcid: 0000-0002-7689-6531
     affiliation: 1
   - name: Karolina Mercoulia
-    affiliation: 1
     orcid: 0000-0002-3957-666X
+    affiliation: 1
   - name: William Pitchers
     orcid: 0000-0003-0385-5939
     affiliation: 1
@@ -32,13 +31,10 @@ authors:
     affiliation: 1
   - name: Marion Easton
     affiliation: 3
-    orcid: NA
   - name: Joy Gregory
     affiliation: 3
-    orcid: NA
   - name: Danita Hennessy
     affiliation: 3
-    orcid: NA
   - name: Linda T. Viberg
     orcid: 0000-0002-4174-1142
     affiliation: 1
@@ -63,8 +59,8 @@ authors:
   - Julian D.Druce
     orcid: 0000-0002-3521-3298
     affiliation: 2
-  - Courtney R. Lane
-    orcid: 
+  - name: Courtney R. Lane
+    affiliation: 1
   - name: Kristy Horan
     orcid: 0000-0003-3960-1519
     affiliation: 1
@@ -80,7 +76,6 @@ authors:
   - name: Benjamin P. Howden
     orcid: 0000-0003-0237-1473
     affiliation: 1
-
 affiliations:
   - name: Microbiological Diagnostic Unit – Public Health Laboratory
     index: 1
@@ -89,26 +84,22 @@ affiliations:
     index: 2
     address: Melbourne Health, The Peter Doherty Institute for Infection and Immunity, 792 Elizabeth Street, Melbourne, Victoria, Australia, 3000
   - name: Department of Health and Human Services, Victorian Government, Australia
-
+    index: 3
+    address: 50 Lonsdale Street, Melbourne, Victoria, Australia, 3000
 date: 25 November 2020
-bibliography: paper.bib
-csl: harvard-the-university-of-melbourne.csl
-
-output: pdf_document
-pandoc_args: ["--toc", "--toc-depth=3", "--filter=pandoc-citeproc"]
-export_on_save:
-  pandoc: true
+bibliography: ./paper.bib
+csl: ./harvard-the-university-of-melbourne.csl
 ---
 
 # Introduction
 
-Globally, Hepatitis A Virus (HAV) infects tens of millions of people each year [@RN406].  Though mortality is low, morbidity is high resulting in large economic burden due to frequent hospitalisation of cases during the acute phase of infection.  Transmission of HAV occurs via the faecal-oral pathway, either directly from person-to-person or indirectly through contaminated food and water [@RN398].  HAV has its highest prevalence in low-income countries; however, sporadic outbreaks do occur in high-income countries [@RN406], typically arriving via return travellers and import on frozen foods [e.g., see @RN410, @RN414].  Lifelong immunity to the virus arises after vaccination or infection [@RN416].  
+Globally, Hepatitis A Virus (HAV) infects tens of millions of people each year [@RN406].  Though mortality is low, morbidity is high resulting in large economic burden due to frequent hospitalisation of cases during the acute phase of infection.  Transmission of HAV occurs via the faecal-oral pathway, either directly from person-to-person or indirectly through contaminated food and water [@RN398].  HAV has its highest prevalence in low-income countries; however, sporadic outbreaks do occur in high-income countries [@RN406], typically arriving via return travellers and import on frozen foods [e.g., see @RN410; @RN414].  Lifelong immunity to the virus arises after vaccination or infection [@RN416].  
 
-Molecular epidemiology using DNA sequencing and comparative genomics is now considered an essential public health measure to characterise virus outbreaks in real-time [@RN407, @RN410, @RN415].  For HAV, whole genome sequencing is not yet the normal practice for outbreak surveillance.  Instead, the gold-standard approach [i.e., the 'HAVNet' protocol @RN316] involves the sequencing of a 460 bp cDNA amplicon spanning the VP1/P2A junction.  After sequencing, the amplicon is compared to global databases to make inferences of genotype and to recover putative epidemiological links [@RN316].  With tiled amplicon approaches to viral sequencing now becoming more common [e.g., @RN417], there is a need for software tools that can handle amplicon, whole genome or partial genome sequences.  
+Molecular epidemiology using DNA sequencing and comparative genomics is now considered an essential public health measure to characterise virus outbreaks in real-time [@RN407; @RN410; @RN415].  For HAV, whole genome sequencing is not yet the normal practice for outbreak surveillance.  Instead, the gold-standard approach [i.e., the 'HAVNet' protocol @RN316] involves the sequencing of a 460 bp cDNA amplicon spanning the VP1/P2A junction.  After sequencing, the amplicon is compared to global databases to make inferences of genotype and to recover putative epidemiological links [@RN316].  With tiled amplicon approaches to viral sequencing now becoming more common [e.g., @RN417], there is a need for software tools that can handle amplicon, whole genome or partial genome sequences.  
 
 Diversity of HAV has been well characterised and modern nomenclature assigns HAV to one serotype divided into six genotypes (I-VI).  Three genotypes (I, II, III), comprising six subtypes (IA, IB, IIA, IIB, IIIA and IIIB), are known to infect humans [@RN416].  Genotypes IV, V and VI infect non-human primates.  Pairwise nucleotide divergences between genotypes I to III range from 12.2% to 21.9% (mean 18.2%).  Diversity _within_ genotypes I to III ranges from 0.3% to 6.5% (mean 4.3%). Between subtypes IA and IB mean nucleotide divergence is estimated at 9.3%; between IIA and IIB divergence is approximately 9.6%; and between IIIA and IIIB divergence is around 11.8% [@RN412].  
 
-Though the HAVNet protocol is widely adopted, variations to the method are commonplace [e.g., see @RN408, @RN407].  Public databases (e.g., HAVNet and NCBI) are compiled over many years from myriad laboratories [e.g., see @RN411].  Artefactual nucleotide variations (e.g., low quality, false indels, incompatible orientation) are present.  And HAV consensus sequences do not always co-locate within a single genome target, with databases comprised of sequences from whole genome or partial genome sequences [refer to Figure 1 in @RN416].  Distance based pairwise nucleotide comparisons used to infer relatedness of samples are naturally sensitive to these sources of variation.  In this article, we describe our software tool `havic`, which is written to ease the burden of detecting and characterising HAV outbreak clusters during routine epidemiolgical surveillance in the midst of these challenges.
+Though the HAVNet protocol is widely adopted, variations to the method are commonplace [e.g., see @RN408; @RN407].  Public databases (e.g., HAVNet and NCBI) are compiled over many years from myriad laboratories [e.g., see @RN411].  Artefactual nucleotide variations (e.g., low quality, false indels, incompatible orientation) are present.  And HAV consensus sequences do not always co-locate within a single genome target, with databases comprised of sequences from whole genome or partial genome sequences [refer to Figure 1 in @RN416].  Distance based pairwise nucleotide comparisons used to infer relatedness of samples are naturally sensitive to these sources of variation.  In this article, we describe our software tool `havic`, which is written to ease the burden of detecting and characterising HAV outbreak clusters during routine epidemiolgical surveillance in the midst of these challenges.
 
 # Statement of utility
 
@@ -126,7 +117,9 @@ Example data are pre-packaged with `havic`.  Tests are performed by running `hav
 
 # Visualisation tools
 
-The results of havic are output to a single folder with the option to summarise the results as images.  Pairwise nucleotide differences may be summarised as a ![Heatmap](https://github.com/schultzm/havic/blob/master/havic/data/_heatmap_SNPs.png?raw=true "Pairwise genetic distances and ClusterPicker clusters")
+The results of havic are output to a single folder with the option to summarise the results as images.  Pairwise nucleotide differences may be summarised as a heatmap \autoref{fig:heatmap}
+
+![Figure 1: Pairwise genetic distances and ClusterPicker clusters.\label{fig:heatmap}](https://github.com/schultzm/havic/blob/master/havic/data/_heatmap_SNPs.png?raw=true )
 
 And the alignment may be plotted next to the phylogenetic tree, with the tree tips coloured by infection cluster.  
 ![Tree](https://github.com/schultzm/havic/blob/master/havic/data/tree_MSA_clusters.png?raw=true "Maximum Likelihood tree with bootstrap support, ClusterPicker clusters, and Multiple Sequence Alignment")
@@ -139,4 +132,3 @@ Samples listed under HIGHLIGHT_TIP will be annotated in the final tree plot with
 # Acknowledgements
 
 # References
-
