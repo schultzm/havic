@@ -1,5 +1,5 @@
 ---
-title: 'havic: detect _H_epatitis _A_ _V_irus _I_nfection _C_lusters from clinical cDNA sequences'
+title: 'havic: detect Hepatitis A Virus Infection Clusters from clinical cDNA sequences'
 tags:
   - python3
   - bioinformatics
