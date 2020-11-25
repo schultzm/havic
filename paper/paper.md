@@ -132,14 +132,14 @@ Example data are pre-packaged with `havic`.  Tests are performed by running `hav
 
 # Visualisation tools
 
-The results of havic are output to a single folder with the option to summarise the results as images.  Pairwise nucleotide differences may be summarised as a heatmap \autoref{fig:heatmap}
+The results of havic are output to a single folder with the option to summarise the results as images.  Pairwise nucleotide differences may be summarised as a heatmap \autoref{fig:heatmap}.
 
 ![Pairwise genetic distances and ClusterPicker clusters.\label{fig:heatmap}](https://github.com/schultzm/havic/blob/master/havic/data/_heatmap_SNPs.png?raw=true )
 
-And the alignment may be plotted next to the phylogenetic tree (\autoref{fig:bigtree}), with tree tips coloured by infection cluster.  
+And the alignment may be plotted next to the phylogenetic tree with tree tips coloured by infection cluster \autoref{fig:bigtree}.  
 ![Maximum Likelihood phylogenetic tree with ufboot branch support.  The underlying multiple sequence alignment is plotted next to the tree and tips are coloured to highlight the detected infection clusters.\label{fig:bigtree}](https://github.com/schultzm/havic/blob/master/havic/data/tree_MSA_clusters.png?raw=true)
 
-Query isolates may be annotated in the final tree plot using a red dot (\autoref{fig:bigdot}).  
+Query isolates may be annotated in the final tree plot using a red dot \autoref{fig:bigdot}.  
 
 ![Query sequence highlighted using a red dot.\label{fig:bigdot}](https://github.com/schultzm/havic/blob/master/havic/data/highlight_tip.png?raw=true)
 
