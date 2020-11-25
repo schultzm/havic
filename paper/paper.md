@@ -137,6 +137,7 @@ The results of havic are output to a single folder with the option to summarise 
 ![Pairwise genetic distances and ClusterPicker clusters.\label{fig:heatmap}](https://github.com/schultzm/havic/blob/master/havic/data/_heatmap_SNPs.png?raw=true )
 
 And the alignment may be plotted next to the phylogenetic tree with tree tips coloured by infection cluster \autoref{fig:bigtree}.  
+
 ![Maximum Likelihood phylogenetic tree with ufboot branch support.  The underlying multiple sequence alignment is plotted next to the tree and tips are coloured to highlight the detected infection clusters.\label{fig:bigtree}](https://github.com/schultzm/havic/blob/master/havic/data/tree_MSA_clusters.png?raw=true)
 
 Query isolates may be annotated in the final tree plot using a red dot \autoref{fig:bigdot}.  
