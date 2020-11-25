@@ -1,12 +1,11 @@
 ---
-title: "havic: a software tool for detection of Hepatitis A Virus Infection Clusters from clinical cDNA sequences"
+title: 'havic: detect Hepatitis A Virus Infection Clusters from clinical cDNA sequences'
 tags:
   - python3
-  - python
   - bioinformatics
   - pipeline
   - ruffus
-  - mapping
+  - sequence mapping
   - consensus
   - epidemiology
   - genomic
@@ -17,7 +16,7 @@ tags:
   - outbreaks
   - phylogenomics
 authors:
-  - name: Mark B. Schultz^[Corresponding author]
+  - name: Mark B. Schultz
     orcid: 0000-0002-7689-6531
     affiliation: 1
   - name: Karolina Mercoulia
@@ -44,19 +43,19 @@ authors:
   - name: Susan A. Ballard
     orcid: 0000-0002-0096-9474
     affiliation: 1
-  - Norelle L Sherry
+  - name: Norelle L Sherry
     orcid: 0000-0002-7789-8360
     affiliation: 1
-  - Lilly Yuen
+  - name: Lilly Yuen
     orcid: 0000-0003-2934-0167
     affiliation: 2
-  - Leon Caly
+  - name: Leon Caly
     orcid: 0000-0003-2846-6729
     affiliation: 2
-  - Mike G. Catton
+  - name: Mike G. Catton
     orcid: 0000-0002-0297-1260
     affiliation: 2
-  - Julian D.Druce
+  - name: Julian D.Druce
     orcid: 0000-0002-3521-3298
     affiliation: 2
   - name: Courtney R. Lane
@@ -67,35 +66,24 @@ authors:
   - name: Torsten Seemann
     orcid: 0000-0001-6046-610X
     affiliation: 1
-  - name: Deborah A. Williamson
-    orcid: 0000-0001-7363-6665
+  - name: Benjamin P. Howden
+    orcid: 0000-0003-0237-1473
     affiliation: 1
   - name: Anders Gonçalves da Silva
     orcid: 0000-0002-2257-8781
     affiliation: 1
-  - name: Benjamin P. Howden
-    orcid: 0000-0003-0237-1473
+  - name: Deborah A. Williamson
+    orcid: 0000-0001-7363-6665
     affiliation: 1
 affiliations:
   - name: Microbiological Diagnostic Unit – Public Health Laboratory
     index: 1
-    address: Department of Microbiology and Immunology, University of Melbourne at The Peter Doherty Institute for Infection and Immunity, 792 Elizabeth Street, Melbourne, Victoria, Australia, 3000
   - name: Victorian Infectious Diseases Reference Laboratory
     index: 2
-    address: Melbourne Health, The Peter Doherty Institute for Infection and Immunity, 792 Elizabeth Street, Melbourne, Victoria, Australia, 3000
   - name: Department of Health and Human Services, Victorian Government, Australia
     index: 3
-    address: 50 Lonsdale Street, Melbourne, Victoria, Australia, 3000
 date: 25 November 2020
-output:
-  pdf_document:
-    citation_package: natbib
-    latex_engine: pdflatex
-bibliography: [paper.bibtex]
-csl: harvard-the-university-of-melbourne.csl
-pandoc_args: ["--filter=pandoc-citeproc"]
-export_on_save:
-  pandoc: true
+bibliography: paper.bib
 ---
 
 # Introduction
