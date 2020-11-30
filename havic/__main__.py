@@ -30,11 +30,13 @@ def main():
     subparser_args1 = argparse.ArgumentParser(add_help=False)
     subparser_args1.add_argument("yaml_path", help="""Path to yaml config.""")
     subparser_args2 = argparse.ArgumentParser(add_help=False)
-    subparser_args2.add_argument("test_suite", choices=["hav_amplicon",
-                                          "hav_wgs",
-                                          "hav_pmc",
-                                          "measles_wgs",
-                                          "hiv_amplicon"],
+    subparser_args2.add_argument("test_suite", choices=[
+                                                        "hav_pmc",
+                                                        "hav_amplicon",
+                                                        "hav_wgs",
+                                                        #   "measles_wgs",
+                                                        #   "hiv_amplicon"
+                                                        ],
                                 help="""The test suite to run.""")#,
                                 # dest="testsuite")
 
