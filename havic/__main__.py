@@ -34,8 +34,8 @@ def main():
                                                         "hav_pmc",
                                                         "hav_amplicon",
                                                         "hav_wgs",
-                                                        #   "measles_wgs",
-                                                        #   "hiv_amplicon"
+                                                        "measles_wgs",
+                                                        "hiv_amplicon"
                                                         ],
                                 help="""The test suite to run.""")#,
                                 # dest="testsuite")
